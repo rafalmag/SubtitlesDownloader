@@ -1,4 +1,4 @@
-package pl.rafalmag.subtitledownloader;
+package pl.rafalmag.subtitledownloader.opensubtitles;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -10,6 +10,11 @@ import org.apache.log4j.Logger;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
+
+import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
+import pl.rafalmag.subtitledownloader.opensubtitles.entities.CheckMovieHash2Entity;
+import pl.rafalmag.subtitledownloader.opensubtitles.entities.ImdbMovieDetails;
+import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
@@ -116,6 +121,7 @@ public class Session {
 			Collection<SearchSubtitlesResult> result = Lists
 					.newArrayListWithCapacity(data.length);
 			for (Object entry : data) {
+				@SuppressWarnings("unchecked")
 				Map<String, Object> entryMap = (Map<String, Object>) entry;
 				result.add(new SearchSubtitlesResult(entryMap));
 			}

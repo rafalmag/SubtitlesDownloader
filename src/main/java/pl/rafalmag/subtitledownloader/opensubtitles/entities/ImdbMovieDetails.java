@@ -1,4 +1,4 @@
-package pl.rafalmag.subtitledownloader;
+package pl.rafalmag.subtitledownloader.opensubtitles.entities;
 
 import java.util.Collection;
 import java.util.Map;

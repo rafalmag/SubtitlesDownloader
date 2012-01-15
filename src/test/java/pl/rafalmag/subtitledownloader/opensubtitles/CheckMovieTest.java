@@ -1,4 +1,4 @@
-package pl.rafalmag.subtitledownloader;
+package pl.rafalmag.subtitledownloader.opensubtitles;
 
 import static ch.lambdaj.Lambda.having;
 import static ch.lambdaj.Lambda.on;
@@ -18,6 +18,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import pl.rafalmag.subtitledownloader.opensubtitles.CheckMovie;
+import pl.rafalmag.subtitledownloader.opensubtitles.Session;
+import pl.rafalmag.subtitledownloader.opensubtitles.SessionException;
+import pl.rafalmag.subtitledownloader.opensubtitles.entities.CheckMovieHash2Entity;
+import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
 
 public class CheckMovieTest {
 

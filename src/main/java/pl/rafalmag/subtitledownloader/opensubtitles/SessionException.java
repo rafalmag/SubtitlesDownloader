@@ -1,4 +1,6 @@
-package pl.rafalmag.subtitledownloader;
+package pl.rafalmag.subtitledownloader.opensubtitles;
+
+import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
 
 @SuppressWarnings("serial")
 public class SessionException extends SubtitlesDownloaderException {

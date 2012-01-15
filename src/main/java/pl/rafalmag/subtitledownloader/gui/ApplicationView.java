@@ -1,27 +1,25 @@
 package pl.rafalmag.subtitledownloader.gui;
 
+import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 
-public class Window {
+public class ApplicationView {
+
+	private static final Logger LOGGER = Logger
+			.getLogger(ApplicationView.class);
 
 	protected Shell shlSubtitlesdownloader;
+	private final ApplicationController controller;
 
-	/**
-	 * Launch the application.
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		try {
-			Window window = new Window();
-			window.open();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public ApplicationView(ApplicationController controller) {
+		this.controller = controller;
+		createContents();
 	}
 
 	/**
@@ -29,7 +27,6 @@ public class Window {
 	 */
 	public void open() {
 		Display display = Display.getDefault();
-		createContents();
 		shlSubtitlesdownloader.open();
 		shlSubtitlesdownloader.layout();
 		while (!shlSubtitlesdownloader.isDisposed()) {
@@ -64,6 +61,22 @@ public class Window {
 
 		MenuItem aboutMenuItem = new MenuItem(menu, SWT.NONE);
 		aboutMenuItem.setText("About");
+
+		// listeners
+		exitMenuItem.addSelectionListener(new SelectionListener() {
+
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				LOGGER.debug("Exit menu item pressed1");
+				controller.exitAction();
+			}
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				LOGGER.debug("Exit menu item pressed2");
+				controller.exitAction();
+			}
+		});
 
 	}
 }

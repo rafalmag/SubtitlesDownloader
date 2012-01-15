@@ -1,4 +1,4 @@
-package pl.rafalmag.subtitledownloader;
+package pl.rafalmag.subtitledownloader.opensubtitles;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,6 +6,10 @@ import java.util.Collection;
 
 import org.apache.log4j.Logger;
 import org.opensubtitles.OpenSubtitlesHasher;
+
+import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
+import pl.rafalmag.subtitledownloader.opensubtitles.entities.CheckMovieHash2Entity;
+import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
 
 // TODO check http://api.themoviedb.org
 public class CheckMovie {
@@ -32,7 +36,7 @@ public class CheckMovie {
 		return checkMovieHash2Map;
 	}
 
-	protected String getHashCode() throws SubtitlesDownloaderException {
+	public String getHashCode() throws SubtitlesDownloaderException {
 		if (hashCode == null) {
 			try {
 				hashCode = OpenSubtitlesHasher.computeHash(movieFile);

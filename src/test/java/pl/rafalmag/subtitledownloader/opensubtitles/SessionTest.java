@@ -1,4 +1,4 @@
-package pl.rafalmag.subtitledownloader;
+package pl.rafalmag.subtitledownloader.opensubtitles;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -6,6 +6,10 @@ import static org.junit.Assert.assertThat;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import pl.rafalmag.subtitledownloader.opensubtitles.Session;
+import pl.rafalmag.subtitledownloader.opensubtitles.SessionException;
+import pl.rafalmag.subtitledownloader.opensubtitles.entities.ImdbMovieDetails;
 
 public class SessionTest {
 
