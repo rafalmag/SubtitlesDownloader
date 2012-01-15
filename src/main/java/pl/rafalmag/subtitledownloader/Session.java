@@ -3,6 +3,7 @@ package pl.rafalmag.subtitledownloader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -11,6 +12,7 @@ import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
 public class Session {
@@ -82,6 +84,49 @@ public class Session {
 		}
 	}
 
+	public Collection<SearchSubtitlesResult> searchSubtitles(String movieHash,
+			Long movieByteSize) throws SubtitlesDownloaderException {
+		Object[] params = new Object[] {
+				token,
+				new Object[] { ImmutableMap.of("sublanguageid", "eng",
+						"moviehash", movieHash, "moviebytesize",
+						movieByteSize.toString()) } };
+		return searchSubtitles(params);
+	}
+
+	private Collection<SearchSubtitlesResult> searchSubtitles(Object[] params)
+			throws SubtitlesDownloaderException {
+		try {
+			@SuppressWarnings("unchecked")
+			Map<String, Object> execute = (Map<String, Object>) client.execute(
+					"SearchSubtitles", params);
+			LOGGER.debug("SearchSubtitles response: " + execute);
+			String status = (String) execute.get("status");
+			if (!status.contains("OK")) {
+				throw new SubtitlesDownloaderException(
+						"could not SearchSubtitles because of wrong status "
+								+ status);
+			}
+
+			Object dataRaw = execute.get("data");
+			if (dataRaw.equals(false)) {
+				return Collections.emptyList();
+			}
+			Object[] data = (Object[]) dataRaw;
+			Collection<SearchSubtitlesResult> result = Lists
+					.newArrayListWithCapacity(data.length);
+			for (Object entry : data) {
+				Map<String, Object> entryMap = (Map<String, Object>) entry;
+				result.add(new SearchSubtitlesResult(entryMap));
+			}
+			return result;
+		} catch (XmlRpcException e) {
+			throw new SubtitlesDownloaderException(
+					"could not invoke SearchSubtitles because of "
+							+ e.getMessage(), e);
+		}
+	}
+
 	public ImdbMovieDetails getImdbMovieDetails(int imdbId)
 			throws SubtitlesDownloaderException {
 		Object[] params = new Object[] { token, imdbId };
@@ -99,27 +144,12 @@ public class Session {
 			@SuppressWarnings("unchecked")
 			Map<String, Object> data = (Map<String, Object>) execute
 					.get("data");
-			return parseImdbMovieDetails(data);
+			return new ImdbMovieDetails(data);
 		} catch (XmlRpcException e) {
 			throw new SubtitlesDownloaderException(
 					"could not invoke GetIMDBMovieDetails because of "
 							+ e.getMessage(), e);
 		}
-	}
-
-	private ImdbMovieDetails parseImdbMovieDetails(Map<String, Object> data) {
-		ImdbMovieDetails imdbMovieDetails = new ImdbMovieDetails();
-		// imdbMovieDetails.setCast(data.get("cast")); // TODO
-		// imdbMovieDetails.setAka(data.get("aka")); // TODO
-		imdbMovieDetails.setRating(Double.parseDouble((String) data
-				.get("rating")));
-		imdbMovieDetails.setCoverUrl((String) data.get("cover"));
-		imdbMovieDetails.setId(Integer.parseInt((String) data.get("id")));
-		imdbMovieDetails.setVotes(Integer.parseInt((String) data.get("votes")));
-		imdbMovieDetails.setTitle((String) data.get("title"));
-		imdbMovieDetails.setYear(Integer.parseInt((String) data.get("year")));
-		LOGGER.debug("parsed imdbMovieDetails=" + imdbMovieDetails);
-		return imdbMovieDetails;
 	}
 
 	public Collection<CheckMovieHash2Entity> checkMovieHash2(String hashCode)
@@ -140,7 +170,8 @@ public class Session {
 			Collection<CheckMovieHash2Entity> result = Lists
 					.newArrayListWithCapacity(object.length);
 			for (Object record : object) {
-				CheckMovieHash2Entity checkMovieHash2Entity = parseCheckMovieHash2Entity((Map<String, Object>) record);
+				CheckMovieHash2Entity checkMovieHash2Entity = new CheckMovieHash2Entity(
+						(Map<String, Object>) record);
 				result.add(checkMovieHash2Entity);
 			}
 			return result;
@@ -149,19 +180,6 @@ public class Session {
 					"could not invoke CheckMovieHash2 because of "
 							+ e.getMessage(), e);
 		}
-	}
-
-	private CheckMovieHash2Entity parseCheckMovieHash2Entity(
-			Map<String, Object> record) {
-		String movieHash = (String) record.get("MovieHash");
-		int imdbId = (Integer) record.get("MovieImdbID");
-		String movieName = (String) record.get("MovieName");
-		int year = (Integer) record.get("MovieYear");
-		int seenCount = (Integer) record.get("SeenCount");
-		CheckMovieHash2Entity checkMovieHash2Entity = new CheckMovieHash2Entity(
-				movieHash, imdbId, movieName, year, seenCount);
-		LOGGER.debug("parsed checkMovieHash2Entity=" + checkMovieHash2Entity);
-		return checkMovieHash2Entity;
 	}
 
 }

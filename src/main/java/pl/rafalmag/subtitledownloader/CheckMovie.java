@@ -23,6 +23,7 @@ public class CheckMovie {
 		this.movieFile = movieFile;
 	}
 
+	@Deprecated
 	public Collection<CheckMovieHash2Entity> getTitleInfo()
 			throws SubtitlesDownloaderException {
 		String hashCode = getHashCode();
@@ -43,7 +44,18 @@ public class CheckMovie {
 			}
 		}
 		return hashCode;
+	}
 
+	public Collection<SearchSubtitlesResult> getSubtitles()
+			throws SubtitlesDownloaderException {
+
+		String movieHash = getHashCode();
+		long movieByteSize = getByteSize();
+		return session.searchSubtitles(movieHash, movieByteSize);
+	}
+
+	public long getByteSize() {
+		return movieFile.length();
 	}
 
 }

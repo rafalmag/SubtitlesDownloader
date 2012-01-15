@@ -1,11 +1,30 @@
 package pl.rafalmag.subtitledownloader;
 
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
 public class CheckMovieHash2Entity {
+
+	private static final Logger LOGGER = Logger
+			.getLogger(CheckMovieHash2Entity.class);
+
 	String movieHash;
 	int imdbId;
 	String movieName;
 	int year;
 	int seenCount;
+
+	public CheckMovieHash2Entity(Map<String, Object> record) {
+		String movieHash = (String) record.get("MovieHash");
+		int imdbId = (Integer) record.get("MovieImdbID");
+		String movieName = (String) record.get("MovieName");
+		int year = (Integer) record.get("MovieYear");
+		int seenCount = (Integer) record.get("SeenCount");
+		CheckMovieHash2Entity checkMovieHash2Entity = new CheckMovieHash2Entity(
+				movieHash, imdbId, movieName, year, seenCount);
+		LOGGER.debug("parsed checkMovieHash2Entity=" + checkMovieHash2Entity);
+	}
 
 	public CheckMovieHash2Entity(String movieHash, int imdbId,
 			String movieName, int year, int seenCount) {

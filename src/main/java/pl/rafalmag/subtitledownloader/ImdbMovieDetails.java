@@ -3,7 +3,13 @@ package pl.rafalmag.subtitledownloader;
 import java.util.Collection;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 public class ImdbMovieDetails {
+
+	private static final Logger LOGGER = Logger
+			.getLogger(ImdbMovieDetails.class);
+
 	Map<String, String> cast;
 	double rating;
 	String coverUrl;
@@ -12,6 +18,18 @@ public class ImdbMovieDetails {
 	String title;
 	Collection<String> aka;
 	int year;
+
+	public ImdbMovieDetails(Map<String, Object> data) {
+		// imdbMovieDetails.setCast(data.get("cast")); // TODO
+		// imdbMovieDetails.setAka(data.get("aka")); // TODO
+		rating = Double.parseDouble((String) data.get("rating"));
+		coverUrl = (String) data.get("cover");
+		id = Integer.parseInt((String) data.get("id"));
+		votes = Integer.parseInt((String) data.get("votes"));
+		title = (String) data.get("title");
+		year = Integer.parseInt((String) data.get("year"));
+		LOGGER.debug("parsed imdbMovieDetails=" + this);
+	}
 
 	public Map<String, String> getCast() {
 		return cast;
