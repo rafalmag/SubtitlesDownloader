@@ -36,7 +36,7 @@ public class CheckMovieTest {
 
 	@Ignore
 	@Deprecated
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
 	public void should_get_title_info_for_movie() throws Exception {
 		// given
@@ -49,7 +49,8 @@ public class CheckMovieTest {
 				.getTitleInfo();
 
 		// then
-		@SuppressWarnings("rawtypes")
+		assertThat("Result should has few records",
+				(Collection) checkMovieHash2Entities, is(not(empty())));
 		Collection select = select(
 				checkMovieHash2Entities,
 				having(on(CheckMovieHash2Entity.class).getMovieName(),

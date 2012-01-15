@@ -16,14 +16,12 @@ public class CheckMovieHash2Entity {
 	int seenCount;
 
 	public CheckMovieHash2Entity(Map<String, Object> record) {
-		String movieHash = (String) record.get("MovieHash");
-		int imdbId = (Integer) record.get("MovieImdbID");
-		String movieName = (String) record.get("MovieName");
-		int year = (Integer) record.get("MovieYear");
-		int seenCount = (Integer) record.get("SeenCount");
-		CheckMovieHash2Entity checkMovieHash2Entity = new CheckMovieHash2Entity(
-				movieHash, imdbId, movieName, year, seenCount);
-		LOGGER.debug("parsed checkMovieHash2Entity=" + checkMovieHash2Entity);
+		movieHash = (String) record.get("MovieHash");
+		imdbId = (Integer) record.get("MovieImdbID");
+		movieName = (String) record.get("MovieName");
+		year = (Integer) record.get("MovieYear");
+		seenCount = (Integer) record.get("SeenCount");
+		LOGGER.debug("parsed checkMovieHash2Entity=" + this);
 	}
 
 	public CheckMovieHash2Entity(String movieHash, int imdbId,

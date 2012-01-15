@@ -2,12 +2,18 @@ package pl.rafalmag.subtitledownloader;
 
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 public class SearchSubtitlesResult {
+
+	private static final Logger LOGGER = Logger
+			.getLogger(SearchSubtitlesResult.class);
 
 	private final Map<String, Object> map;
 
 	public SearchSubtitlesResult(Map<String, Object> map) {
 		this.map = map;
+		LOGGER.debug("parsed SearchSubtitlesResult=" + this);
 	}
 
 	@Override
