@@ -1,5 +1,14 @@
 package pl.rafalmag.subtitledownloader;
 
+import static ch.lambdaj.Lambda.having;
+import static ch.lambdaj.Lambda.on;
+import static ch.lambdaj.Lambda.select;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+
 import java.io.File;
 import java.util.Collection;
 
@@ -22,6 +31,7 @@ public class CheckMovieTest {
 		session.logout();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void should_get_title_info_for_movie() throws Exception {
 		// given
@@ -35,8 +45,12 @@ public class CheckMovieTest {
 				.getTitleInfo();
 
 		// then
-		// TODO
-		// Assert.assertThat(checkMovieHash2Entities,
-		// Matchers.hasItem(elementMatcher)("A Lonely Place To Die"));
+		@SuppressWarnings("rawtypes")
+		Collection select = select(
+				checkMovieHash2Entities,
+				having(on(CheckMovieHash2Entity.class).getMovieName(),
+						equalTo("A Lonely Place To Die")));
+		assertThat("Result should has item with title A Lonely Place To Die",
+				select, is(not(empty())));
 	}
 }

@@ -7,6 +7,7 @@ import java.util.Collection;
 import org.apache.log4j.Logger;
 import org.opensubtitles.OpenSubtitlesHasher;
 
+// TODO check http://api.themoviedb.org
 public class CheckMovie {
 
 	private static final Logger LOGGER = Logger.getLogger(Session.class);
