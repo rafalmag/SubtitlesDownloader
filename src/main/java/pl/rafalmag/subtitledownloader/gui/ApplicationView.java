@@ -2,8 +2,8 @@ package pl.rafalmag.subtitledownloader.gui;
 
 import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -63,20 +63,29 @@ public class ApplicationView {
 		aboutMenuItem.setText("About");
 
 		// listeners
-		exitMenuItem.addSelectionListener(new SelectionListener() {
+		exitMenuItem.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				LOGGER.debug("Exit menu item pressed1");
+				LOGGER.debug("Exit menu item pressed");
 				controller.exitAction();
 			}
 
-			@Override
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-				LOGGER.debug("Exit menu item pressed2");
-				controller.exitAction();
-			}
 		});
 
+		aboutMenuItem.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent arg0) {
+				LOGGER.debug("About menu item pressed");
+				controller.aboutAction();
+			}
+
+		});
+
+	}
+
+	public Shell getShell() {
+		return shlSubtitlesdownloader;
 	}
 }

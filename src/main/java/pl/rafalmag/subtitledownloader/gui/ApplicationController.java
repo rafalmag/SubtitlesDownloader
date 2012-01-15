@@ -1,6 +1,7 @@
 package pl.rafalmag.subtitledownloader.gui;
 
 import org.apache.log4j.Logger;
+import org.eclipse.swt.SWT;
 
 public class ApplicationController {
 
@@ -28,5 +29,11 @@ public class ApplicationController {
 	public final void exitAction() {
 		LOGGER.info("Bye");
 		System.exit(0);
+	}
+
+	public void aboutAction() {
+		AboutDialog aboutDialog = new AboutDialog(applicationView.getShell(),
+				SWT.DIALOG_TRIM);
+		aboutDialog.open();
 	}
 }
