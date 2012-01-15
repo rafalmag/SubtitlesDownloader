@@ -6,16 +6,6 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Subtitles Downloader</name>
 
-<!--
-	<properties>
-		<swt.artifactId>swt-windows</swt.artifactId>
-		<swt.version>3.6</swt.version>
-		<swt.classifier>x86_64</swt.classifier>
-		<os>windows</os>
-	</properties>
-	-->
-	
-	
 	<profiles>
 		<profile>
 			<id>windows-32</id>
