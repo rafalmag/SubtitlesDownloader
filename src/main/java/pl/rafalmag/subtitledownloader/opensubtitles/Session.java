@@ -22,9 +22,7 @@ import com.google.common.collect.Lists;
 
 public class Session {
 
-	private static final String USER_AGENT = "OS Test User Agent"; // TODO
-																	// change
-																	// this
+	private static final String USER_AGENT = "SubtitlesDownloader v1";
 
 	private static final Logger LOGGER = Logger.getLogger(Session.class);
 
