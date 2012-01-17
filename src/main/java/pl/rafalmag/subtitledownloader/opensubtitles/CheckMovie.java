@@ -4,8 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.apache.log4j.Logger;
 import org.opensubtitles.OpenSubtitlesHasher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.CheckMovieHash2Entity;
@@ -14,7 +15,7 @@ import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResu
 // TODO check http://api.themoviedb.org
 public class CheckMovie {
 
-	private static final Logger LOGGER = Logger.getLogger(Session.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Session.class);
 
 	private final Session session;
 

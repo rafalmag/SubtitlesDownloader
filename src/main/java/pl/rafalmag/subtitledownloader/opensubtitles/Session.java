@@ -6,10 +6,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.CheckMovieHash2Entity;
@@ -24,7 +25,7 @@ public class Session {
 
 	private static final String USER_AGENT = "SubtitlesDownloader v1";
 
-	private static final Logger LOGGER = Logger.getLogger(Session.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Session.class);
 
 	private final XmlRpcClient client;
 	private String token;

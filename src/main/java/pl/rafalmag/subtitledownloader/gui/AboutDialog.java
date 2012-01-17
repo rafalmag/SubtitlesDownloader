@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -24,10 +23,13 @@ import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AboutDialog extends Dialog {
 
-	private static final Logger LOGGER = Logger.getLogger(AboutDialog.class);
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(AboutDialog.class);
 
 	protected static final String url = "http://www.opensubtitles.org/";
 

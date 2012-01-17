@@ -2,11 +2,12 @@ package pl.rafalmag.subtitledownloader.opensubtitles.entities;
 
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CheckMovieHash2Entity {
 
-	private static final Logger LOGGER = Logger
+	private static final Logger LOGGER = LoggerFactory
 			.getLogger(CheckMovieHash2Entity.class);
 
 	String movieHash;

@@ -1,11 +1,12 @@
 package pl.rafalmag.subtitledownloader.gui;
 
-import org.apache.log4j.Logger;
 import org.eclipse.swt.SWT;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ApplicationController {
 
-	private static final Logger LOGGER = Logger
+	private static final Logger LOGGER = LoggerFactory
 			.getLogger(ApplicationController.class);
 
 	private final ApplicationView applicationView;
