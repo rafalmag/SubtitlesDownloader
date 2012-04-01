@@ -113,6 +113,7 @@ public class Session {
 			}
 
 			Object dataRaw = execute.get("data");
+			// can be false if nothing found...
 			if (dataRaw.equals(false)) {
 				return Collections.emptyList();
 			}

@@ -5,6 +5,14 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * http://trac.opensubtitles.org/projects/opensubtitles/wiki/XMLRPC#
+ * SearchSubtitles
+ * 
+ * @author rafalmag
+ * 
+ */
 public class SearchSubtitlesResult {
 
 	private static final Logger LOGGER = LoggerFactory
@@ -15,6 +23,18 @@ public class SearchSubtitlesResult {
 	public SearchSubtitlesResult(Map<String, Object> map) {
 		this.map = map;
 		LOGGER.debug("parsed SearchSubtitlesResult=" + this);
+	}
+
+	public String getIdMovie() {
+		return (String) map.get("IDMovie");
+	}
+
+	public String getIDMovieImdb() {
+		return (String) map.get("IDMovieImdb");
+	}
+
+	public String getMovieName() {
+		return (String) map.get("MovieName");
 	}
 
 	@Override

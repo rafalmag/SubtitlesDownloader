@@ -2,6 +2,7 @@ package org.themoviedb;
 
 import javax.ws.rs.core.MediaType;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.Client;
@@ -13,6 +14,8 @@ public class TMDbTest {
 	private static String TM_DB_API_KEY = "TODO"; // TODO waiting for api key
 													// approval
 
+	@Ignore
+	// waiting for approval
 	@Test
 	public void should_auth() throws Exception {
 
