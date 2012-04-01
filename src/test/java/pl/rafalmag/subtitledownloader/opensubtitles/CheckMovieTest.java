@@ -19,9 +19,6 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import pl.rafalmag.subtitledownloader.opensubtitles.CheckMovie;
-import pl.rafalmag.subtitledownloader.opensubtitles.Session;
-import pl.rafalmag.subtitledownloader.opensubtitles.SessionException;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.CheckMovieHash2Entity;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
 
