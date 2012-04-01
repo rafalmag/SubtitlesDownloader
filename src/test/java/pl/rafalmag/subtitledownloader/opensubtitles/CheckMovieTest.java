@@ -66,7 +66,7 @@ public class CheckMovieTest {
 	public void should_get_subtitles_for_movie() throws Exception {
 		// given
 		File movieFile = new File(
-				"C:/torrents/old/A Lonely Place To Die  {2011} DVDRIP. Jaybob/A Lonely Place To Die  {2011} DVDRIP. Jaybob.avi");
+				"C:/torrents/!old/The Girl With A Dragon Tattoo 2011 DVDSCR XviD AC3-FTW/The Girl With A Dragon Tattoo 2011 DVDSCR XviD AC3-FTW.avi");
 		CheckMovie checkMovie = new CheckMovie(session, movieFile);
 
 		// when
