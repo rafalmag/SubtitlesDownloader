@@ -127,6 +127,11 @@
 			<artifactId>logback-classic</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>1.12</version>
+		</dependency>
 	</dependencies>
 
 	<repositories>
