@@ -3,11 +3,11 @@ package pl.rafalmag.subtitledownloader.opensubtitles;
 import static ch.lambdaj.Lambda.having;
 import static ch.lambdaj.Lambda.on;
 import static ch.lambdaj.Lambda.select;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThat;
 
 import java.io.File;
 import java.net.URL;
@@ -62,6 +62,7 @@ public class CheckMovieTest {
 				select, is(not(empty())));
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
 	public void should_get_subtitles_for_movie() throws Exception {
 		// given

@@ -176,6 +176,7 @@ public class Session {
 			Collection<CheckMovieHash2Entity> result = Lists
 					.newArrayListWithCapacity(object.length);
 			for (Object record : object) {
+				@SuppressWarnings("unchecked")
 				CheckMovieHash2Entity checkMovieHash2Entity = new CheckMovieHash2Entity(
 						(Map<String, Object>) record);
 				result.add(checkMovieHash2Entity);
