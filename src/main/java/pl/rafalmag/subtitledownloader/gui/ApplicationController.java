@@ -10,10 +10,11 @@ public class ApplicationController {
 			.getLogger(ApplicationController.class);
 
 	private final ApplicationView applicationView;
-	private final ApplicationModel applicationModel;
+
+	// private final ApplicationModel applicationModel; //TODO
 
 	public ApplicationController() {
-		applicationModel = new ApplicationModel();
+		// applicationModel = new ApplicationModel();
 		applicationView = new ApplicationView(this);
 	}
 
