@@ -30,28 +30,44 @@
               <content>
                 <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                   <children>
-                    <Label id="label1" alignment="CENTER" contentDisplay="CENTER" onDragOver="#setOnDragOver" onDragEntered="#setOnDragEntered" onDragExited="#setOnDragExited" onDragDropped="#setOnDragDropped" text="Drop file here" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                    <Label id="label1" alignment="CENTER" contentDisplay="CENTER" onDragDropped="#setOnDragDropped" onDragEntered="#setOnDragEntered" onDragExited="#setOnDragExited" onDragOver="#setOnDragOver" prefHeight="289.0" prefWidth="600.0" text="Drop file here" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                     <ToolBar id="toolBar1" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                       <items>
                         <Button id="button1" onAction="#browseFile" text="Browse file" />
                       </items>
                     </ToolBar>
-                    <Label id="label2" fx:id="selectedFile" text="Selected file:" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                    <Label id="label2" fx:id="selectedFile" alignment="BOTTOM_LEFT" prefHeight="70.0" prefWidth="600.0" text="Selected file:" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                   </children>
                 </AnchorPane>
               </content>
             </Tab>
             <Tab id="tab2" closable="false" text="Select title">
               <content>
-                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <children>
+                    <TableView id="tableView1" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                      <columns>
+                        <TableColumn prefWidth="75.0" text="Column X" />
+                      </columns>
+                    </TableView>
+                  </children>
+                </AnchorPane>
               </content>
             </Tab>
-            <Tab id="tab3" text="Select subtitles">
+            <Tab id="tab3" closable="false" text="Select subtitles">
               <content>
-                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                  <children>
+                    <TableView id="tableView2" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                      <columns>
+                        <TableColumn prefWidth="75.0" text="Column X" />
+                      </columns>
+                    </TableView>
+                  </children>
+                </AnchorPane>
               </content>
             </Tab>
-            <Tab id="tab4" text="Test subtitles">
+            <Tab id="tab4" closable="false" text="Test subtitles">
               <content>
                 <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
               </content>
