@@ -21,29 +21,29 @@ public class FXMLMainController {
 
 	private Stage primaryStage;
 
-	public synchronized void setStage(Stage primaryStage) {
+	public void setStage(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 	}
 
 	@FXML
-	protected synchronized void openAbout(ActionEvent event) throws IOException {
-		LOGGER.debug("openAbout");
+	protected void openAbout(ActionEvent event) throws IOException {
+		LOGGER.trace("FXMLMainController: openAbout");
 
-		final Stage stage = new Stage(StageStyle.UTILITY);
-		stage.initOwner(primaryStage);
+		final Stage aboutStage = new Stage(StageStyle.UTILITY);
+		aboutStage.initOwner(primaryStage);
 
-		stage.setTitle("FXML TableView Example");
+		aboutStage.setTitle("About Subtitles Downloader");
 
 		URL resource = getClass().getResource("/subtitlesDownloaderAbout.fxml");
-		Parent root = FXMLLoader.load(resource);
-		stage.setScene(new Scene(root));
-		stage.show();
+		Parent aboutView = FXMLLoader.load(resource);
+		aboutStage.setScene(new Scene(aboutView));
+		aboutStage.show();
 	}
 
 	@FXML
-	protected synchronized void closeApp(ActionEvent event) {
-		LOGGER.debug("closeApp");
+	protected void closeApp(ActionEvent event) {
+		LOGGER.trace("closeApp");
 		primaryStage.hide();
-		LOGGER.debug("closeApp: hiden");
+		LOGGER.trace("closeApp: hidden");
 	}
 }

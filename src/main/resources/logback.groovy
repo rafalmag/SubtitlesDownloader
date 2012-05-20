@@ -24,16 +24,15 @@ appender("STDOUT", ConsoleAppender) {
 	encoder(PatternLayoutEncoder) { pattern = "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{20} [%file:%line] - %replace(%msg){'${API_KEY}', '[API-KEY]'}%n" }
 }
 
-def testMode = isTestMode()
-//println "isTestMode="+testMode;
-if(testMode){
+if(isTestMode()){
 	root(DEBUG, ["STDOUT"])
-	logger("pl.rafalmag", DEBUG, ["STDOUT"])
+	logger("pl.rafalmag", DEBUG, ["STDOUT"], additivity = false)
 }else{
 	root(WARN, ["STDOUT"])
-	logger("pl.rafalmag", INFO, ["STDOUT"])
+	logger("pl.rafalmag", INFO, ["STDOUT"], additivity = false)
 }
 
+//logger("pl.rafalmag.subtitledownloader", TRACE, ["STDOUT"], additivity = false)
 
 def isTestMode(){
 	try{

@@ -7,20 +7,27 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import pl.rafalmag.subtitledownloader.gui.FXMLMainController;
 
 public class RunMeMain extends Application {
 
-	/**
-	 * @param args
-	 */
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(RunMeMain.class);
+
 	public static void main(String[] args) {
+		LOGGER.debug("SubtitlesDownloader app started");
 		launch(args);
 	}
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		primaryStage.setTitle("FXML TableView Example");
+		LOGGER.trace("App started: start");
+
+		primaryStage.setTitle("Subtitles Downloader");
 
 		URL resource = getClass().getResource("/subtitlesDownloader.fxml");
 		FXMLLoader fxmlLoader = new FXMLLoader(resource);
