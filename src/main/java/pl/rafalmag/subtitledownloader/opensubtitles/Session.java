@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.xmlrpc.XmlRpcException;
@@ -163,30 +164,55 @@ public class Session {
 		Object[] params = new Object[] { token, new Object[] { hashCode } };
 		try {
 			@SuppressWarnings("unchecked")
-			Map<String, Object> execute = (Map<String, Object>) client.execute(
-					"CheckMovieHash2", params);
-			LOGGER.debug("CheckMovieHash2 response: " + execute);
-			String status = (String) execute.get("status");
+			Map<String, Object> response = (Map<String, Object>) client
+					.execute("CheckMovieHash2", params);
+			LOGGER.debug("CheckMovieHash2 response: " + response);
+			String status = (String) response.get("status");
 			if (!status.contains("OK")) {
 				throw new SubtitlesDownloaderException(
 						"could not CheckMovieHash2 because of wrong status "
 								+ status);
 			}
-			Object[] object = (Object[]) execute.get("data");
-			Collection<CheckMovieHash2Entity> result = Lists
-					.newArrayListWithCapacity(object.length);
-			for (Object record : object) {
-				@SuppressWarnings("unchecked")
-				CheckMovieHash2Entity checkMovieHash2Entity = new CheckMovieHash2Entity(
-						(Map<String, Object>) record);
-				result.add(checkMovieHash2Entity);
-			}
+			Collection<CheckMovieHash2Entity> result = parseData(response);
 			return result;
 		} catch (XmlRpcException e) {
 			throw new SubtitlesDownloaderException(
 					"could not invoke CheckMovieHash2 because of "
 							+ e.getMessage(), e);
 		}
+	}
+
+	private Collection<CheckMovieHash2Entity> parseData(
+			Map<String, Object> response) {
+		Collection<CheckMovieHash2Entity> result;
+		Object data = response.get("data");
+		if (data instanceof Object[]) {
+			Object[] records = (Object[]) data;
+			result = getRecords(records);
+		} else if (data instanceof HashMap<?, ?>) {
+			result = Lists.newArrayList();
+			@SuppressWarnings("unchecked")
+			Map<String, Object> recordsMap = (Map<String, Object>) data;
+			for (Object records : recordsMap.values()) {
+				result.addAll(getRecords((Object[]) records));
+			}
+		} else {
+			throw new IllegalStateException("Unsupported data object type "
+					+ data);
+		}
+		return result;
+	}
+
+	private Collection<CheckMovieHash2Entity> getRecords(Object[] records) {
+		Collection<CheckMovieHash2Entity> result;
+		result = Lists.newArrayListWithCapacity(records.length);
+		for (Object record : records) {
+			@SuppressWarnings("unchecked")
+			CheckMovieHash2Entity checkMovieHash2Entity = new CheckMovieHash2Entity(
+					(Map<String, Object>) record);
+			result.add(checkMovieHash2Entity);
+		}
+		return result;
 	}
 
 }

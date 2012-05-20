@@ -18,11 +18,22 @@ public class CheckMovieHash2Entity {
 
 	public CheckMovieHash2Entity(Map<String, Object> record) {
 		movieHash = (String) record.get("MovieHash");
-		imdbId = (Integer) record.get("MovieImdbID");
+		imdbId = objectToInt(record.get("MovieImdbID"));
 		movieName = (String) record.get("MovieName");
-		year = (Integer) record.get("MovieYear");
-		seenCount = (Integer) record.get("SeenCount");
+		year = objectToInt(record.get("MovieYear"));
+		seenCount = objectToInt(record.get("SeenCount"));
 		LOGGER.debug("parsed checkMovieHash2Entity=" + this);
+	}
+
+	private int objectToInt(Object intObject) {
+		if (intObject instanceof Integer) {
+			return (Integer) intObject;
+		} else if (intObject instanceof String) {
+			return Integer.parseInt((String) intObject);
+		} else {
+			throw new IllegalStateException("Unsupported object type: "
+					+ intObject);
+		}
 	}
 
 	public CheckMovieHash2Entity(String movieHash, int imdbId,

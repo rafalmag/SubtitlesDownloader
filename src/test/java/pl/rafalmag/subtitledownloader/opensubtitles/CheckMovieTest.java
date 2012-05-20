@@ -44,7 +44,7 @@ public class CheckMovieTest {
 	public void should_get_title_info_for_movie() throws Exception {
 		// given
 		File movieFile = new File(
-				"C:/torrents/old/A Lonely Place To Die  {2011} DVDRIP. Jaybob/A Lonely Place To Die  {2011} DVDRIP. Jaybob.avi");
+				"H:/filmy/!old/A Lonely Place To Die  {2011} DVDRIP. Jaybob/A Lonely Place To Die  {2011} DVDRIP. Jaybob.avi");
 		CheckMovie checkMovie = new CheckMovie(session, movieFile);
 
 		// when
@@ -57,7 +57,7 @@ public class CheckMovieTest {
 		Collection select = select(
 				checkMovieHash2Entities,
 				having(on(CheckMovieHash2Entity.class).getMovieName(),
-						equalTo("A Lonely Place To Die")));
+						equalTo("A Lonely Place to Die")));
 		assertThat("Result should has item with title A Lonely Place To Die",
 				select, is(not(empty())));
 	}
