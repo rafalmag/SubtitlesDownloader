@@ -25,7 +25,7 @@ appender("STDOUT", ConsoleAppender) {
 }
 
 def testMode = isTestMode()
-println "isTestMode="+testMode;
+//println "isTestMode="+testMode;
 if(testMode){
 	root(DEBUG, ["STDOUT"])
 	logger("pl.rafalmag", DEBUG, ["STDOUT"])
