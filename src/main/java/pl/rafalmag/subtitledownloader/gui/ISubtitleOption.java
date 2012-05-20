@@ -1,6 +1,5 @@
 package pl.rafalmag.subtitledownloader.gui;
 
-public class ApplicationModel {
-	// TODO
+public interface ISubtitleOption {
 
 }

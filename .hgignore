@@ -1,5 +1,4 @@
-
 syntax: regexp
 ^target$
-syntax: regexp
+^src/main/resources/.*\.bak$
 ^rebel\.xml$
