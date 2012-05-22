@@ -43,7 +43,12 @@ public class SelectMovieProperties {
 
 	@Nullable
 	public File getInitialDir() {
-		return SubtitlesDownloaderProperties.getInstance().getInitialDir();
+		File initialDir = SubtitlesDownloaderProperties.getInstance()
+				.getInitialDir();
+		if (initialDir != null && !initialDir.isDirectory()) {
+			return null;
+		}
+		return initialDir;
 	}
 
 	public void setInitialDir(@Nullable File initialDir) {

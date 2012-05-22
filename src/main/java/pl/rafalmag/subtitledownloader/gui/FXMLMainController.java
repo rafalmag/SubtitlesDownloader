@@ -94,7 +94,7 @@ public class FXMLMainController implements Initializable {
 		if (isOneFileDragged(dragboard)) {
 			File droppedFile = dragboard.getFiles().get(0);
 			LOGGER.debug("setOnDragDropped file: {}", droppedFile);
-			selectFile(droppedFile);
+			selectFile(droppedFile, false);
 		}
 		event.consume();
 	}
@@ -114,19 +114,22 @@ public class FXMLMainController implements Initializable {
 	@FXML
 	protected void browseFile(ActionEvent event) throws IOException {
 		FileChooser fileChooser = new FileChooser();
-		fileChooser.setInitialDirectory(SelectMovieProperties.getInstance()
-				.getInitialDir());
+		File initialDir = SelectMovieProperties.getInstance().getInitialDir();
+		LOGGER.trace("browseFile initialDir {}", initialDir);
+		fileChooser.setInitialDirectory(initialDir);
 		fileChooser.setTitle("Choose movie file");
 		File file = fileChooser.showOpenDialog(primaryStage);
-		selectFile(file);
+		selectFile(file, true);
 		event.consume();
 	}
 
-	private void selectFile(File file) {
+	private void selectFile(File file, boolean setInitialDir) {
 		if (file != null) {
 			SelectMovieProperties.getInstance().setFile(file);
-			SelectMovieProperties.getInstance().setInitialDir(
-					file.getParentFile());
+			if (setInitialDir) {
+				SelectMovieProperties.getInstance().setInitialDir(
+						file.getParentFile());
+			}
 		}
 	}
 }
