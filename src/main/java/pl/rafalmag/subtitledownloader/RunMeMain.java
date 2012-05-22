@@ -1,5 +1,6 @@
 package pl.rafalmag.subtitledownloader;
 
+import java.io.InputStream;
 import java.net.URL;
 
 import javafx.application.Application;
@@ -29,12 +30,16 @@ public class RunMeMain extends Application {
 
 		primaryStage.setTitle("Subtitles Downloader");
 
-		URL resource = getClass().getResource("/subtitlesDownloader.fxml");
+		URL resource = getClass().getResource("/Main.fxml");
 		FXMLLoader fxmlLoader = new FXMLLoader(resource);
-		Parent root = (Parent) fxmlLoader.load(resource.openStream());
+
+		Parent root;
+		try (InputStream is = resource.openStream()) {
+			root = (Parent) fxmlLoader.load(is);
+		}
 		FXMLMainController controller = (FXMLMainController) fxmlLoader
 				.getController();
-		controller.setStage(primaryStage);
+		controller.setWindow(primaryStage);
 		primaryStage.setScene(new Scene(root));
 		primaryStage.show();
 	}

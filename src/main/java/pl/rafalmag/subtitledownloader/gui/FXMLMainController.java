@@ -1,48 +1,53 @@
 package pl.rafalmag.subtitledownloader.gui;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.StringExpression;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
-import javafx.stage.FileChooser;
+import javafx.scene.control.Tab;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.Window;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Throwables;
 
 public class FXMLMainController implements Initializable {
 
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(FXMLMainController.class);
 
-	private Stage primaryStage;
+	private Window window;
 
 	@FXML
-	protected Label selectedFile;
+	protected Tab selectMovieFileTab;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		StringExpression stringExpression = Bindings.concat("Selected movie: ",
-				SelectMovieProperties.getInstance().movieFileProperty());
-		selectedFile.textProperty().bind(stringExpression);
+		URL resource = getClass().getResource("/MainSelectMovieFileTab.fxml");
+		try (InputStream openStream = resource.openStream()) {
+			FXMLLoader fxmlLoader = new FXMLLoader(resource);
+			selectMovieFileTab.setContent((Node) fxmlLoader.load(openStream));
+			((FXMLMainSelectedMovieFileTabController) fxmlLoader
+					.getController()).setWindow(window);
+		} catch (IOException e) {
+			throw Throwables.propagate(e);
+		}
 	}
 
-	public void setStage(Stage primaryStage) {
-		this.primaryStage = primaryStage;
+	public void setWindow(Window window) {
+		this.window = window;
 	}
 
 	@FXML
@@ -50,11 +55,12 @@ public class FXMLMainController implements Initializable {
 		LOGGER.trace("openAbout");
 
 		final Stage aboutStage = new Stage(StageStyle.UTILITY);
-		aboutStage.initOwner(primaryStage);
+		aboutStage.initOwner(window);
+		aboutStage.initModality(Modality.WINDOW_MODAL);
 
 		aboutStage.setTitle("About Subtitles Downloader");
 
-		URL resource = getClass().getResource("/subtitlesDownloaderAbout.fxml");
+		URL resource = getClass().getResource("/About.fxml");
 		Parent aboutView = FXMLLoader.load(resource);
 		aboutStage.setScene(new Scene(aboutView));
 		aboutStage.show();
@@ -62,74 +68,11 @@ public class FXMLMainController implements Initializable {
 	}
 
 	@FXML
-	protected void setOnDragOver(DragEvent event) {
-		// LOGGER.trace("setOnDragOver {}", event);
-		Dragboard dragboard = event.getDragboard();
-		if (isOneFileDragged(dragboard)) {
-			event.acceptTransferModes(TransferMode.LINK);
-		}
-		event.consume();
-	}
-
-	@FXML
-	protected void setOnDragEntered(DragEvent event) {
-		LOGGER.trace("setOnDragEntered {}", event);
-		Dragboard dragboard = event.getDragboard();
-		if (isOneFileDragged(dragboard)) {
-			event.acceptTransferModes(TransferMode.LINK);
-		}
-		event.consume();
-	}
-
-	@FXML
-	protected void setOnDragExited(DragEvent event) {
-		LOGGER.trace("setOnDragExited {}", event);
-		event.consume();
-	}
-
-	@FXML
-	protected void setOnDragDropped(DragEvent event) {
-		LOGGER.trace("setOnDragDropped {}", event);
-		Dragboard dragboard = event.getDragboard();
-		if (isOneFileDragged(dragboard)) {
-			File droppedFile = dragboard.getFiles().get(0);
-			LOGGER.debug("setOnDragDropped file: {}", droppedFile);
-			selectFile(droppedFile, false);
-		}
-		event.consume();
-	}
-
-	private boolean isOneFileDragged(Dragboard dragboard) {
-		return dragboard.hasFiles() && dragboard.getFiles().size() == 1;
-	}
-
-	@FXML
 	protected void closeApp(ActionEvent event) {
 		LOGGER.trace("closeApp");
-		primaryStage.hide();
+		window.hide();
 		LOGGER.trace("closeApp: hidden");
 		event.consume();
 	}
 
-	@FXML
-	protected void browseFile(ActionEvent event) throws IOException {
-		FileChooser fileChooser = new FileChooser();
-		File initialDir = SelectMovieProperties.getInstance().getInitialDir();
-		LOGGER.trace("browseFile initialDir {}", initialDir);
-		fileChooser.setInitialDirectory(initialDir);
-		fileChooser.setTitle("Choose movie file");
-		File file = fileChooser.showOpenDialog(primaryStage);
-		selectFile(file, true);
-		event.consume();
-	}
-
-	private void selectFile(File file, boolean setInitialDir) {
-		if (file != null) {
-			SelectMovieProperties.getInstance().setFile(file);
-			if (setInitialDir) {
-				SelectMovieProperties.getInstance().setInitialDir(
-						file.getParentFile());
-			}
-		}
-	}
 }

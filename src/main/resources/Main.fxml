@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml" fx:controller="pl.rafalmag.subtitledownloader.gui.FXMLMainController">
+  <children>
+    <VBox id="vBox1" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <children>
+        <MenuBar id="menuBar1" VBox.vgrow="ALWAYS">
+          <menus>
+            <Menu id="fileMenu1" text="File">
+              <items>
+                <MenuItem id="close1" onAction="#closeApp" text="Close" />
+              </items>
+            </Menu>
+            <Menu id="helpMenu1" text="Help">
+              <items>
+                <MenuItem id="about1" onAction="#openAbout" text="About" />
+              </items>
+            </Menu>
+          </menus>
+        </MenuBar>
+        <TabPane id="tabPane1" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+          <tabs>
+            <Tab id="tab1" fx:id="selectMovieFileTab" closable="false" text="Select movie file">
+              <content>
+                <AnchorPane id="anchorPane1" prefHeight="200.0" prefWidth="200.0" />
+              </content>
+            </Tab>
+            <Tab id="tab2" closable="false" text="Select title" />
+            <Tab id="tab3" closable="false" text="Select subtitles" />
+            <Tab id="tab4" closable="false" text="Test subtitles" />
+          </tabs>
+        </TabPane>
+      </children>
+    </VBox>
+  </children>
+</AnchorPane>
