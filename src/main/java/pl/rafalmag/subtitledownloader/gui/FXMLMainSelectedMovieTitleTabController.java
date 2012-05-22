@@ -6,9 +6,14 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.ImmutableList;
 
 public class FXMLMainSelectedMovieTitleTabController implements Initializable {
 
@@ -18,16 +23,25 @@ public class FXMLMainSelectedMovieTitleTabController implements Initializable {
 	// private Window window;
 
 	@FXML
-	Label selectedTitle;
+	protected Label selectedTitle;
+
+	@FXML
+	protected TableView<Movie> table;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		// StringExpression selectedMovieText = Bindings.concat(
-		// "Selected movie: ", SelectMovieProperties.getInstance()
-		// .movieFileProperty());
-		// selectedTitle.textProperty().bind(selectedMovieText);
-	}
+		table.setItems(MovieTitlesList.getList());
 
+		TableColumn<Movie, String> title = new TableColumn<>("Title");
+		title.setCellValueFactory(new PropertyValueFactory<Movie, String>(
+				"title"));
+		title.setPrefWidth(500);
+		TableColumn<Movie, Integer> year = new TableColumn<>("Year");
+		year.setCellValueFactory(new PropertyValueFactory<Movie, Integer>(
+				"year"));
+
+		table.getColumns().setAll(ImmutableList.of(title, year));
+	}
 	// public void setWindow(Window window) {
 	// this.window = window;
 	// }
