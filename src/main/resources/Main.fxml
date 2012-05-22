@@ -26,14 +26,10 @@
         </MenuBar>
         <TabPane id="tabPane1" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
           <tabs>
-            <Tab id="tab1" fx:id="selectMovieFileTab" closable="false" text="Select movie file">
-              <content>
-                <AnchorPane id="anchorPane1" prefHeight="200.0" prefWidth="200.0" />
-              </content>
-            </Tab>
-            <Tab id="tab2" closable="false" text="Select title" />
-            <Tab id="tab3" closable="false" text="Select subtitles" />
-            <Tab id="tab4" closable="false" text="Test subtitles" />
+            <Tab id="tab1" fx:id="selectMovieFileTab" closable="false" text="Select movie file"/>
+            <Tab id="tab2" fx:id="selectMovieTitleTab" closable="false" text="Select title" />
+            <Tab id="tab3" fx:id="selectMovieSubtitlesTab" closable="false" text="Select subtitles" />
+            <Tab id="tab4" fx:id="testSubtitlesTab" closable="false" text="Test subtitles" />
           </tabs>
         </TabPane>
       </children>

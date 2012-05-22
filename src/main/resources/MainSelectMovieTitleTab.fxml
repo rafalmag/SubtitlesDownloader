@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+
+<VBox id="VBox" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml" fx:controller="pl.rafalmag.subtitledownloader.gui.FXMLMainSelectedMovieTitleTabController">
+  <children>
+    <TableView id="tableView1" VBox.vgrow="ALWAYS" />
+    <Label id="label2" fx:id="selectedTitle" alignment="BOTTOM_LEFT" prefWidth="600.0" text="Selected title:" VBox.vgrow="SOMETIMES" />
+  </children>
+</VBox>
