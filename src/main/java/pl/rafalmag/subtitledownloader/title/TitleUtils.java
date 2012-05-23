@@ -1,16 +1,21 @@
 package pl.rafalmag.subtitledownloader.title;
 
 import java.io.File;
+import java.util.Comparator;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.SortedSet;
 
 import org.apache.commons.io.FilenameUtils;
 
+import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
+import pl.rafalmag.subtitledownloader.opensubtitles.CheckMovie;
+import pl.rafalmag.subtitledownloader.opensubtitles.Session;
+import pl.rafalmag.subtitledownloader.opensubtitles.entities.CheckMovieHash2Entity;
 import pl.rafalmag.subtitledownloader.themoviedb.TheMovieDbHelper;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.moviejukebox.themoviedb.model.MovieDb;
 
 public class TitleUtils {
@@ -21,35 +26,56 @@ public class TitleUtils {
 		this.movieFile = movieFile;
 	}
 
-	public List<Movie> getTitles() {
+	public SortedSet<Movie> getTitles() throws SubtitlesDownloaderException {
 		String baseName = FilenameUtils.getBaseName(movieFile.getName());
-		List<MovieDb> searchMovie = TheMovieDbHelper.getInstance().searchMovie(
-				baseName);
-		return Lists.transform(searchMovie, new Function<MovieDb, Movie>() {
+		SortedSet<Movie> set = Sets.newTreeSet(new Comparator<Movie>() {
 
 			@Override
-			public Movie apply(MovieDb input) {
-				Movie movie = new Movie();
-				movie.setImdbId(input.getImdbID());
-
-				movie.setTitle(input.getTitle());
-				int year = getYear(input);
-				movie.setYear(year);
-				return movie;
+			public int compare(Movie o1, Movie o2) {
+				// TODO move it, enhance it
+				return o1.getTitle().compareTo(o2.getTitle());
 			}
 
 		});
+		set.addAll(getByTitle(baseName));
+		set.addAll(getByFileHash());
+		return set;
 	}
 
-	// eq. 1977-05-25
-	private static final Pattern YEAR_PATTERN = Pattern.compile("\\d{4}");
+	protected List<Movie> getByTitle(String title) {
+		List<MovieDb> searchMovie = TheMovieDbHelper.getInstance().searchMovie(
+				title);
+		List<Movie> list = Lists.transform(searchMovie,
+				new Function<MovieDb, Movie>() {
 
-	protected static int getYear(MovieDb input) {
-		String releaseDate = input.getReleaseDate();
-		Matcher matcher = YEAR_PATTERN.matcher(releaseDate);
-		if (matcher.find()) {
-			return Integer.parseInt(matcher.group());
-		}
-		return 0;
+					@Override
+					public Movie apply(MovieDb input) {
+						return new Movie(input);
+					}
+
+				});
+		return list;
 	}
+
+	public List<Movie> getByFileHash() throws SubtitlesDownloaderException {
+		Session session = new Session();
+		session.login();
+		CheckMovie checkMovie = new CheckMovie(session, movieFile);
+
+		// when
+		List<CheckMovieHash2Entity> checkMovieHash2Entities = checkMovie
+				.getTitleInfo();
+
+		List<Movie> list = Lists.transform(checkMovieHash2Entities,
+				new Function<CheckMovieHash2Entity, Movie>() {
+
+					@Override
+					public Movie apply(CheckMovieHash2Entity input) {
+						return new Movie(input);
+					}
+
+				});
+		return list;
+	}
+
 }

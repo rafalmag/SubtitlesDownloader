@@ -22,7 +22,7 @@ public class CheckMovieHash2Entity {
 		movieName = (String) record.get("MovieName");
 		year = objectToInt(record.get("MovieYear"));
 		seenCount = objectToInt(record.get("SeenCount"));
-		LOGGER.debug("parsed checkMovieHash2Entity=" + this);
+		LOGGER.debug("parsed checkMovieHash2Entity={}", this);
 	}
 
 	private int objectToInt(Object intObject) {

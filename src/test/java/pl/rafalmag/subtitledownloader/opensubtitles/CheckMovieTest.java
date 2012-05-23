@@ -5,6 +5,7 @@ import static ch.lambdaj.Lambda.on;
 import static ch.lambdaj.Lambda.select;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
@@ -12,6 +13,7 @@ import static org.junit.Assert.assertThat;
 import java.io.File;
 import java.net.URL;
 import java.util.Collection;
+import java.util.List;
 
 import org.hamcrest.Matchers;
 import org.junit.After;
@@ -38,8 +40,6 @@ public class CheckMovieTest {
 	}
 
 	@Ignore
-	@Deprecated
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
 	public void should_get_title_info_for_movie() throws Exception {
 		// given
@@ -48,18 +48,18 @@ public class CheckMovieTest {
 		CheckMovie checkMovie = new CheckMovie(session, movieFile);
 
 		// when
-		Collection<CheckMovieHash2Entity> checkMovieHash2Entities = checkMovie
+		List<CheckMovieHash2Entity> checkMovieHash2Entities = checkMovie
 				.getTitleInfo();
 
 		// then
-		assertThat("Result should has few records",
-				(Collection) checkMovieHash2Entities, is(not(empty())));
-		Collection select = select(
+		assertThat("Result should has few records", checkMovieHash2Entities,
+				not(hasSize(0)));
+		List<CheckMovieHash2Entity> select = select(
 				checkMovieHash2Entities,
 				having(on(CheckMovieHash2Entity.class).getMovieName(),
 						equalTo("A Lonely Place to Die")));
-		assertThat("Result should has item with title A Lonely Place To Die",
-				select, is(not(empty())));
+		assertThat("Result should has item with title: A Lonely Place To Die",
+				select, not(hasSize(0)));
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

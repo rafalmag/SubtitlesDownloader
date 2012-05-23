@@ -2,7 +2,7 @@ package pl.rafalmag.subtitledownloader.opensubtitles;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
+import java.util.List;
 
 import org.opensubtitles.OpenSubtitlesHasher;
 import org.slf4j.Logger;
@@ -12,7 +12,6 @@ import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.CheckMovieHash2Entity;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
 
-// TODO check http://api.themoviedb.org
 public class CheckMovie {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Session.class);
@@ -28,11 +27,10 @@ public class CheckMovie {
 		this.movieFile = movieFile;
 	}
 
-	@Deprecated
-	public Collection<CheckMovieHash2Entity> getTitleInfo()
+	public List<CheckMovieHash2Entity> getTitleInfo()
 			throws SubtitlesDownloaderException {
 		String hashCode = getHashCode();
-		Collection<CheckMovieHash2Entity> checkMovieHash2Map = session
+		List<CheckMovieHash2Entity> checkMovieHash2Map = session
 				.checkMovieHash2(hashCode);
 		return checkMovieHash2Map;
 	}
@@ -51,7 +49,7 @@ public class CheckMovie {
 		return hashCode;
 	}
 
-	public Collection<SearchSubtitlesResult> getSubtitles()
+	public List<SearchSubtitlesResult> getSubtitles()
 			throws SubtitlesDownloaderException {
 
 		String movieHash = getHashCode();

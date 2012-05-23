@@ -2,9 +2,9 @@ package pl.rafalmag.subtitledownloader.opensubtitles;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.xmlrpc.XmlRpcException;
@@ -89,7 +89,7 @@ public class Session {
 		}
 	}
 
-	public Collection<SearchSubtitlesResult> searchSubtitles(String movieHash,
+	public List<SearchSubtitlesResult> searchSubtitles(String movieHash,
 			Long movieByteSize) throws SubtitlesDownloaderException {
 		Object[] params = new Object[] {
 				token,
@@ -99,7 +99,7 @@ public class Session {
 		return searchSubtitles(params);
 	}
 
-	private Collection<SearchSubtitlesResult> searchSubtitles(Object[] params)
+	private List<SearchSubtitlesResult> searchSubtitles(Object[] params)
 			throws SubtitlesDownloaderException {
 		try {
 			@SuppressWarnings("unchecked")
@@ -119,7 +119,7 @@ public class Session {
 				return Collections.emptyList();
 			}
 			Object[] data = (Object[]) dataRaw;
-			Collection<SearchSubtitlesResult> result = Lists
+			List<SearchSubtitlesResult> result = Lists
 					.newArrayListWithCapacity(data.length);
 			for (Object entry : data) {
 				@SuppressWarnings("unchecked")
@@ -159,7 +159,7 @@ public class Session {
 		}
 	}
 
-	public Collection<CheckMovieHash2Entity> checkMovieHash2(String hashCode)
+	public List<CheckMovieHash2Entity> checkMovieHash2(String hashCode)
 			throws SubtitlesDownloaderException {
 		Object[] params = new Object[] { token, new Object[] { hashCode } };
 		try {
@@ -173,7 +173,7 @@ public class Session {
 						"could not CheckMovieHash2 because of wrong status "
 								+ status);
 			}
-			Collection<CheckMovieHash2Entity> result = parseData(response);
+			List<CheckMovieHash2Entity> result = parseData(response);
 			return result;
 		} catch (XmlRpcException e) {
 			throw new SubtitlesDownloaderException(
@@ -182,9 +182,8 @@ public class Session {
 		}
 	}
 
-	private Collection<CheckMovieHash2Entity> parseData(
-			Map<String, Object> response) {
-		Collection<CheckMovieHash2Entity> result;
+	private List<CheckMovieHash2Entity> parseData(Map<String, Object> response) {
+		List<CheckMovieHash2Entity> result;
 		Object data = response.get("data");
 		if (data instanceof Object[]) {
 			Object[] records = (Object[]) data;
@@ -203,8 +202,8 @@ public class Session {
 		return result;
 	}
 
-	private Collection<CheckMovieHash2Entity> getRecords(Object[] records) {
-		Collection<CheckMovieHash2Entity> result;
+	private List<CheckMovieHash2Entity> getRecords(Object[] records) {
+		List<CheckMovieHash2Entity> result;
 		result = Lists.newArrayListWithCapacity(records.length);
 		for (Object record : records) {
 			@SuppressWarnings("unchecked")
