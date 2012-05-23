@@ -1,5 +1,8 @@
 package com.moviejukebox.themoviedb;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
+
 import java.util.List;
 
 import org.junit.Test;
@@ -24,7 +27,11 @@ public class TheMovieDbTest {
 		List<MovieDb> searchMovie = theMovieDb.searchMovie(title, language,
 				allResults);
 
-		System.out.println(searchMovie);
-		// assertThat(text, containsString("_sizes"));
+		MovieDb firstMovieDb = searchMovie.get(0);
+		assertThat(firstMovieDb.getTitle(),
+				equalTo("Star Wars: Episode IV - A New Hope"));
+		assertThat(firstMovieDb.getOriginalTitle(),
+				equalTo("Star Wars: Episode IV - A New Hope"));
+		assertThat(firstMovieDb.getId(), equalTo(11));
 	}
 }

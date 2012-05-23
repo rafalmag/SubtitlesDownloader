@@ -11,6 +11,7 @@
 //   http://www.qos.ch/shop/products/professionalSupport
 
 import pl.rafalmag.subtitledownloader.themoviedb.TheMovieDbHelper;
+import pl.rafalmag.subtitledownloader.themoviedb.TheMovieDbWarnFilter;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder
 import ch.qos.logback.core.ConsoleAppender
 
@@ -21,6 +22,7 @@ def API_KEY = TheMovieDbHelper.API_KEY
 //println "Setting logback in groovy."
 
 appender("STDOUT", ConsoleAppender) {
+	filter(TheMovieDbWarnFilter)
 	encoder(PatternLayoutEncoder) { pattern = "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{20} [%file:%line] - %replace(%msg){'${API_KEY}', '[API-KEY]'}%n" }
 }
 
