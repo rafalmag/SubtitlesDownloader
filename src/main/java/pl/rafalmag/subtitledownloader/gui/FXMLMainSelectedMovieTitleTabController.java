@@ -10,17 +10,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.collect.ImmutableList;
 
 public class FXMLMainSelectedMovieTitleTabController implements Initializable {
-
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(FXMLMainSelectedMovieTitleTabController.class);
-
-	// private Window window;
 
 	@FXML
 	protected Label selectedTitle;
@@ -42,8 +34,5 @@ public class FXMLMainSelectedMovieTitleTabController implements Initializable {
 
 		table.getColumns().setAll(ImmutableList.of(title, year));
 	}
-	// public void setWindow(Window window) {
-	// this.window = window;
-	// }
 
 }

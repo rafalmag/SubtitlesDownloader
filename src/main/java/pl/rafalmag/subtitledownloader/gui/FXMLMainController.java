@@ -41,31 +41,31 @@ public class FXMLMainController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		{
-			URL resource = getClass().getResource(
-					"/MainSelectMovieFileTab.fxml");
-			try (InputStream openStream = resource.openStream()) {
-				FXMLLoader fxmlLoader = new FXMLLoader(resource);
-				selectMovieFileTab.setContent((Node) fxmlLoader
-						.load(openStream));
-				((FXMLMainSelectedMovieFileTabController) fxmlLoader
-						.getController()).setWindow(window);
-			} catch (IOException e) {
-				throw Throwables.propagate(e);
-			}
+		initSelectMovieFileTab();
+		initSelectMovieTitleTab();
+	}
+
+	private void initSelectMovieTitleTab() {
+		URL resource = getClass().getResource("/MainSelectMovieTitleTab.fxml");
+		try (InputStream openStream = resource.openStream()) {
+			FXMLLoader fxmlLoader = new FXMLLoader(resource);
+			selectMovieTitleTab.setContent((Node) fxmlLoader.load(openStream));
+			// ((FXMLMainSelectedMovieFileTabController) fxmlLoader
+			// .getController()).setWindow(window);
+		} catch (IOException e) {
+			throw Throwables.propagate(e);
 		}
-		{
-			URL resource = getClass().getResource(
-					"/MainSelectMovieTitleTab.fxml");
-			try (InputStream openStream = resource.openStream()) {
-				FXMLLoader fxmlLoader = new FXMLLoader(resource);
-				selectMovieTitleTab.setContent((Node) fxmlLoader
-						.load(openStream));
-				// ((FXMLMainSelectedMovieFileTabController) fxmlLoader
-				// .getController()).setWindow(window);
-			} catch (IOException e) {
-				throw Throwables.propagate(e);
-			}
+	}
+
+	private void initSelectMovieFileTab() {
+		URL resource = getClass().getResource("/MainSelectMovieFileTab.fxml");
+		try (InputStream openStream = resource.openStream()) {
+			FXMLLoader fxmlLoader = new FXMLLoader(resource);
+			selectMovieFileTab.setContent((Node) fxmlLoader.load(openStream));
+			((FXMLMainSelectedMovieFileTabController) fxmlLoader
+					.getController()).setWindow(window);
+		} catch (IOException e) {
+			throw Throwables.propagate(e);
 		}
 	}
 
