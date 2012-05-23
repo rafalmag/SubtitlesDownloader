@@ -1,4 +1,4 @@
-package pl.rafalmag.subtitledownloader.entities;
+package pl.rafalmag.subtitledownloader.title;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

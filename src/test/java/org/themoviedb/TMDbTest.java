@@ -34,6 +34,7 @@ public class TMDbTest {
 
 		// then
 		assertThat(text, containsString("Star Wars"));
+		// System.out.println(text);
 	}
 
 	@Test

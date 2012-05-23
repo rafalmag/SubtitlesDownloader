@@ -1,15 +1,19 @@
 package pl.rafalmag.subtitledownloader.themoviedb;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.List;
 
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.moviejukebox.themoviedb.model.MovieDb;
 
 public class TheMovieDbHelperTest {
 
@@ -35,5 +39,25 @@ public class TheMovieDbHelperTest {
 		} finally {
 			System.setOut(out);
 		}
+	}
+
+	@Test
+	public void should_get_movieDb_with_imdb() throws Exception {
+		// given
+		String title = "Star Wars";
+
+		// when
+		List<MovieDb> searchMovie = TheMovieDbHelper.getInstance().searchMovie(
+				title);
+		MovieDb firstMovieDb = searchMovie.get(0);
+		String imdbID = firstMovieDb.getImdbID();
+
+		// then
+		assertThat(firstMovieDb.getTitle(),
+				equalTo("Star Wars: Episode IV - A New Hope"));
+		assertThat(firstMovieDb.getOriginalTitle(),
+				equalTo("Star Wars: Episode IV - A New Hope"));
+		assertThat(firstMovieDb.getId(), equalTo(11));
+		assertThat(imdbID, equalTo("tt0076759"));
 	}
 }
