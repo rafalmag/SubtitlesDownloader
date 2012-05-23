@@ -1,4 +1,4 @@
-package pl.rafalmag.subtitledownloader.gui;
+package pl.rafalmag.subtitledownloader.entities;
 
 
 public class Subtitle {

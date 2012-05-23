@@ -1,4 +1,4 @@
-package pl.rafalmag.subtitledownloader.gui;
+package pl.rafalmag.subtitledownloader.entities;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;

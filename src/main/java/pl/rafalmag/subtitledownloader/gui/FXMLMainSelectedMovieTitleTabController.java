@@ -3,6 +3,9 @@ package pl.rafalmag.subtitledownloader.gui;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import pl.rafalmag.subtitledownloader.entities.Movie;
+import pl.rafalmag.subtitledownloader.entities.MovieTitlesList;
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
