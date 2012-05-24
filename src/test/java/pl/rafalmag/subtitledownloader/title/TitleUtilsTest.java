@@ -84,7 +84,7 @@ public class TitleUtilsTest {
 				"H:/filmy/!old/A Lonely Place To Die  {2011} DVDRIP. Jaybob/A Lonely Place To Die  {2011} DVDRIP. Jaybob.avi");
 
 		TitleUtils titleUtils = new TitleUtils(movieFile);
-		SortedSet<Movie> titles = titleUtils.getTitles();
+		SortedSet<Movie> titles = titleUtils.getTitles(10000);
 
 		// then
 		assertThat(titles, hasSize(1));

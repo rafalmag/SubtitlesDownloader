@@ -4,8 +4,17 @@ import java.io.File;
 import java.util.Comparator;
 import java.util.List;
 import java.util.SortedSet;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
 import pl.rafalmag.subtitledownloader.opensubtitles.CheckMovie;
@@ -20,14 +29,18 @@ import com.moviejukebox.themoviedb.model.MovieDb;
 
 public class TitleUtils {
 
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(TitleUtils.class);
+
 	private final File movieFile;
 
 	public TitleUtils(File movieFile) {
 		this.movieFile = movieFile;
 	}
 
-	public SortedSet<Movie> getTitles() throws SubtitlesDownloaderException {
-		String baseName = FilenameUtils.getBaseName(movieFile.getName());
+	public SortedSet<Movie> getTitles(long timeoutMs)
+			throws SubtitlesDownloaderException, InterruptedException {
+		final String baseName = FilenameUtils.getBaseName(movieFile.getName());
 		SortedSet<Movie> set = Sets.newTreeSet(new Comparator<Movie>() {
 
 			@Override
@@ -37,9 +50,51 @@ public class TitleUtils {
 			}
 
 		});
-		set.addAll(getByTitle(baseName));
-		set.addAll(getByFileHash());
+		startTasksAndGetResults(timeoutMs, baseName, set);
+
 		return set;
+	}
+
+	private void startTasksAndGetResults(long timeoutMs, final String baseName,
+			SortedSet<Movie> set) throws InterruptedException {
+		CompletionService<List<Movie>> compService = new ExecutorCompletionService<List<Movie>>(
+				Executors.newFixedThreadPool(2));
+		compService.submit(new Callable<List<Movie>>() {
+
+			@Override
+			public List<Movie> call() {
+				return getByTitle(baseName);
+			}
+		});
+		compService.submit(new Callable<List<Movie>>() {
+
+			@Override
+			public List<Movie> call() throws SubtitlesDownloaderException {
+				return getByFileHash();
+			}
+		});
+
+		long startWaitingMs = System.currentTimeMillis();
+		try {
+			set.addAll(compService.take().get());
+		} catch (ExecutionException e) {
+			LOGGER.error("Could not get XXX", e);
+		}
+		long waitingTookMs = System.currentTimeMillis() - startWaitingMs;
+		long timeLeftMs = timeoutMs - waitingTookMs;
+		if (timeLeftMs > 0) {
+			Future<List<Movie>> poll = compService.poll(timeoutMs
+					- waitingTookMs, TimeUnit.MILLISECONDS);
+			if (poll == null) {
+				LOGGER.warn("Could not XXX get in given time");
+			} else {
+				try {
+					set.addAll(poll.get());
+				} catch (ExecutionException e) {
+					LOGGER.error("Could not get XXX", e);
+				}
+			}
+		}
 	}
 
 	protected List<Movie> getByTitle(String title) {
@@ -57,7 +112,7 @@ public class TitleUtils {
 		return list;
 	}
 
-	public List<Movie> getByFileHash() throws SubtitlesDownloaderException {
+	protected List<Movie> getByFileHash() throws SubtitlesDownloaderException {
 		Session session = new Session();
 		session.login();
 		CheckMovie checkMovie = new CheckMovie(session, movieFile);
