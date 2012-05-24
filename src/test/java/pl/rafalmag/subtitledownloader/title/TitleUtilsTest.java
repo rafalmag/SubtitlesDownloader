@@ -10,7 +10,6 @@ import java.io.File;
 import java.util.List;
 import java.util.SortedSet;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class TitleUtilsTest {
@@ -55,7 +54,7 @@ public class TitleUtilsTest {
 	}
 
 	// requires existing file
-	@Ignore
+	// @Ignore
 	@Test
 	public void should_get_title_for_movie_by_file_hash() throws Exception {
 		// given
@@ -76,7 +75,7 @@ public class TitleUtilsTest {
 	}
 
 	// requires existing file
-	@Ignore
+	// @Ignore
 	@Test
 	public void should_get_title_for_movie_file_combined() throws Exception {
 		// given
