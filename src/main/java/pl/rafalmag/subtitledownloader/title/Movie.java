@@ -7,7 +7,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import pl.rafalmag.subtitledownloader.opensubtitles.entities.CheckMovieHash2Entity;
+import pl.rafalmag.subtitledownloader.opensubtitles.entities.MovieEntity;
 
 import com.moviejukebox.themoviedb.model.MovieDb;
 
@@ -19,18 +19,19 @@ public class Movie {
 
 	private final IntegerProperty year = new SimpleIntegerProperty();
 
-	private final StringProperty imdbId = new SimpleStringProperty();
+	private final IntegerProperty imdbId = new SimpleIntegerProperty();
 
-	public Movie(CheckMovieHash2Entity checkMovieHash2Entity) {
-		this(checkMovieHash2Entity.getMovieName(), checkMovieHash2Entity
-				.getYear(), "tt" + checkMovieHash2Entity.getImdbId());
+	public Movie(MovieEntity movieEntity) {
+		this(movieEntity.getTitle(), movieEntity.getYear(), movieEntity
+				.getImdbId());
 	}
 
 	public Movie(MovieDb input) {
-		this(input.getTitle(), getYear(input), input.getImdbID());
+		this(input.getTitle(), getYear(input), TitleUtils
+				.getImdbFromString(input.getImdbID()));
 	}
 
-	public Movie(String title, int year, String imdbId) {
+	public Movie(String title, int year, int imdbId) {
 		setTitle(title);
 		setYear(year);
 		setImdbId(imdbId);
@@ -68,7 +69,7 @@ public class Movie {
 		this.year.set(year);
 	}
 
-	public void setImdbId(String imdbId) {
+	public void setImdbId(int imdbId) {
 		this.imdbId.set(imdbId);
 	}
 
@@ -80,7 +81,7 @@ public class Movie {
 		return year.get();
 	}
 
-	public String getImdbId() {
+	public int getImdbId() {
 		return imdbId.get();
 	}
 

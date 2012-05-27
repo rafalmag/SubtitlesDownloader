@@ -12,7 +12,7 @@ public class SubtitlesUtilsTest {
 	@Test
 	public void should_get_valid_subtitles() throws Exception {
 		// given
-		Movie movie = new Movie("A Lonely Place To Die", 2011, "tt1422136");
+		Movie movie = new Movie("A Lonely Place To Die", 2011, 1422136);
 		File movieFile = new File(
 				"H:/filmy/!old/A Lonely Place To Die  {2011} DVDRIP. Jaybob/A Lonely Place To Die  {2011} DVDRIP. Jaybob.avi");
 

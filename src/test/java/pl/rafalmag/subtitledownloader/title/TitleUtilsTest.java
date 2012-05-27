@@ -48,7 +48,7 @@ public class TitleUtilsTest {
 		assertThat(firstMovie.getTitle(),
 				equalToIgnoringCase("The Girl With the Dragon Tattoo"));
 		assertThat(firstMovie.getYear(), equalTo(2011));
-		assertThat(firstMovie.getImdbId(), equalTo("tt1568346"));
+		assertThat(firstMovie.getImdbId(), equalTo(1568346));
 	}
 
 	@Test
@@ -67,7 +67,7 @@ public class TitleUtilsTest {
 		assertThat(firstMovie.getTitle(),
 				equalToIgnoringCase("A Lonely Place To Die"));
 		assertThat(firstMovie.getYear(), equalTo(2011));
-		assertThat(firstMovie.getImdbId(), equalTo("tt1422136"));
+		assertThat(firstMovie.getImdbId(), equalTo(1422136));
 	}
 
 	// requires existing file
@@ -88,7 +88,7 @@ public class TitleUtilsTest {
 		assertThat(firstMovie.getTitle(),
 				equalToIgnoringCase("A Lonely Place To Die"));
 		assertThat(firstMovie.getYear(), equalTo(2011));
-		assertThat(firstMovie.getImdbId(), equalTo("tt1422136"));
+		assertThat(firstMovie.getImdbId(), equalTo(1422136));
 	}
 
 	// requires existing file
@@ -109,6 +109,6 @@ public class TitleUtilsTest {
 		assertThat(firstMovie.getTitle(),
 				equalToIgnoringCase("A Lonely Place To Die"));
 		assertThat(firstMovie.getYear(), equalTo(2011));
-		assertThat(firstMovie.getImdbId(), equalTo("tt1422136"));
+		assertThat(firstMovie.getImdbId(), equalTo(1422136));
 	}
 }

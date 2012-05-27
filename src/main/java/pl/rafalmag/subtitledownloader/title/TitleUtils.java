@@ -15,7 +15,7 @@ import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
 import pl.rafalmag.subtitledownloader.Utils;
 import pl.rafalmag.subtitledownloader.opensubtitles.CheckMovie;
 import pl.rafalmag.subtitledownloader.opensubtitles.Session;
-import pl.rafalmag.subtitledownloader.opensubtitles.entities.CheckMovieHash2Entity;
+import pl.rafalmag.subtitledownloader.opensubtitles.entities.MovieEntity;
 import pl.rafalmag.subtitledownloader.themoviedb.TheMovieDbHelper;
 
 import com.google.common.base.Function;
@@ -112,15 +112,13 @@ public class TitleUtils {
 		session.login(); // mandatory
 		CheckMovie checkMovie = new CheckMovie(session, movieFile);
 
-		// when
-		List<CheckMovieHash2Entity> checkMovieHash2Entities = checkMovie
-				.getTitleInfo();
+		List<MovieEntity> checkMovieHash2Entities = checkMovie.getTitleInfo();
 
 		List<Movie> list = Lists.transform(checkMovieHash2Entities,
-				new Function<CheckMovieHash2Entity, Movie>() {
+				new Function<MovieEntity, Movie>() {
 
 					@Override
-					public Movie apply(CheckMovieHash2Entity input) {
+					public Movie apply(MovieEntity input) {
 						return new Movie(input);
 					}
 

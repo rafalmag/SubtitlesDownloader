@@ -5,6 +5,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pl.rafalmag.subtitledownloader.title.TitleUtils;
+
 /**
  * 
  * http://trac.opensubtitles.org/projects/opensubtitles/wiki/XMLRPC#
@@ -29,8 +31,8 @@ public class SearchSubtitlesResult {
 		return (String) map.get("IDMovie");
 	}
 
-	public String getIDMovieImdb() {
-		return (String) map.get("IDMovieImdb");
+	public int getIDMovieImdb() {
+		return TitleUtils.getImdbFromString((String) map.get("IDMovieImdb"));
 	}
 
 	public String getTitle() {

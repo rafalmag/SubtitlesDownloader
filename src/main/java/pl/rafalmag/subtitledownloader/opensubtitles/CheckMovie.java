@@ -9,7 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
-import pl.rafalmag.subtitledownloader.opensubtitles.entities.CheckMovieHash2Entity;
+import pl.rafalmag.subtitledownloader.opensubtitles.entities.MovieEntity;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
 
 public class CheckMovie {
@@ -27,10 +27,10 @@ public class CheckMovie {
 		this.movieFile = movieFile;
 	}
 
-	public List<CheckMovieHash2Entity> getTitleInfo()
+	public List<MovieEntity> getTitleInfo()
 			throws SubtitlesDownloaderException {
 		String hashCode = getHashCode();
-		List<CheckMovieHash2Entity> checkMovieHash2Map = session
+		List<MovieEntity> checkMovieHash2Map = session
 				.checkMovieHash2(hashCode);
 		return checkMovieHash2Map;
 	}

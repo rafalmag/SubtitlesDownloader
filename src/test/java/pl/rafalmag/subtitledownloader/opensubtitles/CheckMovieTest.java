@@ -19,7 +19,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import pl.rafalmag.subtitledownloader.opensubtitles.entities.CheckMovieHash2Entity;
+import pl.rafalmag.subtitledownloader.opensubtitles.entities.MovieEntity;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
 
 public class CheckMovieTest {
@@ -46,15 +46,15 @@ public class CheckMovieTest {
 		CheckMovie checkMovie = new CheckMovie(session, movieFile);
 
 		// when
-		List<CheckMovieHash2Entity> checkMovieHash2Entities = checkMovie
+		List<MovieEntity> movieEntities = checkMovie
 				.getTitleInfo();
 
 		// then
-		assertThat("Result should has few records", checkMovieHash2Entities,
+		assertThat("Result should has few records", movieEntities,
 				not(hasSize(0)));
-		List<CheckMovieHash2Entity> select = select(
-				checkMovieHash2Entities,
-				having(on(CheckMovieHash2Entity.class).getMovieName(),
+		List<MovieEntity> select = select(
+				movieEntities,
+				having(on(MovieEntity.class).getTitle(),
 						equalToIgnoringCase("A Lonely Place to Die")));
 		assertThat("Result should has item with title: A Lonely Place To Die",
 				select, not(hasSize(0)));

@@ -3,7 +3,7 @@ package pl.rafalmag.subtitledownloader.opensubtitles;
 import static ch.lambdaj.Lambda.having;
 import static ch.lambdaj.Lambda.on;
 import static ch.lambdaj.Lambda.select;
-import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 
 import java.io.File;
 import java.util.Collection;
@@ -19,7 +19,6 @@ import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
 import pl.rafalmag.subtitledownloader.Utils;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
 import pl.rafalmag.subtitledownloader.title.Movie;
-import pl.rafalmag.subtitledownloader.title.TitleUtils;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
@@ -35,8 +34,7 @@ public class CheckMovieSubtitles extends CheckMovie {
 
 	protected List<SearchSubtitlesResult> getSubtitlesByImdb()
 			throws SubtitlesDownloaderException {
-		String imdbStr = movie.getImdbId();
-		return session.searchSubtitlesBy(TitleUtils.getImdbFromString(imdbStr));
+		return session.searchSubtitlesBy(movie.getImdbId());
 	}
 
 	protected List<SearchSubtitlesResult> getSubtitlesByTitle()
@@ -82,9 +80,7 @@ public class CheckMovieSubtitles extends CheckMovie {
 			List<SearchSubtitlesResult> select2 = select(
 					set,
 					having(on(SearchSubtitlesResult.class).getIDMovieImdb(),
-							containsString(""
-									+ TitleUtils.getImdbFromString(movie
-											.getImdbId()))));
+							equalTo(movie.getImdbId())));
 
 			SortedSet<SearchSubtitlesResult> sortedSet = Sets
 					.newTreeSet(new Comparator<SearchSubtitlesResult>() {

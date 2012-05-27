@@ -5,6 +5,8 @@ import javafx.beans.property.SimpleObjectProperty;
 
 public class SelectTitleProperties {
 
+	private static final Movie DUMMY_MOVIE = new Movie("", 0, 0);
+
 	private static class SelectTitlePropertiesHolder {
 		static SelectTitleProperties instance = new SelectTitleProperties();
 	}
@@ -17,7 +19,7 @@ public class SelectTitleProperties {
 	}
 
 	private final ObjectProperty<Movie> selectedMovie = new SimpleObjectProperty<>(
-			new Movie("", 0, ""));
+			DUMMY_MOVIE);
 
 	public ObjectProperty<Movie> selectedMovieProperty() {
 		return selectedMovie;

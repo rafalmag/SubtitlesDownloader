@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
-import pl.rafalmag.subtitledownloader.opensubtitles.entities.CheckMovieHash2Entity;
+import pl.rafalmag.subtitledownloader.opensubtitles.entities.MovieEntity;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.ImdbMovieDetails;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
 
@@ -194,7 +194,7 @@ public class Session {
 		}
 	}
 
-	public List<CheckMovieHash2Entity> checkMovieHash2(String hashCode)
+	public List<MovieEntity> checkMovieHash2(String hashCode)
 			throws SubtitlesDownloaderException {
 		Object[] params = new Object[] { token, new Object[] { hashCode } };
 		try {
@@ -208,7 +208,7 @@ public class Session {
 						"could not CheckMovieHash2 because of wrong status "
 								+ status);
 			}
-			List<CheckMovieHash2Entity> result = parseData(response);
+			List<MovieEntity> result = parseData(response);
 			return result;
 		} catch (XmlRpcException e) {
 			throw new SubtitlesDownloaderException(
@@ -217,8 +217,8 @@ public class Session {
 		}
 	}
 
-	private List<CheckMovieHash2Entity> parseData(Map<String, Object> response) {
-		List<CheckMovieHash2Entity> result;
+	private List<MovieEntity> parseData(Map<String, Object> response) {
+		List<MovieEntity> result;
 		Object data = response.get("data");
 		if (data instanceof Object[]) {
 			Object[] records = (Object[]) data;
@@ -237,12 +237,12 @@ public class Session {
 		return result;
 	}
 
-	private List<CheckMovieHash2Entity> getRecords(Object[] records) {
-		List<CheckMovieHash2Entity> result;
+	private List<MovieEntity> getRecords(Object[] records) {
+		List<MovieEntity> result;
 		result = Lists.newArrayListWithCapacity(records.length);
 		for (Object record : records) {
 			@SuppressWarnings("unchecked")
-			CheckMovieHash2Entity checkMovieHash2Entity = new CheckMovieHash2Entity(
+			MovieEntity checkMovieHash2Entity = new MovieEntity(
 					(Map<String, Object>) record);
 			result.add(checkMovieHash2Entity);
 		}
