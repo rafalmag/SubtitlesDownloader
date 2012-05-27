@@ -41,7 +41,7 @@ public class TitleUtils {
 
 	public SortedSet<Movie> getTitles(long timeoutMs)
 			throws SubtitlesDownloaderException, InterruptedException {
-		final String baseName = FilenameUtils.getBaseName(movieFile.getName());
+		String fileBaseName = FilenameUtils.getBaseName(movieFile.getName());
 		SortedSet<Movie> set = Sets.newTreeSet(new Comparator<Movie>() {
 
 			@Override
@@ -51,12 +51,13 @@ public class TitleUtils {
 			}
 
 		});
-		startTasksAndGetResults(timeoutMs, baseName, set);
+		String title = TitleNameUtils.getTitleFrom(fileBaseName);
+		startTasksAndGetResults(timeoutMs, title, set);
 
 		return set;
 	}
 
-	private void startTasksAndGetResults(long timeoutMs, final String baseName,
+	private void startTasksAndGetResults(long timeoutMs, final String title,
 			SortedSet<Movie> set) throws InterruptedException {
 		ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(2);
 		try {
@@ -66,7 +67,7 @@ public class TitleUtils {
 
 				@Override
 				public List<Movie> call() {
-					return getByTitle(baseName);
+					return getByTitle(title);
 				}
 			});
 			compService.submit(new Callable<List<Movie>>() {
