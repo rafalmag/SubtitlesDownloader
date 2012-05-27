@@ -8,6 +8,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -57,43 +58,48 @@ public class TitleUtils {
 
 	private void startTasksAndGetResults(long timeoutMs, final String baseName,
 			SortedSet<Movie> set) throws InterruptedException {
-		CompletionService<List<Movie>> compService = new ExecutorCompletionService<List<Movie>>(
-				Executors.newFixedThreadPool(2));
-		compService.submit(new Callable<List<Movie>>() {
-
-			@Override
-			public List<Movie> call() {
-				return getByTitle(baseName);
-			}
-		});
-		compService.submit(new Callable<List<Movie>>() {
-
-			@Override
-			public List<Movie> call() throws SubtitlesDownloaderException {
-				return getByFileHash();
-			}
-		});
-
-		long startWaitingMs = System.currentTimeMillis();
+		ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(2);
 		try {
-			set.addAll(compService.take().get());
-		} catch (ExecutionException e) {
-			LOGGER.error("Could not get XXX", e);
-		}
-		long waitingTookMs = System.currentTimeMillis() - startWaitingMs;
-		long timeLeftMs = timeoutMs - waitingTookMs;
-		if (timeLeftMs > 0) {
-			Future<List<Movie>> poll = compService.poll(timeoutMs
-					- waitingTookMs, TimeUnit.MILLISECONDS);
-			if (poll == null) {
-				LOGGER.warn("Could not XXX get in given time");
-			} else {
-				try {
-					set.addAll(poll.get());
-				} catch (ExecutionException e) {
-					LOGGER.error("Could not get XXX", e);
+			CompletionService<List<Movie>> compService = new ExecutorCompletionService<List<Movie>>(
+					newFixedThreadPool);
+			compService.submit(new Callable<List<Movie>>() {
+
+				@Override
+				public List<Movie> call() {
+					return getByTitle(baseName);
+				}
+			});
+			compService.submit(new Callable<List<Movie>>() {
+
+				@Override
+				public List<Movie> call() throws SubtitlesDownloaderException {
+					return getByFileHash();
+				}
+			});
+
+			long startWaitingMs = System.currentTimeMillis();
+			try {
+				set.addAll(compService.take().get());
+			} catch (ExecutionException e) {
+				LOGGER.error("Could not get XXX", e);
+			}
+			long waitingTookMs = System.currentTimeMillis() - startWaitingMs;
+			long timeLeftMs = timeoutMs - waitingTookMs;
+			if (timeLeftMs > 0) {
+				Future<List<Movie>> poll = compService.poll(timeoutMs
+						- waitingTookMs, TimeUnit.MILLISECONDS);
+				if (poll == null) {
+					LOGGER.warn("Could not XXX get in given time");
+				} else {
+					try {
+						set.addAll(poll.get());
+					} catch (ExecutionException e) {
+						LOGGER.error("Could not get XXX", e);
+					}
 				}
 			}
+		} finally {
+			newFixedThreadPool.shutdown();
 		}
 	}
 
