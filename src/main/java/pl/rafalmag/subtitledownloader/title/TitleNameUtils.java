@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,25 +18,29 @@ public class TitleNameUtils {
 			.getLogger(TitleNameUtils.class);
 
 	private static final Pattern TITLE = Pattern
-			.compile("([a-zA-Z0-9 _\\.]*)\\..*");
+			.compile("^([a-zA-Z0-9 _\\.]*)\\..*");
+
+	private static final Pattern TITLE_WITH_DASH = Pattern
+			.compile("^([a-zA-Z0-9 _\\.]*)-.*");
 
 	private static final Pattern TITLE_YEAR = Pattern
-			.compile("([a-zA-Z0-9 _\\.]*)[\\{\\[]\\d{4}.*");
+			.compile("^([a-zA-Z0-9 _\\.]*)([\\{\\[\\(])?\\d{4}.*");
 
 	private static final Pattern TITLE_META = Pattern
-			.compile("([a-zA-Z0-9 _\\.]*)((BRRIP)|(DVD)|(HD)).*");
+			.compile("^([a-zA-Z0-9 _\\.]*)([\\{\\[\\(])?((BRRIP)|(DVD)|(HD)).*");
 
 	// order is important
 	private static final List<Pattern> patternList = ImmutableList.of(
-			TITLE_YEAR, TITLE_META, TITLE);
+			TITLE_YEAR, TITLE_META, TITLE_WITH_DASH, TITLE);
 
-	public static String getTitleFrom(String fileBaseName) {
+	public static String getTitleFrom(String fileName) {
+		String fileBaseName = FilenameUtils.getBaseName(fileName);
 		String title = checkPatterns(fileBaseName);
 		if (title != null) {
 			return prepareResult(title);
 		}
 
-		return fileBaseName;
+		return prepareResult(fileBaseName);
 	}
 
 	private static String prepareResult(String title) {
@@ -62,7 +67,14 @@ public class TitleNameUtils {
 	private static String checkPattern(Pattern pattern, String fileBaseName) {
 		Matcher matcher = pattern.matcher(fileBaseName);
 		if (matcher.find()) {
-			return matcher.group(1).trim();
+			String stringToBeReturned = matcher.group(1).trim();
+			if (stringToBeReturned.isEmpty()) {
+				LOGGER.error("checkPattern matched\n" + "fileBaseName:   "
+						+ fileBaseName + "\nmatched by:     " + pattern
+						+ "\nreturned empty string");
+				return null;
+			}
+			return stringToBeReturned;
 		}
 		return null;
 	}

@@ -38,6 +38,14 @@ public class TitleNameUtilsTest {
 				$("No.Country.For.Old.Men[2007]DvDrip-aXXo.avi",
 						"No Country For Old Men"),
 				$("Terra.Nova.S01E01.Genesis.HDTV.XviD-FQM.avi",
-						"Terra Nova S01E01 Genesis"), $("", ""));
+						"Terra Nova S01E01 Genesis"),
+				$("Zeitgeist.(2007).[DVDRip]-XviD-MP3.avi", "Zeitgeist"),
+				$("Shakespeare In Love [DVD-RIP x264][OGG 2ch EN][Sub BR][Sample].mkv",
+						"Shakespeare In Love"),
+				$("Cast Away - Tom Hanks 2000 BR.avi", "Cast Away"),
+				$("Insidious.2011.720p.RC.BDRip.XviD.AC3-FLAWL3SS.avi",
+						"Insidious"),
+				$("Martha.Marcy.May.Marlene.2011.WORKPRINT.XViD-NFT.avi",
+						"Martha Marcy May Marlene"));
 	}
 }
