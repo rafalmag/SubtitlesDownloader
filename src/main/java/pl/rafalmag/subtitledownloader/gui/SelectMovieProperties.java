@@ -19,6 +19,9 @@ public class SelectMovieProperties {
 		return SelectMoviePropertiesHolder.instance;
 	}
 
+	private SelectMovieProperties() {
+	}
+
 	private final StringProperty filePath = new SimpleStringProperty("");
 
 	public String getFilePath() {

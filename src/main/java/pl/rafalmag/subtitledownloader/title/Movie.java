@@ -20,17 +20,18 @@ public class Movie {
 	private final StringProperty imdbId = new SimpleStringProperty();
 
 	public Movie(CheckMovieHash2Entity checkMovieHash2Entity) {
-		setImdbId("tt" + checkMovieHash2Entity.getImdbId());
-		setTitle(checkMovieHash2Entity.getMovieName());
-		setYear(checkMovieHash2Entity.getYear());
+		this(checkMovieHash2Entity.getMovieName(), checkMovieHash2Entity
+				.getYear(), "tt" + checkMovieHash2Entity.getImdbId());
 	}
 
 	public Movie(MovieDb input) {
-		setImdbId(input.getImdbID());
+		this(input.getTitle(), getYear(input), input.getImdbID());
+	}
 
-		setTitle(input.getTitle());
-		int year = getYear(input);
+	public Movie(String title, int year, String imdbId) {
+		setTitle(title);
 		setYear(year);
+		setImdbId(imdbId);
 	}
 
 	// eq. 1977-05-25
@@ -83,8 +84,8 @@ public class Movie {
 
 	@Override
 	public String toString() {
-		return "Movie [getTitle()=" + getTitle() + ", getYear()=" + getYear()
-				+ ", getImdbId()=" + getImdbId() + "]";
+		return "Movie [title=" + getTitle() + ", year=" + getYear()
+				+ ", imdbId=" + getImdbId() + "]";
 	}
 
 	@Override
