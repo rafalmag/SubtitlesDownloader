@@ -13,7 +13,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +40,6 @@ public class TitleUtils {
 
 	public SortedSet<Movie> getTitles(long timeoutMs)
 			throws SubtitlesDownloaderException, InterruptedException {
-		String fileBaseName = FilenameUtils.getBaseName(movieFile.getName());
 		SortedSet<Movie> set = Sets.newTreeSet(new Comparator<Movie>() {
 
 			@Override
@@ -51,7 +49,7 @@ public class TitleUtils {
 			}
 
 		});
-		String title = TitleNameUtils.getTitleFrom(fileBaseName);
+		String title = TitleNameUtils.getTitleFrom(movieFile.getName());
 		startTasksAndGetResults(timeoutMs, title, set);
 
 		return set;
