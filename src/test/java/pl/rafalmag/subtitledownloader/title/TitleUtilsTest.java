@@ -10,9 +10,26 @@ import java.io.File;
 import java.util.List;
 import java.util.SortedSet;
 
-import org.junit.Test;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+@RunWith(JUnitParamsRunner.class)
 public class TitleUtilsTest {
+
+	@Parameters({ "tt1234,1234", "123,123" })
+	@Test
+	public void should_get_int_from_imdb_string(String imdbStr, int expectedImdb) {
+		// given
+
+		// when
+		int imdbFromString = TitleUtils.getImdbFromString(imdbStr);
+
+		// then
+		assertThat(imdbFromString, equalTo(expectedImdb));
+	}
 
 	@Test
 	public void should_get_title_for_not_exact_title() throws Exception {

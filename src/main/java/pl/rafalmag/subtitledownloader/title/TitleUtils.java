@@ -12,6 +12,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +30,19 @@ import com.google.common.collect.Sets;
 import com.moviejukebox.themoviedb.model.MovieDb;
 
 public class TitleUtils {
+
+	private static Pattern IMDB_PATTERN = Pattern.compile("\\D*(\\d+).*");
+
+	public static int getImdbFromString(String imdbStr) {
+		Matcher matcher = IMDB_PATTERN.matcher(imdbStr);
+		if (matcher.find()) {
+			String digits = matcher.group(1);
+			return Integer.parseInt(digits);
+		} else {
+			throw new IllegalStateException("imdbId (" + imdbStr
+					+ ") doesn't match " + IMDB_PATTERN);
+		}
+	}
 
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(TitleUtils.class);
@@ -119,7 +134,7 @@ public class TitleUtils {
 
 	protected List<Movie> getByFileHash() throws SubtitlesDownloaderException {
 		Session session = new Session();
-		session.login();
+		session.login(); // mandatory
 		CheckMovie checkMovie = new CheckMovie(session, movieFile);
 
 		// when
@@ -137,5 +152,4 @@ public class TitleUtils {
 				});
 		return list;
 	}
-
 }
