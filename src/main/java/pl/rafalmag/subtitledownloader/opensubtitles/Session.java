@@ -24,6 +24,8 @@ import com.google.common.collect.Lists;
 
 public class Session {
 
+	private static final String ENG = "eng";
+
 	private static final String USER_AGENT = "SubtitlesDownloader v1";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Session.class);
@@ -44,7 +46,7 @@ public class Session {
 	}
 
 	public void login() throws SessionException {
-		login("", "", "en", USER_AGENT);
+		login("", "", "en", USER_AGENT); // TODO provide user and pass
 	}
 
 	public void login(String userName, String password, String language,
@@ -89,13 +91,31 @@ public class Session {
 		}
 	}
 
-	public List<SearchSubtitlesResult> searchSubtitles(String movieHash,
+	public List<SearchSubtitlesResult> searchSubtitlesBy(String movieHash,
 			Long movieByteSize) throws SubtitlesDownloaderException {
 		Object[] params = new Object[] {
 				token,
-				new Object[] { ImmutableMap.of("sublanguageid", "eng",
+				new Object[] { ImmutableMap.of("sublanguageid", ENG,
 						"moviehash", movieHash, "moviebytesize",
 						movieByteSize.toString()) } };
+		return searchSubtitles(params);
+	}
+
+	public List<SearchSubtitlesResult> searchSubtitlesBy(int imdbId)
+			throws SubtitlesDownloaderException {
+		Object[] params = new Object[] {
+				token,
+				new Object[] { ImmutableMap.of("sublanguageid", ENG, "imdbid",
+						imdbId) } };
+		return searchSubtitles(params);
+	}
+
+	public List<SearchSubtitlesResult> searchSubtitlesBy(String title)
+			throws SubtitlesDownloaderException {
+		Object[] params = new Object[] {
+				token,
+				new Object[] { ImmutableMap.of("sublanguageid", ENG, "query",
+						title) } };
 		return searchSubtitles(params);
 	}
 
@@ -134,6 +154,21 @@ public class Session {
 		}
 	}
 
+	// TODO
+	// this can be also easily implemented
+	// http://trac.opensubtitles.org/projects/opensubtitles/wiki/XMLRPC#SearchMoviesOnIMDB
+
+	/**
+	 * @deprecated Use TheMovieDb methods
+	 * 
+	 * @see {@link link
+	 *      http://trac.opensubtitles.org/projects/opensubtitles/wiki/XMLRPC
+	 *      #GetIMDBMovieDetails}
+	 * @param imdbId
+	 * @return
+	 * @throws SubtitlesDownloaderException
+	 */
+	@Deprecated
 	public ImdbMovieDetails getImdbMovieDetails(int imdbId)
 			throws SubtitlesDownloaderException {
 		Object[] params = new Object[] { token, imdbId };

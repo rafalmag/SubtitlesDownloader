@@ -33,21 +33,31 @@ public class SearchSubtitlesResult {
 		return (String) map.get("IDMovieImdb");
 	}
 
-	public String getMovieName() {
+	public String getTitle() {
 		return (String) map.get("MovieName");
+	}
+
+	public String getSubDownloadsCnt() {
+		return (String) map.get("SubDownloadsCnt");
+	}
+
+	public String getSubDownloadLink() {
+		return (String) map.get("SubDownloadLink");
 	}
 
 	@Override
 	public String toString() {
-		return "SearchSubtitlesResult [map=" + map + "]";
+		return "SearchSubtitlesResult [getIdMovie()=" + getIdMovie()
+				+ ", getIDMovieImdb()=" + getIDMovieImdb()
+				+ ", getSubDownloadLink()=" + getSubDownloadLink()
+				+ ", getSubDownloadsCnt()=" + getSubDownloadsCnt()
+				+ ", getTitle()=" + getTitle() + "]";
+		// + ", map=" + map + "]";
 	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((map == null) ? 0 : map.hashCode());
-		return result;
+		return getTitle().hashCode();
 	}
 
 	@Override
@@ -59,10 +69,17 @@ public class SearchSubtitlesResult {
 		if (getClass() != obj.getClass())
 			return false;
 		SearchSubtitlesResult other = (SearchSubtitlesResult) obj;
-		if (map == null) {
-			if (other.map != null)
+		// title
+		if (getTitle() == null) {
+			if (other.getTitle() != null)
 				return false;
-		} else if (!map.equals(other.map))
+		} else if (!getTitle().equals(other.getTitle()))
+			return false;
+		// getSubDownloadLink
+		if (getSubDownloadLink() == null) {
+			if (other.getSubDownloadLink() != null)
+				return false;
+		} else if (!getSubDownloadLink().equals(other.getSubDownloadLink()))
 			return false;
 		return true;
 	}

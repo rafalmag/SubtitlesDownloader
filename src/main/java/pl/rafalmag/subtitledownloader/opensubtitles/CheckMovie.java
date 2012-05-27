@@ -16,9 +16,9 @@ public class CheckMovie {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Session.class);
 
-	private final Session session;
+	protected final Session session;
 
-	private final File movieFile;
+	protected final File movieFile;
 
 	private String hashCode;
 
@@ -49,12 +49,12 @@ public class CheckMovie {
 		return hashCode;
 	}
 
-	public List<SearchSubtitlesResult> getSubtitles()
+	protected List<SearchSubtitlesResult> getSubtitlesByMovieHashAndByteSize()
 			throws SubtitlesDownloaderException {
 
 		String movieHash = getHashCode();
 		long movieByteSize = getByteSize();
-		return session.searchSubtitles(movieHash, movieByteSize);
+		return session.searchSubtitlesBy(movieHash, movieByteSize);
 	}
 
 	public long getByteSize() {

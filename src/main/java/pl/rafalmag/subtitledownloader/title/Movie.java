@@ -13,6 +13,8 @@ import com.moviejukebox.themoviedb.model.MovieDb;
 
 public class Movie {
 
+	// TODO movie file ?
+
 	private final StringProperty title = new SimpleStringProperty();
 
 	private final IntegerProperty year = new SimpleIntegerProperty();

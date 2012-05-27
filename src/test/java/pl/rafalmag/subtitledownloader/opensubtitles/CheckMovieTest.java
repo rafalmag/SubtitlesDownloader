@@ -3,10 +3,9 @@ package pl.rafalmag.subtitledownloader.opensubtitles;
 import static ch.lambdaj.Lambda.having;
 import static ch.lambdaj.Lambda.on;
 import static ch.lambdaj.Lambda.select;
-import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertThat;
 
@@ -15,7 +14,6 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 
-import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -57,14 +55,15 @@ public class CheckMovieTest {
 		List<CheckMovieHash2Entity> select = select(
 				checkMovieHash2Entities,
 				having(on(CheckMovieHash2Entity.class).getMovieName(),
-						equalTo("A Lonely Place to Die")));
+						equalToIgnoringCase("A Lonely Place to Die")));
 		assertThat("Result should has item with title: A Lonely Place To Die",
 				select, not(hasSize(0)));
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Ignore
 	@Test
-	public void should_get_subtitles_for_movie() throws Exception {
+	public void should_get_subtitles_for_movie_by_hash_and_size()
+			throws Exception {
 		// given
 		File movieFile = new File(
 				"C:/torrents/!old/The Girl With A Dragon Tattoo 2011 DVDSCR XviD AC3-FTW/The Girl With A Dragon Tattoo 2011 DVDSCR XviD AC3-FTW.avi");
@@ -72,10 +71,19 @@ public class CheckMovieTest {
 
 		// when
 		Collection<SearchSubtitlesResult> checkMovieHash2Entities = checkMovie
-				.getSubtitles();
+				.getSubtitlesByMovieHashAndByteSize();
 
 		// then
-		assertThat((Collection) checkMovieHash2Entities, is(not(empty())));
+		assertThat(checkMovieHash2Entities, not(hasSize(0)));
+
+		List<SearchSubtitlesResult> select2 = select(
+				checkMovieHash2Entities,
+				having(on(SearchSubtitlesResult.class).getTitle(),
+						equalToIgnoringCase("The Girl With The Dragon Tattoo")));
+
+		assertThat(
+				"Result should has item with title: The Girl With The Dragon Tattoo",
+				select2, not(hasSize(0)));
 	}
 
 	@Test
@@ -86,7 +94,7 @@ public class CheckMovieTest {
 		// when
 		String hashcode = new CheckMovie(session, file).getHashCode();
 		// then
-		assertThat(hashcode, Matchers.equalTo("8e245d9679d31e12"));
+		assertThat(hashcode, equalTo("8e245d9679d31e12"));
 	}
 
 	@Test

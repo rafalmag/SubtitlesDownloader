@@ -1,30 +1,25 @@
 package pl.rafalmag.subtitledownloader.title;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.concurrent.Callable;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
+import pl.rafalmag.subtitledownloader.Utils;
 import pl.rafalmag.subtitledownloader.opensubtitles.CheckMovie;
 import pl.rafalmag.subtitledownloader.opensubtitles.Session;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.CheckMovieHash2Entity;
 import pl.rafalmag.subtitledownloader.themoviedb.TheMovieDbHelper;
 
 import com.google.common.base.Function;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.moviejukebox.themoviedb.model.MovieDb;
@@ -44,9 +39,6 @@ public class TitleUtils {
 		}
 	}
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(TitleUtils.class);
-
 	private final File movieFile;
 
 	public TitleUtils(File movieFile) {
@@ -55,6 +47,12 @@ public class TitleUtils {
 
 	public SortedSet<Movie> getTitles(long timeoutMs)
 			throws SubtitlesDownloaderException, InterruptedException {
+		String title = TitleNameUtils.getTitleFrom(movieFile.getName());
+		return startTasksAndGetResults(timeoutMs, title);
+	}
+
+	private SortedSet<Movie> startTasksAndGetResults(long timeoutMs,
+			final String title) throws InterruptedException {
 		SortedSet<Movie> set = Sets.newTreeSet(new Comparator<Movie>() {
 
 			@Override
@@ -64,54 +62,31 @@ public class TitleUtils {
 			}
 
 		});
-		String title = TitleNameUtils.getTitleFrom(movieFile.getName());
-		startTasksAndGetResults(timeoutMs, title, set);
 
-		return set;
-	}
-
-	private void startTasksAndGetResults(long timeoutMs, final String title,
-			SortedSet<Movie> set) throws InterruptedException {
 		ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(2);
 		try {
-			CompletionService<List<Movie>> compService = new ExecutorCompletionService<List<Movie>>(
-					newFixedThreadPool);
-			compService.submit(new Callable<List<Movie>>() {
+			Collection<Callable<List<Movie>>> solvers = ImmutableList.of(
+					new Callable<List<Movie>>() {
 
-				@Override
-				public List<Movie> call() {
-					return getByTitle(title);
-				}
-			});
-			compService.submit(new Callable<List<Movie>>() {
+						@Override
+						public List<Movie> call() {
+							return getByTitle(title);
+						}
+					}, new Callable<List<Movie>>() {
 
-				@Override
-				public List<Movie> call() throws SubtitlesDownloaderException {
-					return getByFileHash();
-				}
-			});
+						@Override
+						public List<Movie> call()
+								throws SubtitlesDownloaderException {
+							return getByFileHash();
+						}
+					});
+			Collection<List<Movie>> solve = Utils.solve(newFixedThreadPool,
+					solvers, timeoutMs);
 
-			long startWaitingMs = System.currentTimeMillis();
-			try {
-				set.addAll(compService.take().get());
-			} catch (ExecutionException e) {
-				LOGGER.error("Could not get XXX", e);
+			for (List<Movie> item : solve) {
+				set.addAll(item);
 			}
-			long waitingTookMs = System.currentTimeMillis() - startWaitingMs;
-			long timeLeftMs = timeoutMs - waitingTookMs;
-			if (timeLeftMs > 0) {
-				Future<List<Movie>> poll = compService.poll(timeoutMs
-						- waitingTookMs, TimeUnit.MILLISECONDS);
-				if (poll == null) {
-					LOGGER.warn("Could not XXX get in given time");
-				} else {
-					try {
-						set.addAll(poll.get());
-					} catch (ExecutionException e) {
-						LOGGER.error("Could not get XXX", e);
-					}
-				}
-			}
+			return set;
 		} finally {
 			newFixedThreadPool.shutdown();
 		}
