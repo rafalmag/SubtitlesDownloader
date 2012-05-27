@@ -46,6 +46,8 @@ public class TitleNameUtilsTest {
 				$("Insidious.2011.720p.RC.BDRip.XviD.AC3-FLAWL3SS.avi",
 						"Insidious"),
 				$("Martha.Marcy.May.Marlene.2011.WORKPRINT.XViD-NFT.avi",
-						"Martha Marcy May Marlene"));
+						"Martha Marcy May Marlene"),
+				$("The Girl With A Dragon Tattoo 2011 DVDSCR XviD AC3-FTW.avi",
+						"The Girl With A Dragon Tattoo"));
 	}
 }
