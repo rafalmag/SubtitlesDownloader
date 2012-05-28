@@ -1,13 +1,15 @@
 package pl.rafalmag.subtitledownloader.gui;
 
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.StringExpression;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -20,6 +22,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
 import pl.rafalmag.subtitledownloader.title.Movie;
 import pl.rafalmag.subtitledownloader.title.MovieTitlesList;
 import pl.rafalmag.subtitledownloader.title.SelectTitleProperties;
@@ -48,28 +51,52 @@ public class FXMLMainSelectedMovieTitleTabController implements Initializable {
 		selectedTitle.textProperty().bind(selectedTitleText);
 
 		setTable();
+
+		addUpdateTableListener();
 	}
 
-	// selectMovieTitleTab.selectedProperty().addListener(
-	// new InvalidationListener() {
-	//
-	// @Override
-	// public void invalidated(Observable observable) {
-	// if (selectMovieTitleTab.selectedProperty().get()) {
-	// Movie selectedMovie = SelectTitleProperties
-	// .getInstance().getSelectedMovie();
-	// try {
-	// MovieTitlesList.updateList(10000);
-	// } catch (SubtitlesDownloaderException
-	// | InterruptedException e) {
-	// LOGGER.error("Could not update titles list", e);
-	// }
-	// }
-	// }
-	// });
+	private void addUpdateTableListener() {
+		StringProperty movieFileProperty = SelectMovieProperties.getInstance()
+				.movieFileProperty();
+
+		StringProperty lastUpdatedForFilePathProperty = MovieTitlesList
+				.lastUpdatedForFilePathProperty();
+
+		BooleanBinding movieFilePathChanged = Bindings.notEqual(
+				movieFileProperty, lastUpdatedForFilePathProperty);
+		ReadOnlyBooleanProperty tabSelectedProperty = selectMovieTitleTab
+				.selectedProperty();
+
+		final BooleanBinding shouldUpdateTitlesList = tabSelectedProperty
+				.and(movieFilePathChanged);
+
+		InvalidationListener shouldUpdateTitlesListListener = new InvalidationListener() {
+
+			@Override
+			public void invalidated(Observable observable) {
+				LOGGER.trace("observable: " + observable);
+				if (shouldUpdateTitlesList.get()) {
+					try {
+						MovieTitlesList.updateList(10000);
+					} catch (SubtitlesDownloaderException
+							| InterruptedException e) {
+						LOGGER.error("Could not update titles list", e);
+					}
+				}
+
+			}
+		};
+
+		tabSelectedProperty.addListener(shouldUpdateTitlesListListener);
+		movieFileProperty.addListener(shouldUpdateTitlesListListener);
+		lastUpdatedForFilePathProperty
+				.addListener(shouldUpdateTitlesListListener);
+		// movieFilePathChanged.addListener(shouldUpdateTitlesListListener);
+		// shouldUpdateTitlesList.addListener(shouldUpdateTitlesListListener);
+	}
 
 	private void setTable() {
-		table.setItems(MovieTitlesList.getList());
+		table.setItems(MovieTitlesList.listProperty());
 
 		TableColumn<Movie, String> title = new TableColumn<>("Title");
 		title.setCellValueFactory(new PropertyValueFactory<Movie, String>(
@@ -85,26 +112,19 @@ public class FXMLMainSelectedMovieTitleTabController implements Initializable {
 
 	private void setSelectionStuff() {
 		table.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+
 		table.getSelectionModel().getSelectedItems()
 				.addListener(new InvalidationListener() {
 
 					@Override
 					public void invalidated(Observable observable) {
-						LOGGER.trace("invalidated {}", observable);
-						if (observable instanceof List<?>) {
-							List<?> list = (List<?>) observable;
-							if (!list.isEmpty()) {
-								Object object = list.get(0);
-								LOGGER.debug("invalidated with object: {}",
-										object);
-								if (object instanceof Movie) {
-									Movie movie = (Movie) object;
-									SelectTitleProperties.getInstance()
-											.setSelectedMovie(movie);
-								}
-							}
+						if (table.getSelectionModel().getSelectedItems().size() == 1) {
+							Movie movie = table.getSelectionModel()
+									.getSelectedItems().get(0);
+							LOGGER.debug("Selected movie: {}", movie);
+							SelectTitleProperties.getInstance()
+									.setSelectedMovie(movie);
 						}
-
 					}
 				});
 	}
