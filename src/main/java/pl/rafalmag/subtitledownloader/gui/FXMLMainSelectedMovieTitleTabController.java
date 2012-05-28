@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -31,6 +32,9 @@ public class FXMLMainSelectedMovieTitleTabController implements Initializable {
 			.getLogger(FXMLMainSelectedMovieTitleTabController.class);
 
 	@FXML
+	protected Tab selectMovieTitleTab;
+
+	@FXML
 	protected Label selectedTitle;
 
 	@FXML
@@ -45,6 +49,24 @@ public class FXMLMainSelectedMovieTitleTabController implements Initializable {
 
 		setTable();
 	}
+
+	// selectMovieTitleTab.selectedProperty().addListener(
+	// new InvalidationListener() {
+	//
+	// @Override
+	// public void invalidated(Observable observable) {
+	// if (selectMovieTitleTab.selectedProperty().get()) {
+	// Movie selectedMovie = SelectTitleProperties
+	// .getInstance().getSelectedMovie();
+	// try {
+	// MovieTitlesList.updateList(10000);
+	// } catch (SubtitlesDownloaderException
+	// | InterruptedException e) {
+	// LOGGER.error("Could not update titles list", e);
+	// }
+	// }
+	// }
+	// });
 
 	private void setTable() {
 		table.setItems(MovieTitlesList.getList());

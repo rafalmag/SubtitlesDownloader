@@ -11,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -20,9 +21,6 @@ import javafx.stage.Window;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
-import pl.rafalmag.subtitledownloader.title.MovieTitlesList;
-
 public class FXMLMainSelectedMovieFileTabController implements Initializable {
 
 	private static final Logger LOGGER = LoggerFactory
@@ -31,7 +29,10 @@ public class FXMLMainSelectedMovieFileTabController implements Initializable {
 	private Window window;
 
 	@FXML
-	Label selectedFile;
+	protected Tab selectMovieFileTab;
+
+	@FXML
+	protected Label selectedFile;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -105,11 +106,6 @@ public class FXMLMainSelectedMovieFileTabController implements Initializable {
 			if (setInitialDir) {
 				SelectMovieProperties.getInstance().setInitialDir(
 						file.getParentFile());
-			}
-			try {
-				MovieTitlesList.updateList(10000);
-			} catch (SubtitlesDownloaderException | InterruptedException e) {
-				LOGGER.error("Could not update titles list", e);
 			}
 		}
 	}

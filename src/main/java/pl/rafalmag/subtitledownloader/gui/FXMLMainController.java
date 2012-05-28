@@ -5,14 +5,13 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -31,13 +30,7 @@ public class FXMLMainController implements Initializable {
 	private Window window;
 
 	@FXML
-	protected Tab selectMovieFileTab;
-	@FXML
-	protected Tab selectMovieTitleTab;
-	@FXML
-	protected Tab selectMovieSubtitlesTab;
-	@FXML
-	protected Tab testSubtitlesTab;
+	protected TabPane tabPane;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -49,7 +42,7 @@ public class FXMLMainController implements Initializable {
 		URL resource = getClass().getResource("/MainSelectMovieTitleTab.fxml");
 		try (InputStream openStream = resource.openStream()) {
 			FXMLLoader fxmlLoader = new FXMLLoader(resource);
-			selectMovieTitleTab.setContent((Node) fxmlLoader.load(openStream));
+			tabPane.getTabs().add((Tab) fxmlLoader.load(openStream));
 			// ((FXMLMainSelectedMovieFileTabController) fxmlLoader
 			// .getController()).setWindow(window);
 		} catch (IOException e) {
@@ -61,7 +54,7 @@ public class FXMLMainController implements Initializable {
 		URL resource = getClass().getResource("/MainSelectMovieFileTab.fxml");
 		try (InputStream openStream = resource.openStream()) {
 			FXMLLoader fxmlLoader = new FXMLLoader(resource);
-			selectMovieFileTab.setContent((Node) fxmlLoader.load(openStream));
+			tabPane.getTabs().add((Tab) fxmlLoader.load(openStream));
 			((FXMLMainSelectedMovieFileTabController) fxmlLoader
 					.getController()).setWindow(window);
 		} catch (IOException e) {
@@ -74,7 +67,7 @@ public class FXMLMainController implements Initializable {
 	}
 
 	@FXML
-	protected void openAbout(ActionEvent event) throws IOException {
+	protected void openAbout() throws IOException {
 		LOGGER.trace("openAbout");
 
 		final Stage aboutStage = new Stage(StageStyle.UTILITY);
@@ -87,15 +80,13 @@ public class FXMLMainController implements Initializable {
 		Parent aboutView = FXMLLoader.load(resource);
 		aboutStage.setScene(new Scene(aboutView));
 		aboutStage.show();
-		event.consume();
 	}
 
 	@FXML
-	protected void closeApp(ActionEvent event) {
+	protected void closeApp() {
 		LOGGER.trace("closeApp");
 		window.hide();
 		LOGGER.trace("closeApp: hidden");
-		event.consume();
 	}
 
 }

@@ -24,12 +24,14 @@
             </Menu>
           </menus>
         </MenuBar>
-        <TabPane id="tabPane1" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+        <TabPane id="tabPane1" fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
           <tabs>
-            <Tab id="tab1" fx:id="selectMovieFileTab" closable="false" text="Select movie file"/>
-            <Tab id="tab2" fx:id="selectMovieTitleTab" closable="false" text="Select title" />
-            <Tab id="tab3" fx:id="selectMovieSubtitlesTab" closable="false" text="Select subtitles" />
-            <Tab id="tab4" fx:id="testSubtitlesTab" closable="false" text="Test subtitles" />
+          <!--
+            <Tab id="tab1" fx:id="selectMovieFileTab" text="Select movie file" />
+            <Tab id="tab2" fx:id="selectMovieTitleTab" text="Select title" />
+            <Tab id="tab3" fx:id="selectMovieSubtitlesTab" text="Select subtitles" />
+            <Tab id="tab4" fx:id="testSubtitlesTab" text="Test subtitles" />
+            -->
           </tabs>
         </TabPane>
       </children>

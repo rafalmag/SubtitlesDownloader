@@ -6,9 +6,13 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
 
-<VBox id="VBox" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml" fx:controller="pl.rafalmag.subtitledownloader.gui.FXMLMainSelectedMovieTitleTabController">
-  <children>
-    <TableView id="tableView1" fx:id="table" VBox.vgrow="ALWAYS"/>
-    <Label id="label2" fx:id="selectedTitle" alignment="BOTTOM_LEFT" prefWidth="600.0" text="Selected title:" VBox.vgrow="SOMETIMES" />
-  </children>
-</VBox>
+<Tab id="tab1" fx:id="selectMovieTitleTab" text="Select title" xmlns:fx="http://javafx.com/fxml" fx:controller="pl.rafalmag.subtitledownloader.gui.FXMLMainSelectedMovieTitleTabController">
+	<content>
+		<VBox id="VBox" >
+		  <children>
+		    <TableView id="tableView1" fx:id="table" VBox.vgrow="ALWAYS"/>
+		    <Label id="label2" fx:id="selectedTitle" alignment="BOTTOM_LEFT" prefWidth="600.0" text="Selected title:" VBox.vgrow="SOMETIMES" />
+		  </children>
+		</VBox>
+	</content>
+</Tab>
