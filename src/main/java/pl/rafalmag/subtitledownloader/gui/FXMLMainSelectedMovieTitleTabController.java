@@ -62,20 +62,20 @@ public class FXMLMainSelectedMovieTitleTabController implements Initializable {
 		StringProperty lastUpdatedForFilePathProperty = MovieTitlesList
 				.lastUpdatedForFilePathProperty();
 
-		BooleanBinding movieFilePathChanged = Bindings.notEqual(
+		BooleanBinding movieFilePathChangedBinding = Bindings.notEqual(
 				movieFileProperty, lastUpdatedForFilePathProperty);
 		ReadOnlyBooleanProperty tabSelectedProperty = selectMovieTitleTab
 				.selectedProperty();
 
-		final BooleanBinding shouldUpdateTitlesList = tabSelectedProperty
-				.and(movieFilePathChanged);
+		final BooleanBinding shouldUpdateTitlesListBinding = tabSelectedProperty
+				.and(movieFilePathChangedBinding);
 
 		InvalidationListener shouldUpdateTitlesListListener = new InvalidationListener() {
 
 			@Override
 			public void invalidated(Observable observable) {
 				LOGGER.trace("observable: " + observable);
-				if (shouldUpdateTitlesList.get()) {
+				if (shouldUpdateTitlesListBinding.get()) {
 					try {
 						MovieTitlesList.updateList(10000);
 					} catch (SubtitlesDownloaderException
@@ -91,8 +91,6 @@ public class FXMLMainSelectedMovieTitleTabController implements Initializable {
 		movieFileProperty.addListener(shouldUpdateTitlesListListener);
 		lastUpdatedForFilePathProperty
 				.addListener(shouldUpdateTitlesListListener);
-		// movieFilePathChanged.addListener(shouldUpdateTitlesListListener);
-		// shouldUpdateTitlesList.addListener(shouldUpdateTitlesListListener);
 	}
 
 	private void setTable() {
