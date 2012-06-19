@@ -48,6 +48,8 @@ public class TitleNameUtilsTest {
 				$("Martha.Marcy.May.Marlene.2011.WORKPRINT.XViD-NFT.avi",
 						"Martha Marcy May Marlene"),
 				$("The Girl With A Dragon Tattoo 2011 DVDSCR XviD AC3-FTW.avi",
-						"The Girl With A Dragon Tattoo"));
+						"The Girl With A Dragon Tattoo"),
+				$("Mission.Impossible.Ghost.Protocol.2011.1080p.BluRay.x264-SECTOR7 [PublicHD.ORG].mkv",
+						"Mission Impossible Ghost Protocol"));
 	}
 }

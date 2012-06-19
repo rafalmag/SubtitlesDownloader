@@ -24,7 +24,7 @@ public class TitleNameUtils {
 			.compile("^([a-zA-Z0-9 _\\.]*)-.*");
 
 	private static final Pattern TITLE_YEAR = Pattern
-			.compile("^([a-zA-Z0-9 _\\.]*)([\\{\\[\\(])?\\d{4}.*");
+			.compile("^([a-zA-Z0-9 _\\.]*)([\\{\\[\\(])?\\d{4}[^p].*");
 
 	private static final Pattern TITLE_META = Pattern
 			.compile("^([a-zA-Z0-9 _\\.]*)([\\{\\[\\(])?((BRRIP)|(DVD)|(HD)).*");
