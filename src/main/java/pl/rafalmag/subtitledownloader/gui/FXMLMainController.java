@@ -42,6 +42,7 @@ public class FXMLMainController implements Initializable {
 		initTab("/MainSelectMovieTitleTab.fxml");
 		initTab("/MainSelectMovieSubtitlesTab.fxml");
 		initTab("/MainDownloadAndTestTab.fxml");
+		progressBar.disableProperty().set(true);
 	}
 
 	private void initTab(String resourceStr) {

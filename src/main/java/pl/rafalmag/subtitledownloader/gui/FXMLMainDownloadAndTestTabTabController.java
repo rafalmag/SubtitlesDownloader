@@ -96,6 +96,7 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
 
 	@FXML
 	protected void download() {
+		fxmlMainController.progressBar.disableProperty().set(false);
 		fxmlMainController.progressBar.setProgress(0);
 		LOGGER.trace("download");
 		Subtitles subtitles = SelectSubtitlesProperties.getInstance()
@@ -110,6 +111,7 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
 			LOGGER.error(e.getMessage(), e);
 		}
 		fxmlMainController.progressBar.setProgress(1);
+		fxmlMainController.progressBar.disableProperty().set(true);
 	}
 
 	@FXML
