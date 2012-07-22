@@ -25,8 +25,10 @@ appender("STDOUT", ConsoleAppender) {
 	filter(TheMovieDbWarnFilter)
 	encoder(PatternLayoutEncoder) { pattern = "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{20} [%file:%line] - %replace(%msg){'${API_KEY}', '[API-KEY]'}%n" }
 }
-
-if(isTestMode()){
+if(isDev()){
+	root(DEBUG, ["STDOUT"])
+	logger("pl.rafalmag", DEBUG, ["STDOUT"], additivity = false)
+}else if(isTestMode()){
 	root(DEBUG, ["STDOUT"])
 	logger("pl.rafalmag", DEBUG, ["STDOUT"], additivity = false)
 }else{
@@ -43,4 +45,9 @@ def isTestMode(){
 	}catch(ClassNotFoundException e){
 		false
 	}
+}
+
+def isDev(){
+	// InetAddress.getLocalHost().getHostName().equals("sdsd")
+	true
 }
