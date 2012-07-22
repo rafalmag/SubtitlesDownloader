@@ -11,7 +11,7 @@
 		<AnchorPane id="AnchorPane" >
 		  <children>
 		    <Label id="label1" alignment="CENTER" contentDisplay="CENTER" onDragDropped="#setOnDragDropped" onDragEntered="#setOnDragEntered" onDragExited="#setOnDragExited" onDragOver="#setOnDragOver" prefHeight="289.0" prefWidth="600.0" text="Drop file here" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-		    <ToolBar id="toolBar1" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+		    <ToolBar id="toolBar1" prefWidth="2500.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 		      <items>
 		        <Button id="button1" onAction="#browseFile" text="Browse file" />
 		      </items>

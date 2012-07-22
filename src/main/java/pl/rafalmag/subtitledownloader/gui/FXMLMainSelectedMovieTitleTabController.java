@@ -75,11 +75,7 @@ public class FXMLMainSelectedMovieTitleTabController implements Initializable {
 			public void invalidated(Observable observable) {
 				LOGGER.trace("observable: " + observable);
 				if (shouldUpdateTitlesListBinding.get()) {
-					try {
-						MovieTitlesList.updateList(10000);
-					} catch (InterruptedException e) {
-						LOGGER.error("Could not update titles list", e);
-					}
+					refreshTable();
 				}
 
 			}
@@ -123,5 +119,15 @@ public class FXMLMainSelectedMovieTitleTabController implements Initializable {
 						}
 					}
 				});
+	}
+
+	@FXML
+	protected void refreshTable() {
+		LOGGER.trace("refresh");
+		try {
+			MovieTitlesList.updateList(10000);
+		} catch (InterruptedException e) {
+			LOGGER.error("Could not update titles list", e);
+		}
 	}
 }

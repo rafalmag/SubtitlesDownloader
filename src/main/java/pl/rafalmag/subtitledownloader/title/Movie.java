@@ -50,7 +50,7 @@ public class Movie {
 	protected static int getYear(MovieDb input) {
 		String releaseDate = input.getReleaseDate();
 		if (Strings.isNullOrEmpty(releaseDate)) {
-			LOGGER.warn("releaseDate is null");
+			LOGGER.debug("releaseDate is null");
 			return -1;
 		}
 		Matcher matcher = YEAR_PATTERN.matcher(releaseDate);

@@ -2,17 +2,23 @@
 
 <?import java.lang.*?>
 <?import java.util.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
 
 <Tab id="tab1" fx:id="selectMovieTitleTab" text="Select title" xmlns:fx="http://javafx.com/fxml" fx:controller="pl.rafalmag.subtitledownloader.gui.FXMLMainSelectedMovieTitleTabController">
-	<content>
-		<VBox id="VBox" >
-		  <children>
-		    <TableView id="tableView1" fx:id="table" VBox.vgrow="ALWAYS"/>
-		    <Label id="label2" fx:id="selectedTitle" alignment="BOTTOM_LEFT" prefWidth="600.0" text="Selected title:" VBox.vgrow="SOMETIMES" />
-		  </children>
-		</VBox>
-	</content>
+  <content>
+    <VBox id="VBox">
+      <children>
+        <TableView id="tableView1" fx:id="table" VBox.vgrow="ALWAYS" />
+        <HBox id="hBox1" prefHeight="100.0" VBox.vgrow="SOMETIMES">
+          <children>
+            <Label id="label2" fx:id="selectedTitle" prefWidth="2500.0" text="Selected title:" HBox.hgrow="ALWAYS" />
+            <Button id="button1" alignment="CENTER_RIGHT" maxWidth="-Infinity" minWidth="-Infinity" text="Refresh" HBox.hgrow="NEVER" onAction="#refreshTable"/>
+          </children>
+        </HBox>
+      </children>
+    </VBox>
+  </content>
 </Tab>

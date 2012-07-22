@@ -38,7 +38,7 @@ public class TitleUtils {
 
 	public static int getImdbFromString(@Nullable String imdbStr) {
 		if (Strings.isNullOrEmpty(imdbStr)) {
-			LOGGER.warn("imdbId is null");
+			LOGGER.debug("imdbId is null");
 			return -1;
 		}
 		Matcher matcher = IMDB_PATTERN.matcher(imdbStr);

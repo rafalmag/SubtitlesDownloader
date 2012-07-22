@@ -11,7 +11,7 @@
     <VBox id="VBox">
       <children>
         <TableView id="tableView1" fx:id="table" VBox.vgrow="ALWAYS" />
-        <Label id="label2" fx:id="selectedSubtitles" alignment="BOTTOM_LEFT" prefWidth="600.0" text="Selected subtitle:" VBox.vgrow="SOMETIMES" />
+        <Label id="label2" fx:id="selectedSubtitles" alignment="BOTTOM_LEFT" prefWidth="2500.0" text="Selected subtitle:" VBox.vgrow="SOMETIMES" />
       </children>
     </VBox>
   </content>
