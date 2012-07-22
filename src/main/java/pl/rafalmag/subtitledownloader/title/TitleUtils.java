@@ -46,7 +46,7 @@ public class TitleUtils {
 	}
 
 	public SortedSet<Movie> getTitles(long timeoutMs)
-			throws SubtitlesDownloaderException, InterruptedException {
+			throws InterruptedException {
 		String title = TitleNameUtils.getTitleFrom(movieFile.getName());
 		return startTasksAndGetResults(timeoutMs, title);
 	}

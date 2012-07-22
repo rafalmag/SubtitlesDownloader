@@ -11,7 +11,6 @@ import javafx.collections.ObservableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
 import pl.rafalmag.subtitledownloader.gui.SelectMovieProperties;
 
 public class MovieTitlesList {
@@ -33,8 +32,7 @@ public class MovieTitlesList {
 		return lastUpdatedForFilePath;
 	}
 
-	public static void updateList(long timeoutMs)
-			throws SubtitlesDownloaderException, InterruptedException {
+	public static void updateList(long timeoutMs) throws InterruptedException {
 		LOGGER.debug("updateList timeoutMs=" + timeoutMs);
 		File file = SelectMovieProperties.getInstance().getFile();
 		TitleUtils titleUtils = new TitleUtils(file);

@@ -22,7 +22,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
 import pl.rafalmag.subtitledownloader.title.Movie;
 import pl.rafalmag.subtitledownloader.title.MovieTitlesList;
 import pl.rafalmag.subtitledownloader.title.SelectTitleProperties;
@@ -78,8 +77,7 @@ public class FXMLMainSelectedMovieTitleTabController implements Initializable {
 				if (shouldUpdateTitlesListBinding.get()) {
 					try {
 						MovieTitlesList.updateList(10000);
-					} catch (SubtitlesDownloaderException
-							| InterruptedException e) {
+					} catch (InterruptedException e) {
 						LOGGER.error("Could not update titles list", e);
 					}
 				}

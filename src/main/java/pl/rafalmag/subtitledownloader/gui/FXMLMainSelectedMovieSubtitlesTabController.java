@@ -8,8 +8,8 @@ import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.StringExpression;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
-import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -22,11 +22,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
 import pl.rafalmag.subtitledownloader.subtitles.SelectSubtitlesProperties;
 import pl.rafalmag.subtitledownloader.subtitles.Subtitles;
 import pl.rafalmag.subtitledownloader.subtitles.SubtitlesList;
-import pl.rafalmag.subtitledownloader.title.MovieTitlesList;
+import pl.rafalmag.subtitledownloader.title.Movie;
 import pl.rafalmag.subtitledownloader.title.SelectTitleProperties;
 
 import com.google.common.collect.ImmutableList;
@@ -49,51 +48,50 @@ public class FXMLMainSelectedMovieSubtitlesTabController implements
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		StringExpression selectedSubtitlesText = Bindings.concat(
-				"Selected subtitles: ", SelectTitleProperties.getInstance()
-						.selectedMovieProperty());
+				"Selected subtitles: ", SelectSubtitlesProperties.getInstance()
+						.selectedSubtitlesProperty());
 		selectedSubtitles.textProperty().bind(selectedSubtitlesText);
 
 		setTable();
 
-		// addUpdateTableListener();
+		addUpdateTableListener();
 	}
 
 	private void addUpdateTableListener() {
-		StringProperty movieFileProperty = SelectMovieProperties.getInstance()
-				.movieFileProperty();
+		ObjectProperty<Movie> selectedMovieProperty = SelectTitleProperties
+				.getInstance().selectedMovieProperty();
 
-		StringProperty lastUpdatedForFilePathProperty = MovieTitlesList
-				.lastUpdatedForFilePathProperty();
+		ObjectProperty<Movie> lastUpdatedForMovieProperty = SubtitlesList
+				.lastUpdatedForMovieProperty();
 
-		BooleanBinding movieFilePathChangedBinding = Bindings.notEqual(
-				movieFileProperty, lastUpdatedForFilePathProperty);
+		BooleanBinding selectedMovieChangedBinding = Bindings.notEqual(
+				selectedMovieProperty, lastUpdatedForMovieProperty);
 		ReadOnlyBooleanProperty tabSelectedProperty = selectMovieSubtitlesTab
 				.selectedProperty();
 
 		final BooleanBinding shouldUpdateTitlesListBinding = tabSelectedProperty
-				.and(movieFilePathChangedBinding);
+				.and(selectedMovieChangedBinding);
 
-		InvalidationListener shouldUpdateTitlesListListener = new InvalidationListener() {
+		InvalidationListener shouldUpdateSubtitlesListListener = new InvalidationListener() {
 
 			@Override
 			public void invalidated(Observable observable) {
 				LOGGER.trace("observable: " + observable);
 				if (shouldUpdateTitlesListBinding.get()) {
 					try {
-						MovieTitlesList.updateList(10000);
-					} catch (SubtitlesDownloaderException
-							| InterruptedException e) {
-						LOGGER.error("Could not update titles list", e);
+						SubtitlesList.updateList(10000);
+					} catch (InterruptedException e) {
+						LOGGER.error("Could not update subtitles list", e);
 					}
 				}
 
 			}
 		};
 
-		tabSelectedProperty.addListener(shouldUpdateTitlesListListener);
-		movieFileProperty.addListener(shouldUpdateTitlesListListener);
-		lastUpdatedForFilePathProperty
-				.addListener(shouldUpdateTitlesListListener);
+		tabSelectedProperty.addListener(shouldUpdateSubtitlesListListener);
+		selectedMovieProperty.addListener(shouldUpdateSubtitlesListListener);
+		lastUpdatedForMovieProperty
+				.addListener(shouldUpdateSubtitlesListListener);
 	}
 
 	private void setTable() {
@@ -105,8 +103,9 @@ public class FXMLMainSelectedMovieSubtitlesTabController implements
 		fileName.setPrefWidth(500);
 		TableColumn<Subtitles, Integer> downloadsCount = new TableColumn<>(
 				"Downloads Count");
-		downloadsCount.setCellValueFactory(new PropertyValueFactory<Subtitles, Integer>(
-				"downloadsCount"));
+		downloadsCount
+				.setCellValueFactory(new PropertyValueFactory<Subtitles, Integer>(
+						"downloadsCount"));
 
 		table.getColumns().setAll(ImmutableList.of(fileName, downloadsCount));
 		setSelectionStuff();
