@@ -17,10 +17,12 @@ public class Subtitles {
 
 	private final IntegerProperty downloadsCount = new SimpleIntegerProperty();
 	private final StringProperty fileName = new SimpleStringProperty();
+	private final StringProperty downloadLink = new SimpleStringProperty();
 
 	public Subtitles(SearchSubtitlesResult result) {
 		setFileName(result.getSubFileName());
 		setDownloadsCount(Integer.parseInt(result.getSubDownloadsCnt()));
+		setDownloadLink(result.getSubDownloadLink());
 	}
 
 	public Subtitles(String fileName, int downloadsCount) {
@@ -56,6 +58,18 @@ public class Subtitles {
 	public String toString() {
 		return "Subtitles [getFileName()=" + getFileName()
 				+ ", getDownloadsCount()=" + getDownloadsCount() + "]";
+	}
+
+	public StringProperty downloadLinkProperty() {
+		return downloadLink;
+	}
+
+	public String getDownloadLink() {
+		return downloadLink.get();
+	}
+
+	public void setDownloadLink(String downloadLink) {
+		this.downloadLink.set(downloadLink);
 	}
 
 }

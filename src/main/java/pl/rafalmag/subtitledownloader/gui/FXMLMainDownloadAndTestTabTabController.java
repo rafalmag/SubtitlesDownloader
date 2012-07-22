@@ -1,5 +1,6 @@
 package pl.rafalmag.subtitledownloader.gui;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -14,6 +15,8 @@ import javafx.scene.control.Tooltip;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
+import pl.rafalmag.subtitledownloader.subtitles.Downloader;
 import pl.rafalmag.subtitledownloader.subtitles.SelectSubtitlesProperties;
 import pl.rafalmag.subtitledownloader.subtitles.Subtitles;
 
@@ -60,7 +63,16 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
 
 	@FXML
 	protected void download() {
-		LOGGER.trace("downlaod");
+		LOGGER.trace("download");
+		Subtitles subtitles = SelectSubtitlesProperties.getInstance()
+				.getSelectedSubtitles();
+		File movieFile = SelectMovieProperties.getInstance().getFile();
+		Downloader downloader = new Downloader(subtitles, movieFile);
+		try {
+			downloader.download();
+		} catch (SubtitlesDownloaderException e) {
+			LOGGER.error(e.getMessage(), e);
+		}
 	}
 
 	@FXML
