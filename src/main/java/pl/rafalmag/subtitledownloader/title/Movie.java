@@ -7,8 +7,13 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.MovieEntity;
 
+import com.google.common.base.Strings;
 import com.moviejukebox.themoviedb.model.MovieDb;
 
 public class Movie {
@@ -40,13 +45,22 @@ public class Movie {
 	// eq. 1977-05-25
 	private static final Pattern YEAR_PATTERN = Pattern.compile("\\d{4}");
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(Movie.class);
+
 	protected static int getYear(MovieDb input) {
 		String releaseDate = input.getReleaseDate();
+		if (Strings.isNullOrEmpty(releaseDate)) {
+			LOGGER.warn("releaseDate is null");
+			return -1;
+		}
 		Matcher matcher = YEAR_PATTERN.matcher(releaseDate);
 		if (matcher.find()) {
 			return Integer.parseInt(matcher.group());
+		} else {
+			LOGGER.warn("releaseDate '" + releaseDate
+					+ "' does not contain year");
+			return -1;
 		}
-		return 0;
 	}
 
 	public StringProperty titleProperty() {

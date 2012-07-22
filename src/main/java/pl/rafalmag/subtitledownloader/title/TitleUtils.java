@@ -11,6 +11,11 @@ import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.Nullable;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
 import pl.rafalmag.subtitledownloader.Utils;
 import pl.rafalmag.subtitledownloader.opensubtitles.CheckMovie;
@@ -19,23 +24,31 @@ import pl.rafalmag.subtitledownloader.opensubtitles.entities.MovieEntity;
 import pl.rafalmag.subtitledownloader.themoviedb.TheMovieDbHelper;
 
 import com.google.common.base.Function;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.moviejukebox.themoviedb.model.MovieDb;
 
 public class TitleUtils {
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(TitleUtils.class);
 
 	private static Pattern IMDB_PATTERN = Pattern.compile("\\D*(\\d+).*");
 
-	public static int getImdbFromString(String imdbStr) {
+	public static int getImdbFromString(@Nullable String imdbStr) {
+		if (Strings.isNullOrEmpty(imdbStr)) {
+			LOGGER.warn("imdbId is null");
+			return -1;
+		}
 		Matcher matcher = IMDB_PATTERN.matcher(imdbStr);
 		if (matcher.find()) {
 			String digits = matcher.group(1);
 			return Integer.parseInt(digits);
 		} else {
-			throw new IllegalStateException("imdbId (" + imdbStr
-					+ ") doesn't match " + IMDB_PATTERN);
+			LOGGER.warn("imdbId (" + imdbStr + ") doesn't match "
+					+ IMDB_PATTERN);
+			return -1;
 		}
 	}
 
