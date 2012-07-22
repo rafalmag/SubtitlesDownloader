@@ -24,10 +24,12 @@
             </Menu>
           </menus>
         </MenuBar>
-        <TabPane id="tabPane1" fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
-          <tabs>
-          </tabs>
-        </TabPane>
+        <TabPane id="tabPane1" fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS" />
+        <ToolBar id="toolBar1" VBox.vgrow="NEVER">
+          <items>
+            <ProgressBar id="progressBar1" fx:id="progressBar" prefWidth="200.0" progress="0.0" />
+          </items>
+        </ToolBar>
       </children>
     </VBox>
   </children>
