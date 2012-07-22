@@ -37,10 +37,14 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
 	@FXML
 	protected Button test;
 
+	@FXML
+	protected Button markValid;
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		initDownloadButton();
 		initTestButton();
+		initMarkValid();
 	}
 
 	private void initDownloadButton() {
@@ -85,6 +89,11 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
 		});
 	}
 
+	private void initMarkValid() {
+		// TODO
+		markValid.disableProperty().set(true);
+	}
+
 	@FXML
 	protected void download() {
 		LOGGER.trace("download");
@@ -111,5 +120,13 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
 					"Could not open URL " + file + " because of "
 							+ e.getMessage(), e);
 		}
+	}
+
+	@FXML
+	protected void markValid() {
+		LOGGER.trace("markValid");
+		// TODO
+		// http://trac.opensubtitles.org/projects/opensubtitles/wiki/XMLRPC#TryUploadSubtitles
+
 	}
 }
