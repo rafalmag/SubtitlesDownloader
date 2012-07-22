@@ -36,6 +36,19 @@ public class FXMLMainController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		initSelectMovieFileTab();
 		initSelectMovieTitleTab();
+		initSelectMovieSubtitlesTab();
+	}
+
+	private void initSelectMovieFileTab() {
+		URL resource = getClass().getResource("/MainSelectMovieFileTab.fxml");
+		try (InputStream openStream = resource.openStream()) {
+			FXMLLoader fxmlLoader = new FXMLLoader(resource);
+			tabPane.getTabs().add((Tab) fxmlLoader.load(openStream));
+			((FXMLMainSelectedMovieFileTabController) fxmlLoader
+					.getController()).setWindow(window);
+		} catch (IOException e) {
+			throw Throwables.propagate(e);
+		}
 	}
 
 	private void initSelectMovieTitleTab() {
@@ -50,13 +63,12 @@ public class FXMLMainController implements Initializable {
 		}
 	}
 
-	private void initSelectMovieFileTab() {
-		URL resource = getClass().getResource("/MainSelectMovieFileTab.fxml");
+	private void initSelectMovieSubtitlesTab() {
+		URL resource = getClass().getResource(
+				"/MainSelectMovieSubtitlesTab.fxml");
 		try (InputStream openStream = resource.openStream()) {
 			FXMLLoader fxmlLoader = new FXMLLoader(resource);
 			tabPane.getTabs().add((Tab) fxmlLoader.load(openStream));
-			((FXMLMainSelectedMovieFileTabController) fxmlLoader
-					.getController()).setWindow(window);
 		} catch (IOException e) {
 			throw Throwables.propagate(e);
 		}

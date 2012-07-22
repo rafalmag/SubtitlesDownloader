@@ -7,10 +7,8 @@ import static org.hamcrest.Matchers.equalTo;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -43,7 +41,7 @@ public class CheckMovieSubtitles extends CheckMovie {
 		return session.searchSubtitlesBy(title);
 	}
 
-	public SortedSet<SearchSubtitlesResult> getSubtitles(long timeoutMs)
+	public List<SearchSubtitlesResult> getSubtitles(long timeoutMs)
 			throws InterruptedException {
 		ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(3);
 		try {
@@ -77,24 +75,24 @@ public class CheckMovieSubtitles extends CheckMovie {
 				set.addAll(item);
 			}
 
-			List<SearchSubtitlesResult> select2 = select(
+			List<SearchSubtitlesResult> validImdbSubtitles = select(
 					set,
 					having(on(SearchSubtitlesResult.class).getIDMovieImdb(),
 							equalTo(movie.getImdbId())));
 
-			SortedSet<SearchSubtitlesResult> sortedSet = Sets
-					.newTreeSet(new Comparator<SearchSubtitlesResult>() {
-
-						@Override
-						public int compare(SearchSubtitlesResult o1,
-								SearchSubtitlesResult o2) {
-							// TODO move it, enhance it
-							return o1.getTitle().compareTo(o2.getTitle());
-						}
-
-					});
-			sortedSet.addAll(select2);
-			return sortedSet;
+			// SortedSet<SearchSubtitlesResult> sortedSet = Sets
+			// .newTreeSet(new Comparator<SearchSubtitlesResult>() {
+			//
+			// @Override
+			// public int compare(SearchSubtitlesResult o1,
+			// SearchSubtitlesResult o2) {
+			// // TODO move it, enhance it
+			// return o1.getTitle().compareTo(o2.getTitle());
+			// }
+			//
+			// });
+			// sortedSet.addAll(select2);
+			return validImdbSubtitles;
 		} finally {
 			newFixedThreadPool.shutdown();
 		}
