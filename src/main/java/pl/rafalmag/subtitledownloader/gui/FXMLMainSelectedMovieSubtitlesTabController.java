@@ -102,7 +102,7 @@ public class FXMLMainSelectedMovieSubtitlesTabController implements
 				"fileName"));
 		fileName.setPrefWidth(500);
 		TableColumn<Subtitles, Integer> downloadsCount = new TableColumn<>(
-				"Downloads Count");
+				"Downloads");
 		downloadsCount
 				.setCellValueFactory(new PropertyValueFactory<Subtitles, Integer>(
 						"downloadsCount"));

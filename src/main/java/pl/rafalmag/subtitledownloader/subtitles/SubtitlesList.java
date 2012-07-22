@@ -23,7 +23,8 @@ public class SubtitlesList {
 	private static final ObservableList<Subtitles> list = FXCollections
 			.observableArrayList();
 
-	private static final ObjectProperty<Movie> lastUpdatedForMovie = new SimpleObjectProperty<Movie>();
+	private static final ObjectProperty<Movie> lastUpdatedForMovie = new SimpleObjectProperty<Movie>(
+			Movie.DUMMY_MOVIE);
 
 	public static ObservableList<Subtitles> listProperty() {
 		return list;

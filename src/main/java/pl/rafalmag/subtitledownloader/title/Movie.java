@@ -18,7 +18,7 @@ import com.moviejukebox.themoviedb.model.MovieDb;
 
 public class Movie {
 
-	// TODO movie file ?
+	public static final Movie DUMMY_MOVIE = new Movie("", 0, 0);
 
 	private final StringProperty title = new SimpleStringProperty();
 
