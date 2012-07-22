@@ -1,6 +1,9 @@
 package pl.rafalmag.subtitledownloader.gui;
 
+import java.awt.Desktop;
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -37,6 +40,7 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		initDownloadButton();
+		initTestButton();
 	}
 
 	private void initDownloadButton() {
@@ -61,6 +65,26 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
 		});
 	}
 
+	private void initTestButton() {
+		final BooleanBinding disabledTestProperty = SelectMovieProperties
+				.getInstance().movieFileProperty().isEqualTo("");
+		test.disableProperty().bind(disabledTestProperty);
+
+		disabledTestProperty.addListener(new InvalidationListener() {
+
+			@Override
+			public void invalidated(Observable observable) {
+				if (!disabledTestProperty.get()) {
+					test.tooltipProperty().set(
+							new Tooltip("View movie: "
+									+ SelectMovieProperties.getInstance()
+											.getFilePath()));
+				}
+
+			}
+		});
+	}
+
 	@FXML
 	protected void download() {
 		LOGGER.trace("download");
@@ -78,5 +102,14 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
 	@FXML
 	protected void test() {
 		LOGGER.trace("test");
+		File file = SelectMovieProperties.getInstance().getFile();
+		try {
+			URI uri = file.toURI();
+			Desktop.getDesktop().browse(uri);
+		} catch (IOException e) {
+			LOGGER.error(
+					"Could not open URL " + file + " because of "
+							+ e.getMessage(), e);
+		}
 	}
 }

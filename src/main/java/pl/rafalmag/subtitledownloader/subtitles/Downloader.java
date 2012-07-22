@@ -5,6 +5,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipException;
 
@@ -40,10 +42,11 @@ public class Downloader {
 	}
 
 	public void download() throws SubtitlesDownloaderException {
-		String extension = "sub";
+		String extension = FilenameUtils.getExtension(subtitles.getFileName());
 		String destinationPath = getSubtitlesDestinationPath(
 				movieFile.getAbsolutePath(), extension);
 		try {
+			backupExistingSubtitles(destinationPath);
 			URL url = new URL(subtitles.getDownloadLink());
 			try (InputStream is = url.openStream();
 					FileOutputStream fos = new FileOutputStream(destinationPath)) {
@@ -66,5 +69,14 @@ public class Downloader {
 					"Could not download substitles " + subtitles, e);
 		}
 
+	}
+
+	private void backupExistingSubtitles(String destinationPath)
+			throws IOException {
+		File destinationFile = new File(destinationPath);
+		if (destinationFile.exists()) {
+			Files.move(destinationFile.toPath(), new File(destinationPath
+					+ ".bak").toPath(), StandardCopyOption.REPLACE_EXISTING);
+		}
 	}
 }
