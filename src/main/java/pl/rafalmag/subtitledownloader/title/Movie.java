@@ -18,7 +18,12 @@ import com.moviejukebox.themoviedb.model.MovieDb;
 
 public class Movie {
 
-	public static final Movie DUMMY_MOVIE = new Movie("", 0, 0);
+	public static final Movie DUMMY_MOVIE = new Movie("", 0, 0) {
+		@Override
+		public String toString() {
+			return "";
+		};
+	};
 
 	private final StringProperty title = new SimpleStringProperty();
 

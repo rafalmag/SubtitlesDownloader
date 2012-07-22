@@ -5,8 +5,6 @@ import javafx.beans.property.SimpleObjectProperty;
 
 public class SelectSubtitlesProperties {
 
-	private static final Subtitles DUMMY_SUBTITLES = new Subtitles("", 0);
-
 	private static class SelectSubtitlesPropertiesHolder {
 		static SelectSubtitlesProperties instance = new SelectSubtitlesProperties();
 	}
@@ -19,7 +17,7 @@ public class SelectSubtitlesProperties {
 	}
 
 	private final ObjectProperty<Subtitles> selectedMovie = new SimpleObjectProperty<>(
-			DUMMY_SUBTITLES);
+			Subtitles.DUMMY_SUBTITLES);
 
 	public ObjectProperty<Subtitles> selectedSubtitlesProperty() {
 		return selectedMovie;

@@ -8,6 +8,13 @@ import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResu
 
 public class Subtitles {
 
+	public static final Subtitles DUMMY_SUBTITLES = new Subtitles("", 0) {
+		@Override
+		public String toString() {
+			return "";
+		};
+	};
+
 	private final IntegerProperty downloadsCount = new SimpleIntegerProperty();
 	private final StringProperty fileName = new SimpleStringProperty();
 

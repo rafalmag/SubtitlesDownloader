@@ -115,6 +115,9 @@ public class FXMLMainSelectedMovieTitleTabController extends FXMLMainTab {
 							LOGGER.debug("Selected movie: {}", movie);
 							SelectTitleProperties.getInstance()
 									.setSelectedMovie(movie);
+						} else {
+							SelectTitleProperties.getInstance()
+									.setSelectedMovie(Movie.DUMMY_MOVIE);
 						}
 					}
 				});

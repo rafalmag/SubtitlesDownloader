@@ -123,6 +123,10 @@ public class FXMLMainSelectedMovieSubtitlesTabController extends FXMLMainTab {
 							LOGGER.debug("Selected subtitles: {}", subtitles);
 							SelectSubtitlesProperties.getInstance()
 									.setSelectedSubtitles(subtitles);
+						} else {
+							SelectSubtitlesProperties.getInstance()
+									.setSelectedSubtitles(
+											Subtitles.DUMMY_SUBTITLES);
 						}
 					}
 				});
