@@ -34,44 +34,24 @@ public class FXMLMainController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		initSelectMovieFileTab();
-		initSelectMovieTitleTab();
-		initSelectMovieSubtitlesTab();
+		initTab("/MainSelectMovieFileTab.fxml");
+		initTab("/MainSelectMovieTitleTab.fxml");
+		initTab("/MainSelectMovieSubtitlesTab.fxml");
 	}
 
-	private void initSelectMovieFileTab() {
-		URL resource = getClass().getResource("/MainSelectMovieFileTab.fxml");
+	private void initTab(String resourceStr) {
+		URL resource = getClass().getResource(resourceStr);
 		try (InputStream openStream = resource.openStream()) {
 			FXMLLoader fxmlLoader = new FXMLLoader(resource);
 			tabPane.getTabs().add((Tab) fxmlLoader.load(openStream));
-			((FXMLMainSelectedMovieFileTabController) fxmlLoader
-					.getController()).setWindow(window);
+			((FXMLMainTab) fxmlLoader.getController()).setMainController(this);
 		} catch (IOException e) {
 			throw Throwables.propagate(e);
 		}
 	}
 
-	private void initSelectMovieTitleTab() {
-		URL resource = getClass().getResource("/MainSelectMovieTitleTab.fxml");
-		try (InputStream openStream = resource.openStream()) {
-			FXMLLoader fxmlLoader = new FXMLLoader(resource);
-			tabPane.getTabs().add((Tab) fxmlLoader.load(openStream));
-			// ((FXMLMainSelectedMovieFileTabController) fxmlLoader
-			// .getController()).setWindow(window);
-		} catch (IOException e) {
-			throw Throwables.propagate(e);
-		}
-	}
-
-	private void initSelectMovieSubtitlesTab() {
-		URL resource = getClass().getResource(
-				"/MainSelectMovieSubtitlesTab.fxml");
-		try (InputStream openStream = resource.openStream()) {
-			FXMLLoader fxmlLoader = new FXMLLoader(resource);
-			tabPane.getTabs().add((Tab) fxmlLoader.load(openStream));
-		} catch (IOException e) {
-			throw Throwables.propagate(e);
-		}
+	public Window getWindow() {
+		return window;
 	}
 
 	public void setWindow(Window window) {

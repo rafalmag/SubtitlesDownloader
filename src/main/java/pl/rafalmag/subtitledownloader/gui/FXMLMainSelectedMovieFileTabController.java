@@ -9,24 +9,20 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringExpression;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.stage.FileChooser;
-import javafx.stage.Window;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class FXMLMainSelectedMovieFileTabController implements Initializable {
+public class FXMLMainSelectedMovieFileTabController extends FXMLMainTab {
 
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(FXMLMainSelectedMovieFileTabController.class);
-
-	private Window window;
 
 	@FXML
 	protected Tab selectMovieFileTab;
@@ -40,10 +36,6 @@ public class FXMLMainSelectedMovieFileTabController implements Initializable {
 				"Selected movie: ", SelectMovieProperties.getInstance()
 						.movieFileProperty());
 		selectedFile.textProperty().bind(selectedMovieText);
-	}
-
-	public void setWindow(Window window) {
-		this.window = window;
 	}
 
 	@FXML
@@ -95,7 +87,7 @@ public class FXMLMainSelectedMovieFileTabController implements Initializable {
 		LOGGER.trace("browseFile initialDir {}", initialDir);
 		fileChooser.setInitialDirectory(initialDir);
 		fileChooser.setTitle("Choose movie file");
-		File file = fileChooser.showOpenDialog(window);
+		File file = fileChooser.showOpenDialog(fxmlMainController.getWindow());
 		selectFile(file, true);
 		event.consume();
 	}
@@ -109,4 +101,5 @@ public class FXMLMainSelectedMovieFileTabController implements Initializable {
 			}
 		}
 	}
+
 }

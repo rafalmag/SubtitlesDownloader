@@ -11,7 +11,6 @@ import javafx.beans.binding.StringExpression;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Tab;
@@ -28,7 +27,7 @@ import pl.rafalmag.subtitledownloader.title.SelectTitleProperties;
 
 import com.google.common.collect.ImmutableList;
 
-public class FXMLMainSelectedMovieTitleTabController implements Initializable {
+public class FXMLMainSelectedMovieTitleTabController extends FXMLMainTab {
 
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(FXMLMainSelectedMovieTitleTabController.class);
