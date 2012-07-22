@@ -19,6 +19,8 @@ import org.junit.runner.RunWith;
 @RunWith(JUnitParamsRunner.class)
 public class TitleUtilsTest {
 
+	private static final int TIMEOUT_MS = 10000;
+
 	@Parameters({ "tt1234,1234", "123,123" })
 	@Test
 	public void should_get_int_from_imdb_string(String imdbStr, int expectedImdb) {
@@ -100,7 +102,7 @@ public class TitleUtilsTest {
 				"H:/filmy/!old/A Lonely Place To Die  {2011} DVDRIP. Jaybob/A Lonely Place To Die  {2011} DVDRIP. Jaybob.avi");
 
 		TitleUtils titleUtils = new TitleUtils(movieFile);
-		SortedSet<Movie> titles = titleUtils.getTitles(10000);
+		SortedSet<Movie> titles = titleUtils.getTitles(TIMEOUT_MS);
 
 		// then
 		assertThat(titles, hasSize(1));

@@ -47,6 +47,10 @@ public class SearchSubtitlesResult {
 		return (String) map.get("SubDownloadLink");
 	}
 
+	public String getSubFileName() {
+		return (String) map.get("SubFileName");
+	}
+
 	@Override
 	public String toString() {
 		return "SearchSubtitlesResult [getIdMovie()=" + getIdMovie()
