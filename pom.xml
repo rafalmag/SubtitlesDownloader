@@ -129,9 +129,12 @@
 					</excludes>
 
 					<archive>
-						<manifest>
-							<mainClass>pl.rafalmag.subtitledownloader.RunMeMain</mainClass>
-						</manifest>
+					<!-- http://loop81.blogspot.com/2012/03/javafx-2-get-started-with-maven-eclipse.html -->
+						<manifestEntries>
+							<JavaFX-Version>2.1</JavaFX-Version>
+							<JavaFX-Application-Class>pl.rafalmag.subtitledownloader.RunMeMain</JavaFX-Application-Class>
+							<Main-Class>com/javafx/main/Main</Main-Class>
+						</manifestEntries>
 					</archive>
 					<appendAssemblyId>false</appendAssemblyId>
 					<descriptorRefs>
