@@ -70,6 +70,8 @@ public class CheckMovieSubtitles extends CheckMovie {
 					});
 			Collection<List<SearchSubtitlesResult>> solve = Utils.solve(
 					newFixedThreadPool, solvers, timeoutMs);
+			// TODO maybe other custom collection :
+			// Multimap<SearchSubtitlesResult, SearchMethod>
 			Set<SearchSubtitlesResult> set = Sets.newHashSet();
 			for (List<SearchSubtitlesResult> item : solve) {
 				set.addAll(item);

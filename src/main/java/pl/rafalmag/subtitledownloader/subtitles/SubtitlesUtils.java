@@ -1,7 +1,6 @@
 package pl.rafalmag.subtitledownloader.subtitles;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -18,6 +17,7 @@ import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResu
 import pl.rafalmag.subtitledownloader.title.Movie;
 
 import com.google.common.base.Function;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
@@ -47,15 +47,15 @@ public class SubtitlesUtils {
 		ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(1);
 		try {
 
-			// TODO immutable list of
-			Collection<Callable<List<Subtitles>>> solvers = new ArrayList<>();
-			solvers.add(new Callable<List<Subtitles>>() {
+			Callable<List<Subtitles>> callable = new Callable<List<Subtitles>>() {
 
 				@Override
 				public List<Subtitles> call() throws Exception {
 					return getSubtitlesFromOpenSubtitles(timeoutMs);
 				}
-			});
+			};
+			// odd that it cannot be inline - some compiler bug...
+			Collection<Callable<List<Subtitles>>> solvers = ImmutableList.of(callable);
 			Collection<List<Subtitles>> solve = Utils.solve(newFixedThreadPool,
 					solvers, timeoutMs);
 

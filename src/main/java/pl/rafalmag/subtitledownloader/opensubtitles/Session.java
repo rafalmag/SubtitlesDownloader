@@ -14,8 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
-import pl.rafalmag.subtitledownloader.opensubtitles.entities.MovieEntity;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.ImdbMovieDetails;
+import pl.rafalmag.subtitledownloader.opensubtitles.entities.MovieEntity;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
 
 import com.google.common.base.Throwables;
@@ -24,7 +24,8 @@ import com.google.common.collect.Lists;
 
 public class Session {
 
-	private static final String ENG = "eng";
+	private static final String ENG = "eng"; // TODO let users to choose
+												// language
 
 	private static final String USER_AGENT = "SubtitlesDownloader v1";
 
@@ -118,6 +119,8 @@ public class Session {
 						title) } };
 		return searchSubtitles(params);
 	}
+
+	// TODO searchSubtitlesByTag - filename
 
 	private List<SearchSubtitlesResult> searchSubtitles(Object[] params)
 			throws SubtitlesDownloaderException {
