@@ -78,7 +78,7 @@ public class TitleUtilsTest {
 	public void should_get_title_for_movie_by_file_hash() throws Exception {
 		// given
 		File movieFile = new File(
-				"H:/filmy/!old/A Lonely Place To Die  {2011} DVDRIP. Jaybob/A Lonely Place To Die  {2011} DVDRIP. Jaybob.avi");
+				"I:/filmy/!old/A Lonely Place To Die  {2011} DVDRIP. Jaybob/A Lonely Place To Die  {2011} DVDRIP. Jaybob.avi");
 
 		TitleUtils titleUtils = new TitleUtils(movieFile);
 		List<Movie> titles = titleUtils.getByFileHash();

@@ -44,7 +44,7 @@ public class TheMovieDbHelperTest {
 	@Test
 	public void should_get_movieDb_with_imdb() throws Exception {
 		// given
-		String title = "Star Wars";
+		String title = "Star Wars New Hope";
 
 		// when
 		List<MovieDb> searchMovie = TheMovieDbHelper.getInstance().searchMovie(

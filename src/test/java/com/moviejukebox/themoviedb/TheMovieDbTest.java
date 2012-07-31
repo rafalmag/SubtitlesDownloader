@@ -18,7 +18,7 @@ public class TheMovieDbTest {
 	@Test
 	public void should_get_info_for_starWars_movie() throws Exception {
 		// given
-		String title = "Star Wars";
+		String title = "Star Wars New Hope";
 		String language = "english";
 		boolean allResults = true;
 
@@ -56,7 +56,7 @@ public class TheMovieDbTest {
 	@Test
 	public void should_get_the_same_obj_by_title_and_id() throws Exception {
 		// given
-		String title = "Star Wars";
+		String title = "Star Wars New Hope";
 		String language = "english";
 		int id = 11;
 

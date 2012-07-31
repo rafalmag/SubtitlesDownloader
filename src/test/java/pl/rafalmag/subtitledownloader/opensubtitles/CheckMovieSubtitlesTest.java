@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
@@ -82,7 +83,8 @@ public class CheckMovieSubtitlesTest {
 				not(hasSize(0)));
 	}
 
-	// @Ignore
+	// requires existing file
+	@Ignore
 	@Test
 	public void should_get_subtitles_for_movie() throws Exception {
 		// given
