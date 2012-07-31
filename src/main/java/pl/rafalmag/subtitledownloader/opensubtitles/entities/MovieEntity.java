@@ -5,6 +5,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Strings;
+
 public class MovieEntity {
 
 	private static final Logger LOGGER = LoggerFactory
@@ -18,18 +20,24 @@ public class MovieEntity {
 
 	public MovieEntity(Map<String, Object> record) {
 		movieHash = (String) record.get("MovieHash");
-		imdbId = objectToInt(record.get("MovieImdbID"));
+		imdbId = objectToInt(record.get("MovieImdbID"), "imdbId");
 		title = (String) record.get("MovieName");
-		year = objectToInt(record.get("MovieYear"));
-		seenCount = objectToInt(record.get("SeenCount"));
+		year = objectToInt(record.get("MovieYear"), "year");
+		seenCount = objectToInt(record.get("SeenCount"), "seanCount");
 		LOGGER.debug("parsed checkMovieHash2Entity={}", this);
 	}
 
-	private static int objectToInt(Object intObject) {
+	private static int objectToInt(Object intObject, String objectName) {
 		if (intObject instanceof Integer) {
 			return (Integer) intObject;
 		} else if (intObject instanceof String) {
-			return Integer.parseInt((String) intObject);
+			String string = (String) intObject;
+			if (Strings.isNullOrEmpty(string)) {
+				LOGGER.debug(objectName + " is null");
+				return -1;
+			} else {
+				return Integer.parseInt(string);
+			}
 		} else {
 			throw new IllegalStateException("Unsupported object type: "
 					+ intObject);
