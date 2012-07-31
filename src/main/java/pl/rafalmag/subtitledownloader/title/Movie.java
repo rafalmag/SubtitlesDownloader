@@ -16,7 +16,7 @@ import pl.rafalmag.subtitledownloader.opensubtitles.entities.MovieEntity;
 import com.google.common.base.Strings;
 import com.moviejukebox.themoviedb.model.MovieDb;
 
-public class Movie {
+public class Movie implements Comparable<Movie> {
 
 	public static final Movie DUMMY_MOVIE = new Movie("", 0, 0) {
 		@Override
@@ -145,6 +145,11 @@ public class Movie {
 		} else if (!year.equals(other.year))
 			return false;
 		return true;
+	}
+
+	@Override
+	public int compareTo(Movie o) {
+		return getTitle().compareTo(o.getTitle());
 	}
 
 }

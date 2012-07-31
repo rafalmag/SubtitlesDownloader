@@ -6,7 +6,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
 
-public class Subtitles {
+public class Subtitles implements Comparable<Subtitles> {
 
 	public static final Subtitles DUMMY_SUBTITLES = new Subtitles("", 0) {
 		@Override
@@ -70,6 +70,12 @@ public class Subtitles {
 
 	public void setDownloadLink(String downloadLink) {
 		this.downloadLink.set(downloadLink);
+	}
+
+	@Override
+	public int compareTo(Subtitles o) {
+		return new Integer(getDownloadsCount()).compareTo(new Integer(o
+				.getDownloadsCount()));
 	}
 
 }

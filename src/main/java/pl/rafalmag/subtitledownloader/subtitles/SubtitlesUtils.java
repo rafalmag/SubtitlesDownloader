@@ -2,7 +2,7 @@ package pl.rafalmag.subtitledownloader.subtitles;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.concurrent.Callable;
@@ -33,20 +33,10 @@ public class SubtitlesUtils {
 
 	public SortedSet<Subtitles> getSubtitles(final long timeoutMs)
 			throws InterruptedException {
-		SortedSet<Subtitles> set = Sets.newTreeSet(new Comparator<Subtitles>() {
-
-			@Override
-			public int compare(Subtitles o1, Subtitles o2) {
-				// descending order (by downloads count)
-				return -new Integer(o1.getDownloadsCount())
-						.compareTo(new Integer(o2.getDownloadsCount()));
-			}
-
-		});
+		SortedSet<Subtitles> set = Sets.newTreeSet(Collections.reverseOrder());
 
 		ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(1);
 		try {
-
 			Callable<List<Subtitles>> callable = new Callable<List<Subtitles>>() {
 
 				@Override
@@ -54,8 +44,12 @@ public class SubtitlesUtils {
 					return getSubtitlesFromOpenSubtitles(timeoutMs);
 				}
 			};
-			// odd that it cannot be inline - some compiler bug...
-			Collection<Callable<List<Subtitles>>> solvers = ImmutableList.of(callable);
+			/*
+			 * FIXME strange that it cannot be inline - some java 1.7 / eclipse
+			 * 3.7 compiler bug...
+			 */
+			Collection<Callable<List<Subtitles>>> solvers = ImmutableList
+					.of(callable);
 			Collection<List<Subtitles>> solve = Utils.solve(newFixedThreadPool,
 					solvers, timeoutMs);
 

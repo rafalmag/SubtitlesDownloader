@@ -81,19 +81,6 @@ public class CheckMovieSubtitles extends CheckMovie {
 					set,
 					having(on(SearchSubtitlesResult.class).getIDMovieImdb(),
 							equalTo(movie.getImdbId())));
-
-			// SortedSet<SearchSubtitlesResult> sortedSet = Sets
-			// .newTreeSet(new Comparator<SearchSubtitlesResult>() {
-			//
-			// @Override
-			// public int compare(SearchSubtitlesResult o1,
-			// SearchSubtitlesResult o2) {
-			// // TODO move it, enhance it
-			// return o1.getTitle().compareTo(o2.getTitle());
-			// }
-			//
-			// });
-			// sortedSet.addAll(select2);
 			return validImdbSubtitles;
 		} finally {
 			newFixedThreadPool.shutdown();

@@ -2,7 +2,6 @@ package pl.rafalmag.subtitledownloader.title;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.concurrent.Callable;
@@ -66,15 +65,7 @@ public class TitleUtils {
 
 	private SortedSet<Movie> startTasksAndGetResults(long timeoutMs,
 			final String title) throws InterruptedException {
-		SortedSet<Movie> set = Sets.newTreeSet(new Comparator<Movie>() {
-
-			@Override
-			public int compare(Movie o1, Movie o2) {
-				// TODO move it, enhance it
-				return o1.getTitle().compareTo(o2.getTitle());
-			}
-
-		});
+		SortedSet<Movie> set = Sets.newTreeSet();
 
 		ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(2);
 		try {
