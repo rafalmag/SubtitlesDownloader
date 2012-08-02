@@ -13,6 +13,7 @@ import java.util.SortedSet;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -73,7 +74,7 @@ public class TitleUtilsTest {
 	}
 
 	// requires existing file
-	// @Ignore
+	@Ignore
 	@Test
 	public void should_get_title_for_movie_by_file_hash() throws Exception {
 		// given
@@ -93,7 +94,8 @@ public class TitleUtilsTest {
 		assertThat(firstMovie.getImdbId(), equalTo(1422136));
 	}
 
-	// requires existing file
+	// requires existing file, but passes without is - by resolving file name
+	// from path
 	// @Ignore
 	@Test
 	public void should_get_title_for_movie_file_combined() throws Exception {
