@@ -17,20 +17,7 @@
 		</buildCommand>
 	</buildSpec>
 	<natures>
-		<nature>org.eclipse.jdt.groovy.core.groovyNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.m2e.core.maven2Nature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>lib-global_dsld_support</name>
-			<type>2</type>
-			<location>C:/Users/rafalmag/.groovy/greclipse/global_dsld_support</location>
-		</link>
-		<link>
-			<name>lib-plugin_dsld_support</name>
-			<type>2</type>
-			<location>C:/Program Files/eclipse/plugins/org.codehaus.groovy_1.8.6.xx-20120301-1000-e37-RELEASE/plugin_dsld_support</location>
-		</link>
-	</linkedResources>
 </projectDescription>
