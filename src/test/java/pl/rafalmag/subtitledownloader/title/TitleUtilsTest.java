@@ -17,6 +17,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+
 @RunWith(JUnitParamsRunner.class)
 public class TitleUtilsTest {
 
@@ -94,7 +95,7 @@ public class TitleUtilsTest {
 		assertThat(firstMovie.getImdbId(), equalTo(1422136));
 	}
 
-	// requires existing file, but passes without is - by resolving file name
+	// requires existing file, but test passes without it - by resolving file name
 	// from path
 	// @Ignore
 	@Test
