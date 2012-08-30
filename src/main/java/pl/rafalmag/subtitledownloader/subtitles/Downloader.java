@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
 
 import com.google.common.io.ByteStreams;
-import com.google.common.io.Closeables;
 
 public class Downloader {
 
@@ -56,22 +55,9 @@ public class Downloader {
 			HttpURLConnection httpConn = (HttpURLConnection) url
 					.openConnection();
 			long contentLength = httpConn.getContentLengthLong();
-			try (InputStream is = new CountingSettingProgressBarInputStream(
-					httpConn.getInputStream(), contentLength);
+			try (InputStream is = getInputStream(httpConn, contentLength);
 					FileOutputStream fos = new FileOutputStream(destinationPath)) {
-				InputStream sourceInputStream;
-				try {
-					GZIPInputStream gzipInputStream = new GZIPInputStream(is);
-					sourceInputStream = gzipInputStream;
-				} catch (ZipException e) {
-					LOGGER.info("This is not gzip", e);
-					sourceInputStream = is;
-				}
-				try {
-					ByteStreams.copy(sourceInputStream, fos);
-				} finally {
-					Closeables.closeQuietly(sourceInputStream);
-				}
+				ByteStreams.copy(is, fos);
 			} finally {
 				httpConn.disconnect();
 			}
@@ -79,7 +65,19 @@ public class Downloader {
 			throw new SubtitlesDownloaderException(
 					"Could not download substitles " + subtitles, e);
 		}
+	}
 
+	private InputStream getInputStream(HttpURLConnection httpConn,
+			long contentLength) throws IOException {
+		InputStream inputStream = new CountingSettingProgressBarInputStream(
+				httpConn.getInputStream(), contentLength);
+		try {
+			return new GZIPInputStream(inputStream);
+		} catch (ZipException e) {
+			LOGGER.info("Url (" + subtitles.getDownloadLink()
+					+ ") does not lead to gzip archive", e);
+			return inputStream;
+		}
 	}
 
 	private void backupExistingSubtitles(String destinationPath)
