@@ -27,7 +27,13 @@ public class Session {
 	private static final String ENG = "eng"; // TODO let users to choose
 												// language
 
-	private static final String USER_AGENT = "SubtitlesDownloader v1";
+//	@formatter:off
+	/**
+	 * See restrictions here: 
+	 * {@link http://trac.opensubtitles.org/projects/opensubtitles/wiki/DevReadFirst}
+	 */
+	private static final String USER_AGENT = "SubtitlesDownloader v1.1";
+//	@formatter:on
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Session.class);
 

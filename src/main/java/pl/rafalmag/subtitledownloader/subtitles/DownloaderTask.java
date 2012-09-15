@@ -7,11 +7,16 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipException;
 
-import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.BooleanProperty;
+import javafx.concurrent.Task;
 
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
@@ -21,50 +26,64 @@ import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
 
 import com.google.common.io.ByteStreams;
 
-public class Downloader {
+public class DownloaderTask extends Task<Void> {
 
 	private static final Logger LOGGER = LoggerFactory
-			.getLogger(Downloader.class);
+			.getLogger(DownloaderTask.class);
+
+	private static final long STEP_PREPARE = 30;
+	private static final long STEP_AFTER_BACKUP = 40;
+	private static final long STEP_DOWNLOAD = 50;
+	private static final long DONE = 100;
 
 	private final Subtitles subtitles;
 	private final File movieFile;
 
-	private DoubleProperty progressProperty;
+	private final BooleanProperty disableProgressBarProperty;
 
-	public Downloader(Subtitles subtitles, File movieFile) {
+	public DownloaderTask(Subtitles subtitles, File movieFile,
+			BooleanProperty disableProgressBarProperty) {
 		this.subtitles = subtitles;
 		this.movieFile = movieFile;
+		this.disableProgressBarProperty = disableProgressBarProperty;
 	}
 
-	static String getSubtitlesDestinationPath(String movieFilePath,
+	static Path getSubtitlesDestinationPath(String movieFilePath,
 			String extension) {
 		String baseName = FilenameUtils.getBaseName(movieFilePath);
 		String parentPath = FilenameUtils.getFullPath(movieFilePath);
-		String destinationWithOutExtension = FilenameUtils.concat(parentPath,
-				baseName);
-		return destinationWithOutExtension + "." + extension;
+		return Paths.get(parentPath, baseName + "." + extension);
 	}
 
-	public void download() throws SubtitlesDownloaderException {
+	@Override
+	protected Void call() throws SubtitlesDownloaderException {
+		updateProgress(0, DONE);
 		String extension = FilenameUtils.getExtension(subtitles.getFileName());
-		String destinationPath = getSubtitlesDestinationPath(
+		Path destinationPath = getSubtitlesDestinationPath(
 				movieFile.getAbsolutePath(), extension);
 		try {
+			updateProgress(STEP_PREPARE, DONE);
 			backupExistingSubtitles(destinationPath);
+			updateProgress(STEP_AFTER_BACKUP, DONE);
 			URL url = new URL(subtitles.getDownloadLink());
 			HttpURLConnection httpConn = (HttpURLConnection) url
 					.openConnection();
 			long contentLength = httpConn.getContentLengthLong();
 			try (InputStream is = getInputStream(httpConn, contentLength);
-					FileOutputStream fos = new FileOutputStream(destinationPath)) {
+					FileOutputStream fos = new FileOutputStream(
+							destinationPath.toFile())) {
+				updateProgress(STEP_DOWNLOAD, DONE);
 				ByteStreams.copy(is, fos);
 			} finally {
 				httpConn.disconnect();
 			}
 		} catch (IOException e) {
-			throw new SubtitlesDownloaderException(
-					"Could not download substitles " + subtitles, e);
+			LOGGER.error("Could not download substitles " + subtitles, e);
+		} finally {
+			updateProgress(DONE, DONE);
+			disableProgressBarProperty.set(true);
 		}
+		return null;
 	}
 
 	private InputStream getInputStream(HttpURLConnection httpConn,
@@ -80,22 +99,23 @@ public class Downloader {
 		}
 	}
 
-	private void backupExistingSubtitles(String destinationPath)
+	private void backupExistingSubtitles(Path destinationPath)
 			throws IOException {
-		File destinationFile = new File(destinationPath);
-		if (destinationFile.exists()) {
-			Files.move(destinationFile.toPath(), new File(destinationPath
-					+ ".bak").toPath(), StandardCopyOption.REPLACE_EXISTING);
+		try {
+			Files.move(destinationPath,
+					Paths.get(destinationPath.toString() + ".bak"),
+					StandardCopyOption.REPLACE_EXISTING,
+					LinkOption.NOFOLLOW_LINKS);
+		} catch (NoSuchFileException e) {
+			// its oki
+			LOGGER.debug("Nothing to backup, because no such file: "
+					+ destinationPath);
 		}
-	}
-
-	public void setProgressProperty(DoubleProperty progressProperty) {
-		this.progressProperty = progressProperty;
-
 	}
 
 	private class CountingSettingProgressBarInputStream extends
 			org.apache.commons.io.input.CountingInputStream {
+
 		private final long contentLength;
 
 		public CountingSettingProgressBarInputStream(InputStream in,
@@ -107,10 +127,13 @@ public class Downloader {
 		@Override
 		public int read(byte[] bts) throws IOException {
 			int read = super.read(bts);
-			progressProperty.set(((double) getByteCount())
-					/ (double) contentLength);
+			double downloadProgress = ((double) getByteCount())
+					/ (double) contentLength;
+			updateProgress(STEP_DOWNLOAD
+					+ (long) (STEP_DOWNLOAD * downloadProgress), DONE);
 			return read;
 		}
 
 	}
+
 }

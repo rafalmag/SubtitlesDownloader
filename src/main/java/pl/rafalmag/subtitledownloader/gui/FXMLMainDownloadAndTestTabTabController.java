@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -18,8 +20,7 @@ import javafx.scene.control.Tooltip;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
-import pl.rafalmag.subtitledownloader.subtitles.Downloader;
+import pl.rafalmag.subtitledownloader.subtitles.DownloaderTask;
 import pl.rafalmag.subtitledownloader.subtitles.SelectSubtitlesProperties;
 import pl.rafalmag.subtitledownloader.subtitles.Subtitles;
 
@@ -27,6 +28,9 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
 
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(FXMLMainDownloadAndTestTabTabController.class);
+
+	private static final ExecutorService EXECUTOR = Executors
+			.newCachedThreadPool();
 
 	@FXML
 	protected Label status;
@@ -97,21 +101,16 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
 	@FXML
 	protected void download() {
 		fxmlMainController.progressBar.disableProperty().set(false);
-		fxmlMainController.progressBar.setProgress(0);
 		LOGGER.trace("download");
 		Subtitles subtitles = SelectSubtitlesProperties.getInstance()
 				.getSelectedSubtitles();
 		File movieFile = SelectMovieProperties.getInstance().getFile();
-		Downloader downloader = new Downloader(subtitles, movieFile);
-		downloader.setProgressProperty(fxmlMainController.progressBar
-				.progressProperty());
-		try {
-			downloader.download();
-		} catch (SubtitlesDownloaderException e) {
-			LOGGER.error(e.getMessage(), e);
-		}
-		fxmlMainController.progressBar.setProgress(1);
-		fxmlMainController.progressBar.disableProperty().set(true);
+		DownloaderTask downloader = new DownloaderTask(subtitles, movieFile,
+				fxmlMainController.progressBar.disableProperty());
+		fxmlMainController.progressBar.progressProperty().bind(
+				downloader.progressProperty());
+
+		EXECUTOR.submit(downloader);
 	}
 
 	@FXML

@@ -3,6 +3,9 @@ package pl.rafalmag.subtitledownloader.subtitles;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.junit.Test;
 
 public class DownloaderTest {
@@ -12,10 +15,11 @@ public class DownloaderTest {
 		// given
 		String input = "c:\\a.avi";
 		String extension = "sub";
-		String expectedDestinationPath = "c:\\a.sub";
+		Path expectedDestinationPath = Paths.get("c:\\a.sub");
 
 		// when
-		String destinationPath = Downloader.getSubtitlesDestinationPath(input,
+		Path destinationPath = DownloaderTask.getSubtitlesDestinationPath(
+				input,
 				extension);
 
 		// then
