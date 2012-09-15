@@ -2,6 +2,7 @@
 
 <?import java.lang.*?>
 <?import java.util.*?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
@@ -12,11 +13,15 @@
     <VBox id="vBox1" alignment="CENTER" layoutX="14.0" layoutY="14.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="89.0" prefWidth="258.0">
       <children>
         <Text id="text2" scaleX="1.2271511421926773" stroke="BLACK" text="SubtitlesDownloader by Rafal Magda" />
-        <ImageView id="emptyImageView1" fitHeight="150.0" fitWidth="200.0" mouseTransparent="true" onMouseClicked="#openUrl" preserveRatio="true">
-          <image>
-            <Image url="@opensubtitles-logo-transparent.png" preserveRatio="false" smooth="false" />
-          </image>
-        </ImageView>
+        <Button id="" onAction="#openUrl" style="-fx-cursor: hand; -fx-background-color: white;">
+          <graphic>
+            <ImageView>
+              <image>
+                <Image url="@opensubtitles-logo-transparent.png" preserveRatio="false" smooth="false" />
+              </image>
+            </ImageView>
+          </graphic>
+        </Button>
         <Text id="text1" scaleX="0.8638451451172655" scaleY="1.0651003426333823" stroke="BLACK" text="Subtitles service powered by www.OpenSubtitles.org" />
       </children>
     </VBox>
