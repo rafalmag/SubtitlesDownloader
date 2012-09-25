@@ -134,6 +134,7 @@ public class FXMLMainSelectedMovieSubtitlesTabController extends FXMLMainTab {
 							SelectSubtitlesProperties.getInstance()
 									.setSelectedSubtitles(subtitles);
 							if (oldSubtitles == subtitles) {
+								// item was double clicked
 								fxmlMainController.nextTab();
 							}
 						} else {

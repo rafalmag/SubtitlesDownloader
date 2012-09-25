@@ -149,6 +149,7 @@ public class FXMLMainSelectedMovieTitleTabController extends FXMLMainTab {
 							SelectTitleProperties.getInstance()
 									.setSelectedMovie(movie);
 							if (oldSelectedMovie == movie) {
+								// item was double clicked
 								fxmlMainController.nextTab();
 							}
 						} else {
