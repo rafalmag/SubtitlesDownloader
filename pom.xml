@@ -86,11 +86,17 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>log4j-over-slf4j</artifactId>
 			<version>1.6.4</version>
+		</dependency>
+		<dependency>
+			<groupId>de.huxhorn.lilith</groupId>
+			<artifactId>de.huxhorn.lilith.logback.appender.multiplex-classic-xml</artifactId>
+			<version>0.9.42.1</version>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -108,7 +114,8 @@
 					<artifactId>junit</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency><dependency>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit-dep</artifactId>
 			<version>4.10</version>
@@ -120,8 +127,8 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
-		
+
+
 	</dependencies>
 
 	<repositories>
@@ -149,7 +156,7 @@
 					</excludes>
 
 					<archive>
-					<!-- http://loop81.blogspot.com/2012/03/javafx-2-get-started-with-maven-eclipse.html -->
+						<!-- http://loop81.blogspot.com/2012/03/javafx-2-get-started-with-maven-eclipse.html -->
 						<manifestEntries>
 							<JavaFX-Version>2.1</JavaFX-Version>
 							<JavaFX-Application-Class>pl.rafalmag.subtitledownloader.RunMeMain</JavaFX-Application-Class>

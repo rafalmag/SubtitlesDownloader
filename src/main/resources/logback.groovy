@@ -15,22 +15,28 @@ import pl.rafalmag.subtitledownloader.themoviedb.TheMovieDbWarnFilter;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder
 import ch.qos.logback.core.ConsoleAppender
 
+import de.huxhorn.lilith.logback.appender.ClassicXmlMultiplexSocketAppender
 import static ch.qos.logback.classic.Level.*
 
 def API_KEY = TheMovieDbHelper.API_KEY
 
 //println "Setting logback in groovy."
 
+
+appender("SOCKET", ClassicXmlMultiplexSocketAppender) {
+  compressing = true
+  reconnectionDelay = 10000
+  includeCallerData = true
+  remoteHosts = "localhost, 10.200.55.13"
+}
+
 appender("STDOUT", ConsoleAppender) {
 	filter(TheMovieDbWarnFilter)
 	encoder(PatternLayoutEncoder) { pattern = "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{20} [%file:%line] - %replace(%msg){'${API_KEY}', '[API-KEY]'}%n" }
 }
-if(isDev()){
-	root(DEBUG, ["STDOUT"])
-	logger("pl.rafalmag", DEBUG, ["STDOUT"], additivity = false)
-}else if(isTestMode()){
-	root(DEBUG, ["STDOUT"])
-	logger("pl.rafalmag", DEBUG, ["STDOUT"], additivity = false)
+if(isDev() || isTestMode()){
+	root(DEBUG, ["STDOUT", "SOCKET"])
+	logger("pl.rafalmag", DEBUG, ["STDOUT", "SOCKET"], additivity = false)
 }else{
 	root(WARN, ["STDOUT"])
 	logger("pl.rafalmag", INFO, ["STDOUT"], additivity = false)
