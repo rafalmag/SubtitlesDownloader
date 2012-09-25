@@ -28,6 +28,10 @@
         <ToolBar id="toolBar1" VBox.vgrow="NEVER">
           <items>
             <ProgressBar id="progressBar1" fx:id="progressBar" prefWidth="200.0" progress="0.0" />
+            <Button id="button1" onAction="#openAbout" text="About" />
+            <Button id="button2" fx:id="previousButton" onAction="#previousTab" text="Previous" />
+            <Button id="button3" fx:id="nextButton" onAction="#nextTab" text="Next" />
+            <Button id="button4" onAction="#closeApp" text="Finish" />
           </items>
         </ToolBar>
       </children>

@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -36,6 +37,12 @@ public class FXMLMainController implements Initializable {
 	@FXML
 	protected ProgressBar progressBar;
 
+	@FXML
+	protected Button previousButton;
+
+	@FXML
+	protected Button nextButton;
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		initTab("/MainSelectMovieFileTab.fxml");
@@ -43,6 +50,12 @@ public class FXMLMainController implements Initializable {
 		initTab("/MainSelectMovieSubtitlesTab.fxml");
 		initTab("/MainDownloadAndTestTab.fxml");
 		progressBar.disableProperty().set(true);
+
+		previousButton.disableProperty().bind(
+				tabPane.getTabs().get(0).selectedProperty());
+		nextButton.disableProperty().bind(
+				tabPane.getTabs().get(tabPane.getTabs().size() - 1)
+						.selectedProperty());
 	}
 
 	private void initTab(String resourceStr) {
@@ -85,6 +98,18 @@ public class FXMLMainController implements Initializable {
 		LOGGER.trace("closeApp");
 		window.hide();
 		LOGGER.trace("closeApp: hidden");
+	}
+
+	@FXML
+	protected void nextTab() {
+		int selectedIndex = tabPane.getSelectionModel().getSelectedIndex();
+		tabPane.getSelectionModel().select(selectedIndex + 1);
+	}
+
+	@FXML
+	protected void previousTab() {
+		int selectedIndex = tabPane.getSelectionModel().getSelectedIndex();
+		tabPane.getSelectionModel().select(selectedIndex - 1);
 	}
 
 }
