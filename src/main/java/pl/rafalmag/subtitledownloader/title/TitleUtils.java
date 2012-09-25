@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pl.rafalmag.subtitledownloader.NamedCallable;
+import pl.rafalmag.subtitledownloader.ProgressCallback;
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
 import pl.rafalmag.subtitledownloader.Utils;
 import pl.rafalmag.subtitledownloader.opensubtitles.CheckMovie;
@@ -55,22 +56,29 @@ public class TitleUtils {
 
 	private final File movieFile;
 
-	public TitleUtils(File movieFile) {
+	private final long timeoutMs;
+
+	private final ProgressCallback progressCallback;
+
+	public TitleUtils(File movieFile, long timeoutMs,
+			ProgressCallback progressCallback) {
 		this.movieFile = movieFile;
+		this.timeoutMs = timeoutMs;
+		this.progressCallback = progressCallback;
 	}
 
-	public SortedSet<Movie> getTitles(long timeoutMs)
+	public SortedSet<Movie> getTitles()
 			throws InterruptedException {
 		String title = TitleNameUtils.getTitleFrom(movieFile.getName());
-		return startTasksAndGetResults(timeoutMs, title);
+		return startTasksAndGetResults(title);
 	}
 
 	private final static ExecutorService EXECUTOR = Executors
 			.newCachedThreadPool(new BasicThreadFactory.Builder().daemon(true)
 					.namingPattern("Title-%d").build());
 
-	private SortedSet<Movie> startTasksAndGetResults(long timeoutMs,
-			final String title) throws InterruptedException {
+	private SortedSet<Movie> startTasksAndGetResults(final String title)
+			throws InterruptedException {
 		SortedSet<Movie> set = Sets.newTreeSet();
 		Collection<? extends Callable<List<Movie>>> solvers = ImmutableList.of(
 				new NamedCallable<>("-movByTitle", new Callable<List<Movie>>() {
@@ -90,7 +98,7 @@ public class TitleUtils {
 						})
 				);
 		Collection<List<Movie>> solve = Utils.solve(EXECUTOR,
-				solvers, timeoutMs);
+				solvers, timeoutMs, progressCallback);
 
 		for (List<Movie> item : solve) {
 			set.addAll(item);

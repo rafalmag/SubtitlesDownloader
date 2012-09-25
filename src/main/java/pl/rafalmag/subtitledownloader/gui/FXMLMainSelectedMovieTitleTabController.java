@@ -164,7 +164,7 @@ public class FXMLMainSelectedMovieTitleTabController extends FXMLMainTab {
 	protected void refreshTable() {
 		LOGGER.trace("refresh");
 		try {
-			MovieTitlesList.updateList(10000);
+			MovieTitlesList.updateList(fxmlMainController.progressBar, 10000);
 		} catch (InterruptedException e) {
 			LOGGER.error("Could not update titles list", e);
 		}

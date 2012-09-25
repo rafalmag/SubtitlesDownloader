@@ -17,6 +17,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import pl.rafalmag.subtitledownloader.ProgressCallbackDummy;
 
 @RunWith(JUnitParamsRunner.class)
 public class TitleUtilsTest {
@@ -39,9 +40,9 @@ public class TitleUtilsTest {
 	public void should_get_title_for_not_exact_title() throws Exception {
 		// given
 		String titleWithError = "The Girl With A Dragon Tattoo";
-
+		TitleUtils titleUtils = new TitleUtils(new File("ble"), TIMEOUT_MS,
+				new ProgressCallbackDummy());
 		// when
-		TitleUtils titleUtils = new TitleUtils(new File("ble"));
 		List<Movie> titles = titleUtils.getByTitle(titleWithError);
 
 		// then
@@ -59,9 +60,9 @@ public class TitleUtilsTest {
 	public void should_get_title_for_movie_by_title() throws Exception {
 		// given
 		String titleWithError = "A Lonely Place To Die";
-
+		TitleUtils titleUtils = new TitleUtils(new File("ble"), TIMEOUT_MS,
+				new ProgressCallbackDummy());
 		// when
-		TitleUtils titleUtils = new TitleUtils(new File("ble"));
 		List<Movie> titles = titleUtils.getByTitle(titleWithError);
 
 		// then
@@ -81,8 +82,8 @@ public class TitleUtilsTest {
 		// given
 		File movieFile = new File(
 				"I:/filmy/!old/A Lonely Place To Die  {2011} DVDRIP. Jaybob/A Lonely Place To Die  {2011} DVDRIP. Jaybob.avi");
-
-		TitleUtils titleUtils = new TitleUtils(movieFile);
+		TitleUtils titleUtils = new TitleUtils(movieFile, TIMEOUT_MS,
+				new ProgressCallbackDummy());
 		List<Movie> titles = titleUtils.getByFileHash();
 
 		// then
@@ -95,7 +96,8 @@ public class TitleUtilsTest {
 		assertThat(firstMovie.getImdbId(), equalTo(1422136));
 	}
 
-	// requires existing file, but test passes without it - by resolving file name
+	// requires existing file, but test passes without it - by resolving file
+	// name
 	// from path
 	// @Ignore
 	@Test
@@ -104,8 +106,9 @@ public class TitleUtilsTest {
 		File movieFile = new File(
 				"H:/filmy/!old/A Lonely Place To Die  {2011} DVDRIP. Jaybob/A Lonely Place To Die  {2011} DVDRIP. Jaybob.avi");
 
-		TitleUtils titleUtils = new TitleUtils(movieFile);
-		SortedSet<Movie> titles = titleUtils.getTitles(TIMEOUT_MS);
+		TitleUtils titleUtils = new TitleUtils(movieFile, TIMEOUT_MS,
+				new ProgressCallbackDummy());
+		SortedSet<Movie> titles = titleUtils.getTitles();
 
 		// then
 		assertThat(titles, hasSize(1));
