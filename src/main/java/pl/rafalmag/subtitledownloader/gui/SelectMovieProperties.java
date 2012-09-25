@@ -11,6 +11,8 @@ import pl.rafalmag.subtitledownloader.SubtitlesDownloaderProperties;
 
 public class SelectMovieProperties {
 
+	public static final String NO_MOVIE_SELECTED = "";
+
 	private static class SelectMoviePropertiesHolder {
 		static SelectMovieProperties instance = new SelectMovieProperties();
 	}
@@ -22,7 +24,8 @@ public class SelectMovieProperties {
 	private SelectMovieProperties() {
 	}
 
-	private final StringProperty filePath = new SimpleStringProperty("");
+	private final StringProperty filePath = new SimpleStringProperty(
+			NO_MOVIE_SELECTED);
 
 	public String getFilePath() {
 		return filePath.get();

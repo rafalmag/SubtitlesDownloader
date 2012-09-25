@@ -78,6 +78,12 @@ public class FXMLMainSelectedMovieSubtitlesTabController extends FXMLMainTab {
 				if (shouldUpdateTitlesListBinding.get()) {
 					try {
 						SubtitlesList.updateList(10000);
+
+						table.getSelectionModel().clearSelection();
+
+						SelectSubtitlesProperties
+								.getInstance()
+								.setSelectedSubtitles(Subtitles.DUMMY_SUBTITLES);
 					} catch (InterruptedException e) {
 						LOGGER.error("Could not update subtitles list", e);
 					}
@@ -120,13 +126,20 @@ public class FXMLMainSelectedMovieSubtitlesTabController extends FXMLMainTab {
 						if (table.getSelectionModel().getSelectedItems().size() == 1) {
 							Subtitles subtitles = table.getSelectionModel()
 									.getSelectedItems().get(0);
-							LOGGER.debug("Selected subtitles: {}", subtitles);
+							Subtitles oldSubtitles = SelectSubtitlesProperties
+									.getInstance()
+									.getSelectedSubtitles();
+							LOGGER.debug("Selected subtitles: {} old: {}",
+									subtitles, oldSubtitles);
 							SelectSubtitlesProperties.getInstance()
 									.setSelectedSubtitles(subtitles);
+							if (oldSubtitles == subtitles) {
+								fxmlMainController.nextTab();
+							}
 						} else {
-							SelectSubtitlesProperties.getInstance()
-									.setSelectedSubtitles(
-											Subtitles.DUMMY_SUBTITLES);
+							// SelectSubtitlesProperties.getInstance()
+							// .setSelectedSubtitles(
+							// Subtitles.DUMMY_SUBTITLES);
 						}
 					}
 				});

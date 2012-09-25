@@ -17,6 +17,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +31,10 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
 			.getLogger(FXMLMainDownloadAndTestTabTabController.class);
 
 	private static final ExecutorService EXECUTOR = Executors
-			.newCachedThreadPool();
+			.newCachedThreadPool(new BasicThreadFactory.Builder()
+					.daemon(true)
+					.namingPattern("DownloadTask#%d")
+					.build());
 
 	@FXML
 	protected Label status;
@@ -75,7 +79,8 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
 
 	private void initTestButton() {
 		final BooleanBinding disabledTestProperty = SelectMovieProperties
-				.getInstance().movieFileProperty().isEqualTo("");
+				.getInstance().movieFileProperty()
+				.isEqualTo(SelectMovieProperties.NO_MOVIE_SELECTED);
 		test.disableProperty().bind(disabledTestProperty);
 
 		disabledTestProperty.addListener(new InvalidationListener() {

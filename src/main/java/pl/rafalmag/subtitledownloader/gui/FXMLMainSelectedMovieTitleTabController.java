@@ -75,6 +75,13 @@ public class FXMLMainSelectedMovieTitleTabController extends FXMLMainTab {
 				LOGGER.trace("observable: " + observable);
 				if (shouldUpdateTitlesListBinding.get()) {
 					refreshTable();
+
+					table.getSelectionModel().clearSelection();
+
+					SelectTitleProperties
+							.getInstance()
+							.setSelectedMovie(Movie.DUMMY_MOVIE);
+
 				}
 
 			}
@@ -96,6 +103,25 @@ public class FXMLMainSelectedMovieTitleTabController extends FXMLMainTab {
 		TableColumn<Movie, Integer> year = new TableColumn<>("Year");
 		year.setCellValueFactory(new PropertyValueFactory<Movie, Integer>(
 				"year"));
+		// year.setCellFactory(new Callback<TableColumn<Movie, Integer>,
+		// TableCell<Movie, Integer>>() {
+		//
+		// @Override
+		// public TableCell<Movie, Integer> call(
+		// TableColumn<Movie, Integer> param) {
+		// final TableCell<Movie, Integer> cell = new TableCell<>();
+		// cell.setOnMouseClicked(new EventHandler<Event>() {
+		//
+		// @Override
+		// public void handle(Event event) {
+		// LOGGER.info(cell.getText() + " # " + event.toString());
+		//
+		// }
+		// });
+		// return cell;
+		//
+		// }
+		// });
 
 		table.getColumns().setAll(ImmutableList.of(title, year));
 		setSelectionStuff();
@@ -103,6 +129,8 @@ public class FXMLMainSelectedMovieTitleTabController extends FXMLMainTab {
 
 	private void setSelectionStuff() {
 		table.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+		// SelectTitleProperties.getInstance().selectedMovieProperty()
+		// .bind(table.getSelectionModel().selectedItemProperty());
 
 		table.getSelectionModel().getSelectedItems()
 				.addListener(new InvalidationListener() {
@@ -112,12 +140,20 @@ public class FXMLMainSelectedMovieTitleTabController extends FXMLMainTab {
 						if (table.getSelectionModel().getSelectedItems().size() == 1) {
 							Movie movie = table.getSelectionModel()
 									.getSelectedItems().get(0);
-							LOGGER.debug("Selected movie: {}", movie);
+							Movie oldSelectedMovie = SelectTitleProperties
+									.getInstance()
+									.getSelectedMovie();
+							LOGGER.debug("Selected movie: {}, old: {}", movie,
+									oldSelectedMovie);
+
 							SelectTitleProperties.getInstance()
 									.setSelectedMovie(movie);
+							if (oldSelectedMovie == movie) {
+								fxmlMainController.nextTab();
+							}
 						} else {
-							SelectTitleProperties.getInstance()
-									.setSelectedMovie(Movie.DUMMY_MOVIE);
+							// SelectTitleProperties.getInstance()
+							// .setSelectedMovie(Movie.DUMMY_MOVIE);
 						}
 					}
 				});

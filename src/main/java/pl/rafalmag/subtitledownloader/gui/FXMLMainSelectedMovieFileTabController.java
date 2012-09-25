@@ -99,6 +99,7 @@ public class FXMLMainSelectedMovieFileTabController extends FXMLMainTab {
 				SelectMovieProperties.getInstance().setInitialDir(
 						file.getParentFile());
 			}
+			fxmlMainController.nextTab();
 		}
 	}
 
