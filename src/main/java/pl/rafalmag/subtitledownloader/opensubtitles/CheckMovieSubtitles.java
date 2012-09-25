@@ -14,6 +14,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
@@ -25,6 +27,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
 
 public class CheckMovieSubtitles extends CheckMovie {
+
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(CheckMovieSubtitles.class);
 
 	private final Movie movie;
 
@@ -50,6 +55,8 @@ public class CheckMovieSubtitles extends CheckMovie {
 
 	public List<SearchSubtitlesResult> getSubtitles(long timeoutMs)
 			throws InterruptedException {
+		LOGGER.debug("search openSubtitles for {} with timeout {}ms", movie,
+				timeoutMs);
 		Collection<? extends Callable<List<SearchSubtitlesResult>>> solvers = ImmutableList
 				.of(
 						new NamedCallable<>(

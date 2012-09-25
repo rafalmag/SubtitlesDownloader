@@ -10,6 +10,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
 import pl.rafalmag.subtitledownloader.opensubtitles.CheckMovieSubtitles;
@@ -17,6 +19,7 @@ import pl.rafalmag.subtitledownloader.opensubtitles.Session;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
 import pl.rafalmag.subtitledownloader.title.Movie;
 import pl.rafalmag.subtitledownloader.utils.NamedCallable;
+import pl.rafalmag.subtitledownloader.utils.ProgressCallback;
 import pl.rafalmag.subtitledownloader.utils.Utils;
 
 import com.google.common.base.Function;
@@ -26,20 +29,30 @@ import com.google.common.collect.Sets;
 
 public class SubtitlesUtils {
 
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(SubtitlesUtils.class);
+
 	private final Movie movie;
 	private final File movieFile;
+	private final long timeoutMs;
+	private final ProgressCallback progressCallback;
 
-	public SubtitlesUtils(Movie movie, File movieFile) {
+	public SubtitlesUtils(Movie movie, File movieFile, long timeoutMs,
+			ProgressCallback progressCallback) {
 		this.movie = movie;
 		this.movieFile = movieFile;
+		this.timeoutMs = timeoutMs;
+		this.progressCallback = progressCallback;
 	}
 
 	private final static ExecutorService EXECUTOR = Executors
 			.newCachedThreadPool(new BasicThreadFactory.Builder().daemon(true)
 					.namingPattern("Subtitle-%d").build());
 
-	public SortedSet<Subtitles> getSubtitles(final long timeoutMs)
+	public SortedSet<Subtitles> getSubtitles()
 			throws InterruptedException {
+		LOGGER.debug("search subtitles for {} with timeout {}ms", movie,
+				timeoutMs);
 		SortedSet<Subtitles> set = Sets.newTreeSet(Collections.reverseOrder());
 
 		Callable<List<Subtitles>> callable = new NamedCallable<>(
@@ -59,7 +72,7 @@ public class SubtitlesUtils {
 		Collection<Callable<List<Subtitles>>> solvers = ImmutableList
 				.of(callable);
 		Collection<List<Subtitles>> solve = Utils.solve(EXECUTOR,
-				solvers, timeoutMs);
+				solvers, timeoutMs, progressCallback);
 
 		for (List<Subtitles> item : solve) {
 			set.addAll(item);

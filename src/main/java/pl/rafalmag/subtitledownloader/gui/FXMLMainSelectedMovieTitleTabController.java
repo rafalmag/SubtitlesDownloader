@@ -76,7 +76,8 @@ public class FXMLMainSelectedMovieTitleTabController extends FXMLMainTab {
 				if (shouldUpdateTitlesListBinding.get()) {
 					refreshTable();
 
-					table.getSelectionModel().clearSelection();
+					// clear table
+					MovieTitlesList.listProperty().clear();
 
 					SelectTitleProperties
 							.getInstance()

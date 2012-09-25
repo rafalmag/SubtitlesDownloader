@@ -15,6 +15,7 @@ import java.util.SortedSet;
 import org.junit.Test;
 
 import pl.rafalmag.subtitledownloader.title.Movie;
+import pl.rafalmag.subtitledownloader.utils.ProgressCallbackDummy;
 
 public class SubtitlesUtilsTest {
 
@@ -28,9 +29,10 @@ public class SubtitlesUtilsTest {
 				"I:/filmy/!old/Midnight.in.Paris.DVDRip.XviD-TARGET/target-paris-xvid.avi");
 
 		// when
-		SubtitlesUtils subtitlesUtils = new SubtitlesUtils(movie, movieFile);
+		SubtitlesUtils subtitlesUtils = new SubtitlesUtils(movie, movieFile,
+				TIMEOUT_MS, new ProgressCallbackDummy());
 		SortedSet<Subtitles> subtitles = subtitlesUtils
-				.getSubtitles(TIMEOUT_MS);
+				.getSubtitles();
 
 		// then
 		List<Subtitles> downloadsOver1000 = select(

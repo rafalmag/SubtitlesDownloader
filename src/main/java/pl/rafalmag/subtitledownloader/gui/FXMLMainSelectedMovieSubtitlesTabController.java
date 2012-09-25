@@ -77,10 +77,10 @@ public class FXMLMainSelectedMovieSubtitlesTabController extends FXMLMainTab {
 				LOGGER.trace("observable: " + observable);
 				if (shouldUpdateTitlesListBinding.get()) {
 					try {
-						SubtitlesList.updateList(10000);
-
-						table.getSelectionModel().clearSelection();
-
+						SubtitlesList.updateList(
+								fxmlMainController.progressBar, 10000);
+						// clear table
+						SubtitlesList.listProperty().clear();
 						SelectSubtitlesProperties
 								.getInstance()
 								.setSelectedSubtitles(Subtitles.DUMMY_SUBTITLES);
