@@ -23,9 +23,9 @@ public class SubtitlesUtilsTest {
 	@Test
 	public void should_get_valid_subtitles() throws Exception {
 		// given
-		Movie movie = new Movie("A Lonely Place To Die", 2011, 1422136);
+		Movie movie = new Movie("Midnight in Paris", 2011, 1605783);
 		File movieFile = new File(
-				"I:/filmy/!old/A Lonely Place To Die  {2011} DVDRIP. Jaybob/A Lonely Place To Die  {2011} DVDRIP. Jaybob.avi");
+				"I:/filmy/!old/Midnight.in.Paris.DVDRip.XviD-TARGET/target-paris-xvid.avi");
 
 		// when
 		SubtitlesUtils subtitlesUtils = new SubtitlesUtils(movie, movieFile);
@@ -41,7 +41,7 @@ public class SubtitlesUtilsTest {
 		List<Subtitles> downloadsOver1000WithPropperTitle = select(
 				downloadsOver1000,
 				having(on(Subtitles.class).getFileName(),
-						containsString("A.Lonely.Place.To.Die")));
+						containsString("Midnight.in.Paris.DVDRip.XviD")));
 		assertThat(downloadsOver1000WithPropperTitle, hasSize(greaterThan(1)));
 
 	}
