@@ -16,14 +16,14 @@ import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pl.rafalmag.subtitledownloader.NamedCallable;
-import pl.rafalmag.subtitledownloader.ProgressCallback;
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
-import pl.rafalmag.subtitledownloader.Utils;
 import pl.rafalmag.subtitledownloader.opensubtitles.CheckMovie;
 import pl.rafalmag.subtitledownloader.opensubtitles.Session;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.MovieEntity;
 import pl.rafalmag.subtitledownloader.themoviedb.TheMovieDbHelper;
+import pl.rafalmag.subtitledownloader.utils.NamedCallable;
+import pl.rafalmag.subtitledownloader.utils.ProgressCallback;
+import pl.rafalmag.subtitledownloader.utils.Utils;
 
 import com.google.common.base.Function;
 import com.google.common.base.Strings;

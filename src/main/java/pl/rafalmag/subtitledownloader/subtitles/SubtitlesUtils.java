@@ -11,13 +11,13 @@ import java.util.concurrent.Executors;
 
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 
-import pl.rafalmag.subtitledownloader.NamedCallable;
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
-import pl.rafalmag.subtitledownloader.Utils;
 import pl.rafalmag.subtitledownloader.opensubtitles.CheckMovieSubtitles;
 import pl.rafalmag.subtitledownloader.opensubtitles.Session;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
 import pl.rafalmag.subtitledownloader.title.Movie;
+import pl.rafalmag.subtitledownloader.utils.NamedCallable;
+import pl.rafalmag.subtitledownloader.utils.Utils;
 
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;

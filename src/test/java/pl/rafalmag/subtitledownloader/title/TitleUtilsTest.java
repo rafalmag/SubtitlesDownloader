@@ -17,7 +17,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import pl.rafalmag.subtitledownloader.ProgressCallbackDummy;
+import pl.rafalmag.subtitledownloader.utils.ProgressCallbackDummy;
 
 @RunWith(JUnitParamsRunner.class)
 public class TitleUtilsTest {

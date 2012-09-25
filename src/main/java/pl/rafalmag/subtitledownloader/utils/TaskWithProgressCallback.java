@@ -1,4 +1,4 @@
-package pl.rafalmag.subtitledownloader;
+package pl.rafalmag.subtitledownloader.utils;
 
 import javafx.concurrent.Task;
 

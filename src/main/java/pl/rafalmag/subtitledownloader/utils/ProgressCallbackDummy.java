@@ -1,4 +1,4 @@
-package pl.rafalmag.subtitledownloader;
+package pl.rafalmag.subtitledownloader.utils;
 
 public class ProgressCallbackDummy implements ProgressCallback {
 
