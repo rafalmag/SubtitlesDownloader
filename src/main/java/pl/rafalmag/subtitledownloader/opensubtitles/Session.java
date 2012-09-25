@@ -32,7 +32,7 @@ public class Session {
 	 * See restrictions here: 
 	 * {@link http://trac.opensubtitles.org/projects/opensubtitles/wiki/DevReadFirst}
 	 */
-	private static final String USER_AGENT = "SubtitlesDownloader v1.1";
+	private static final String USER_AGENT = "SubtitlesDownloader v1.2";
 //	@formatter:on
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Session.class);
