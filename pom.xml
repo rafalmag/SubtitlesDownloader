@@ -59,7 +59,7 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sun.jersey</groupId>
@@ -97,6 +97,7 @@
 			<artifactId>de.huxhorn.lilith.logback.appender.multiplex-classic</artifactId>
 			<version>0.9.42.1</version>
 			<scope>runtime</scope>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
