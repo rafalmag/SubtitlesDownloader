@@ -15,7 +15,7 @@ import pl.rafalmag.subtitledownloader.themoviedb.TheMovieDbWarnFilter;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder
 import ch.qos.logback.core.ConsoleAppender
 
-import de.huxhorn.lilith.logback.appender.ClassicXmlMultiplexSocketAppender
+import de.huxhorn.lilith.logback.appender.ClassicMultiplexSocketAppender
 import static ch.qos.logback.classic.Level.*
 
 def API_KEY = TheMovieDbHelper.API_KEY
@@ -23,7 +23,7 @@ def API_KEY = TheMovieDbHelper.API_KEY
 //println "Setting logback in groovy."
 
 
-appender("SOCKET", ClassicXmlMultiplexSocketAppender) {
+appender("SOCKET", ClassicMultiplexSocketAppender) {
   compressing = true
   reconnectionDelay = 10000
   includeCallerData = true
