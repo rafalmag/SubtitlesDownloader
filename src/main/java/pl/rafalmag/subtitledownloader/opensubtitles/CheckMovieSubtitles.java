@@ -13,6 +13,9 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+
+import pl.rafalmag.subtitledownloader.NamedCallable;
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
 import pl.rafalmag.subtitledownloader.Utils;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
@@ -41,49 +44,58 @@ public class CheckMovieSubtitles extends CheckMovie {
 		return session.searchSubtitlesBy(title);
 	}
 
+	private final static ExecutorService EXECUTOR = Executors
+			.newCachedThreadPool(new BasicThreadFactory.Builder().daemon(true)
+					.namingPattern("OpenSubtitle-%d").build());
+
 	public List<SearchSubtitlesResult> getSubtitles(long timeoutMs)
 			throws InterruptedException {
-		ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(3);
-		try {
-			Collection<Callable<List<SearchSubtitlesResult>>> solvers = ImmutableList
-					.of(new Callable<List<SearchSubtitlesResult>>() {
+		Collection<? extends Callable<List<SearchSubtitlesResult>>> solvers = ImmutableList
+				.of(
+						new NamedCallable<>(
+								"-ByTitle",
+								new Callable<List<SearchSubtitlesResult>>() {
 
-						@Override
-						public List<SearchSubtitlesResult> call()
-								throws SubtitlesDownloaderException {
-							return getSubtitlesByTitle();
-						}
-					}, new Callable<List<SearchSubtitlesResult>>() {
+									@Override
+									public List<SearchSubtitlesResult> call()
+											throws SubtitlesDownloaderException {
+										return getSubtitlesByTitle();
+									}
+								}),
+						new NamedCallable<>(
+								"-ByImdb",
+								new Callable<List<SearchSubtitlesResult>>() {
 
-						@Override
-						public List<SearchSubtitlesResult> call()
-								throws SubtitlesDownloaderException {
-							return getSubtitlesByImdb();
-						}
-					}, new Callable<List<SearchSubtitlesResult>>() {
+									@Override
+									public List<SearchSubtitlesResult> call()
+											throws SubtitlesDownloaderException {
+										return getSubtitlesByImdb();
+									}
+								}),
+						new NamedCallable<>(
+								"-ByMovieHashAndByteSize",
+								new Callable<List<SearchSubtitlesResult>>() {
 
-						@Override
-						public List<SearchSubtitlesResult> call()
-								throws SubtitlesDownloaderException {
-							return getSubtitlesByMovieHashAndByteSize();
-						}
-					});
-			Collection<List<SearchSubtitlesResult>> solve = Utils.solve(
-					newFixedThreadPool, solvers, timeoutMs);
-			// TODO maybe other custom collection :
-			// Multimap<SearchSubtitlesResult, SearchMethod>
-			Set<SearchSubtitlesResult> set = Sets.newHashSet();
-			for (List<SearchSubtitlesResult> item : solve) {
-				set.addAll(item);
-			}
-
-			List<SearchSubtitlesResult> validImdbSubtitles = select(
-					set,
-					having(on(SearchSubtitlesResult.class).getIDMovieImdb(),
-							equalTo(movie.getImdbId())));
-			return validImdbSubtitles;
-		} finally {
-			newFixedThreadPool.shutdown();
+									@Override
+									public List<SearchSubtitlesResult> call()
+											throws SubtitlesDownloaderException {
+										return getSubtitlesByMovieHashAndByteSize();
+									}
+								})
+				);
+		Collection<List<SearchSubtitlesResult>> solve = Utils.solve(
+				EXECUTOR, solvers, timeoutMs);
+		// TODO maybe other custom collection :
+		// Multimap<SearchSubtitlesResult, SearchMethod>
+		Set<SearchSubtitlesResult> set = Sets.newHashSet();
+		for (List<SearchSubtitlesResult> item : solve) {
+			set.addAll(item);
 		}
+
+		List<SearchSubtitlesResult> validImdbSubtitles = select(
+				set,
+				having(on(SearchSubtitlesResult.class).getIDMovieImdb(),
+						equalTo(movie.getImdbId())));
+		return validImdbSubtitles;
 	}
 }

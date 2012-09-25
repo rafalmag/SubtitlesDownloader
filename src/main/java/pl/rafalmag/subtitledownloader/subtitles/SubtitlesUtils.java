@@ -9,6 +9,9 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+
+import pl.rafalmag.subtitledownloader.NamedCallable;
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
 import pl.rafalmag.subtitledownloader.Utils;
 import pl.rafalmag.subtitledownloader.opensubtitles.CheckMovieSubtitles;
@@ -31,35 +34,37 @@ public class SubtitlesUtils {
 		this.movieFile = movieFile;
 	}
 
+	private final static ExecutorService EXECUTOR = Executors
+			.newCachedThreadPool(new BasicThreadFactory.Builder().daemon(true)
+					.namingPattern("Subtitle-%d").build());
+
 	public SortedSet<Subtitles> getSubtitles(final long timeoutMs)
 			throws InterruptedException {
 		SortedSet<Subtitles> set = Sets.newTreeSet(Collections.reverseOrder());
 
-		ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(1);
-		try {
-			Callable<List<Subtitles>> callable = new Callable<List<Subtitles>>() {
+		Callable<List<Subtitles>> callable = new NamedCallable<>(
+				"-FromOpenSub", new Callable<List<Subtitles>>() {
 
-				@Override
-				public List<Subtitles> call() throws Exception {
-					return getSubtitlesFromOpenSubtitles(timeoutMs);
-				}
-			};
-			/*
-			 * FIXME strange that it cannot be inline - some java 1.7 / eclipse
-			 * 3.7 compiler bug...
-			 */
-			Collection<Callable<List<Subtitles>>> solvers = ImmutableList
-					.of(callable);
-			Collection<List<Subtitles>> solve = Utils.solve(newFixedThreadPool,
-					solvers, timeoutMs);
+					@Override
+					public List<Subtitles> call()
+							throws SubtitlesDownloaderException,
+							InterruptedException {
+						return getSubtitlesFromOpenSubtitles(timeoutMs);
+					}
+				});
+		/*
+		 * FIXME strange that it cannot be inline - some java 1.7 / eclipse
+		 * 3.7 compiler bug...
+		 */
+		Collection<Callable<List<Subtitles>>> solvers = ImmutableList
+				.of(callable);
+		Collection<List<Subtitles>> solve = Utils.solve(EXECUTOR,
+				solvers, timeoutMs);
 
-			for (List<Subtitles> item : solve) {
-				set.addAll(item);
-			}
-			return set;
-		} finally {
-			newFixedThreadPool.shutdown();
+		for (List<Subtitles> item : solve) {
+			set.addAll(item);
 		}
+		return set;
 	}
 
 	protected List<Subtitles> getSubtitlesFromOpenSubtitles(long timeoutMs)

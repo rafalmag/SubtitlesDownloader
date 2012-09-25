@@ -35,7 +35,7 @@ public class SubtitlesList {
 	}
 
 	public static void updateList(int timeoutMs) throws InterruptedException {
-		LOGGER.debug("updateList timeoutMs=" + timeoutMs);
+		LOGGER.debug("SubtitlesList update timeout " + timeoutMs + "ms");
 		Movie selectedMovie = SelectTitleProperties.getInstance()
 				.getSelectedMovie();
 		File selectedFile = SelectMovieProperties.getInstance().getFile();

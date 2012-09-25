@@ -12,9 +12,11 @@ import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
+import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pl.rafalmag.subtitledownloader.NamedCallable;
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
 import pl.rafalmag.subtitledownloader.Utils;
 import pl.rafalmag.subtitledownloader.opensubtitles.CheckMovie;
@@ -63,37 +65,37 @@ public class TitleUtils {
 		return startTasksAndGetResults(timeoutMs, title);
 	}
 
+	private final static ExecutorService EXECUTOR = Executors
+			.newCachedThreadPool(new BasicThreadFactory.Builder().daemon(true)
+					.namingPattern("Title-%d").build());
+
 	private SortedSet<Movie> startTasksAndGetResults(long timeoutMs,
 			final String title) throws InterruptedException {
 		SortedSet<Movie> set = Sets.newTreeSet();
+		Collection<? extends Callable<List<Movie>>> solvers = ImmutableList.of(
+				new NamedCallable<>("-movByTitle", new Callable<List<Movie>>() {
 
-		ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(2);
-		try {
-			Collection<Callable<List<Movie>>> solvers = ImmutableList.of(
-					new Callable<List<Movie>>() {
+					@Override
+					public List<Movie> call() {
+						return getByTitle(title);
+					}
+				}), new NamedCallable<>("-movByFileHash",
+						new Callable<List<Movie>>() {
 
-						@Override
-						public List<Movie> call() {
-							return getByTitle(title);
-						}
-					}, new Callable<List<Movie>>() {
+							@Override
+							public List<Movie> call()
+									throws SubtitlesDownloaderException {
+								return getByFileHash();
+							}
+						})
+				);
+		Collection<List<Movie>> solve = Utils.solve(EXECUTOR,
+				solvers, timeoutMs);
 
-						@Override
-						public List<Movie> call()
-								throws SubtitlesDownloaderException {
-							return getByFileHash();
-						}
-					});
-			Collection<List<Movie>> solve = Utils.solve(newFixedThreadPool,
-					solvers, timeoutMs);
-
-			for (List<Movie> item : solve) {
-				set.addAll(item);
-			}
-			return set;
-		} finally {
-			newFixedThreadPool.shutdown();
+		for (List<Movie> item : solve) {
+			set.addAll(item);
 		}
+		return set;
 	}
 
 	protected List<Movie> getByTitle(String title) {
@@ -108,6 +110,7 @@ public class TitleUtils {
 					}
 
 				});
+		LOGGER.debug("TheMovieDb returned: {}", list);
 		return list;
 	}
 

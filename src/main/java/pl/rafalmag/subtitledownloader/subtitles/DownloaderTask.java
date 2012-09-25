@@ -15,6 +15,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipException;
 
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.concurrent.Task;
 
@@ -81,7 +82,14 @@ public class DownloaderTask extends Task<Void> {
 			LOGGER.error("Could not download substitles " + subtitles, e);
 		} finally {
 			updateProgress(DONE, DONE);
-			disableProgressBarProperty.set(true);
+			Platform.runLater(new Runnable() {
+
+				@Override
+				public void run() {
+					disableProgressBarProperty.set(true);
+				}
+
+			});
 		}
 		return null;
 	}
