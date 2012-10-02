@@ -12,6 +12,7 @@ import java.io.File;
 import java.util.List;
 import java.util.SortedSet;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import pl.rafalmag.subtitledownloader.title.Movie;
@@ -19,8 +20,10 @@ import pl.rafalmag.subtitledownloader.utils.ProgressCallbackDummy;
 
 public class SubtitlesUtilsTest {
 
-	private static final int TIMEOUT_MS = 10000;
+	private static final int TIMEOUT_MS = 10_000;
 
+	// this test requires a big file in specified path
+	@Ignore
 	@Test
 	public void should_get_valid_subtitles() throws Exception {
 		// given
@@ -31,8 +34,7 @@ public class SubtitlesUtilsTest {
 		// when
 		SubtitlesUtils subtitlesUtils = new SubtitlesUtils(movie, movieFile,
 				TIMEOUT_MS, new ProgressCallbackDummy());
-		SortedSet<Subtitles> subtitles = subtitlesUtils
-				.getSubtitles();
+		SortedSet<Subtitles> subtitles = subtitlesUtils.getSubtitles();
 
 		// then
 		List<Subtitles> downloadsOver1000 = select(
