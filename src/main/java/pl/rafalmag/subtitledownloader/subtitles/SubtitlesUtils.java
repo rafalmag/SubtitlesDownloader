@@ -1,6 +1,5 @@
 package pl.rafalmag.subtitledownloader.subtitles;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -33,14 +32,12 @@ public class SubtitlesUtils {
 			.getLogger(SubtitlesUtils.class);
 
 	private final Movie movie;
-	private final File movieFile;
 	private final long timeoutMs;
 	private final ProgressCallback progressCallback;
 
-	public SubtitlesUtils(Movie movie, File movieFile, long timeoutMs,
+	public SubtitlesUtils(Movie movie, long timeoutMs,
 			ProgressCallback progressCallback) {
 		this.movie = movie;
-		this.movieFile = movieFile;
 		this.timeoutMs = timeoutMs;
 		this.progressCallback = progressCallback;
 	}
@@ -85,7 +82,7 @@ public class SubtitlesUtils {
 		Session session = new Session();
 		session.login(); // mandatory
 		List<SearchSubtitlesResult> subtitlesFromOpenSubtitles = new CheckMovieSubtitles(
-				session, movieFile, movie).getSubtitles(timeoutMs);
+				session, movie).getSubtitles(timeoutMs);
 		return Lists.transform(subtitlesFromOpenSubtitles,
 				new Function<SearchSubtitlesResult, Subtitles>() {
 

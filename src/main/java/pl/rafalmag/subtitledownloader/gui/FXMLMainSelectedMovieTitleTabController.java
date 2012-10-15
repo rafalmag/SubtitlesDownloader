@@ -41,6 +41,9 @@ public class FXMLMainSelectedMovieTitleTabController extends FXMLMainTab {
 	@FXML
 	protected TableView<Movie> table;
 
+	// TODO add listener for refreshButton listen on
+	// SelectMovieProperties.getInstance().getFile();
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		StringExpression selectedTitleText = Bindings.concat(

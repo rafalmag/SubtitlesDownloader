@@ -163,8 +163,7 @@ public class Session {
 		}
 	}
 
-	// TODO
-	// this can be also easily implemented
+	// TODO this can be also easily implemented
 	// http://trac.opensubtitles.org/projects/opensubtitles/wiki/XMLRPC#SearchMoviesOnIMDB
 
 	/**

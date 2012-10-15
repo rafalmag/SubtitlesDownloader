@@ -1,10 +1,13 @@
 package pl.rafalmag.subtitledownloader.title;
 
+import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -18,7 +21,8 @@ import com.moviejukebox.themoviedb.model.MovieDb;
 
 public class Movie implements Comparable<Movie> {
 
-	public static final Movie DUMMY_MOVIE = new Movie("", 0, 0) {
+	// TODO NPE !!!
+	public static final Movie DUMMY_MOVIE = new Movie("", 0, 0, null) {
 		@Override
 		public String toString() {
 			return "";
@@ -31,17 +35,28 @@ public class Movie implements Comparable<Movie> {
 
 	private final IntegerProperty imdbId = new SimpleIntegerProperty();
 
-	public Movie(MovieEntity movieEntity) {
+	private final ObjectProperty<File> movieFile = new SimpleObjectProperty<>();
+
+	public File getMovieFile() {
+		return movieFile.get();
+	}
+
+	public void setMovieFile(File movieFile) {
+		this.movieFile.set(movieFile);
+	}
+
+	public Movie(MovieEntity movieEntity, File movieFile) {
 		this(movieEntity.getTitle(), movieEntity.getYear(), movieEntity
-				.getImdbId());
+				.getImdbId(), movieFile);
 	}
 
-	public Movie(MovieDb input) {
+	public Movie(MovieDb input, File movieFile) {
 		this(input.getTitle(), getYear(input), TitleUtils
-				.getImdbFromString(input.getImdbID()));
+				.getImdbFromString(input.getImdbID()), movieFile);
 	}
 
-	public Movie(String title, int year, int imdbId) {
+	public Movie(String title, int year, int imdbId, File movieFile) {
+		this.movieFile.setValue(movieFile);
 		setTitle(title);
 		setYear(year);
 		setImdbId(imdbId);
@@ -80,6 +95,10 @@ public class Movie implements Comparable<Movie> {
 		return year;
 	}
 
+	public ObjectProperty<File> movieFileProperty() {
+		return movieFile;
+	}
+
 	public void setTitle(String title) {
 		this.title.set(title);
 	}
@@ -106,8 +125,9 @@ public class Movie implements Comparable<Movie> {
 
 	@Override
 	public String toString() {
-		return "Movie [title=" + getTitle() + ", year=" + getYear()
-				+ ", imdbId=" + getImdbId() + "]";
+		return "Movie [getMovieFile()=" + getMovieFile() + ", getTitle()="
+				+ getTitle() + ", getYear()=" + getYear() + ", getImdbId()="
+				+ getImdbId() + "]";
 	}
 
 	@Override
@@ -115,6 +135,8 @@ public class Movie implements Comparable<Movie> {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((imdbId == null) ? 0 : imdbId.hashCode());
+		result = prime * result
+				+ ((movieFile == null) ? 0 : movieFile.hashCode());
 		result = prime * result + ((title == null) ? 0 : title.hashCode());
 		result = prime * result + ((year == null) ? 0 : year.hashCode());
 		return result;
@@ -133,6 +155,11 @@ public class Movie implements Comparable<Movie> {
 			if (other.imdbId != null)
 				return false;
 		} else if (!imdbId.equals(other.imdbId))
+			return false;
+		if (movieFile == null) {
+			if (other.movieFile != null)
+				return false;
+		} else if (!movieFile.equals(other.movieFile))
 			return false;
 		if (title == null) {
 			if (other.title != null)

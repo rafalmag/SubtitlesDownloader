@@ -21,8 +21,6 @@ public class ImdbMovieDetails {
 	int year;
 
 	public ImdbMovieDetails(Map<String, Object> data) {
-		// imdbMovieDetails.setCast(data.get("cast")); // TODO
-		// imdbMovieDetails.setAka(data.get("aka")); // TODO
 		rating = Double.parseDouble((String) data.get("rating"));
 		coverUrl = (String) data.get("cover");
 		id = Integer.parseInt((String) data.get("id"));
