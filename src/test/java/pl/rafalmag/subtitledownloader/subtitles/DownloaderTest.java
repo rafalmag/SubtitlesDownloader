@@ -13,9 +13,9 @@ public class DownloaderTest {
 	@Test
 	public void should_get_subtitles_destination_path() throws Exception {
 		// given
-		String input = "c:\\a.avi";
+		String input = "a.avi";
 		String extension = "sub";
-		Path expectedDestinationPath = Paths.get("c:\\a.sub");
+		Path expectedDestinationPath = Paths.get("a.sub");
 
 		// when
 		Path destinationPath = DownloaderTask.getSubtitlesDestinationPath(
