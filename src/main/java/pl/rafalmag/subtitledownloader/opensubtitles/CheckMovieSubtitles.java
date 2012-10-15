@@ -5,6 +5,7 @@ import static ch.lambdaj.Lambda.on;
 import static ch.lambdaj.Lambda.select;
 import static org.hamcrest.Matchers.equalTo;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -32,8 +33,8 @@ public class CheckMovieSubtitles extends CheckMovie {
 
 	private final Movie movie;
 
-	public CheckMovieSubtitles(Session session, Movie movie) {
-		super(session, movie.getMovieFile());
+	public CheckMovieSubtitles(Session session, File movieFile, Movie movie) {
+		super(session, movieFile);
 		this.movie = movie;
 	}
 

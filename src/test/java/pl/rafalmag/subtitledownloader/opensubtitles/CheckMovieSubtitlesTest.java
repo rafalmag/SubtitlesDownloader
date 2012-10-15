@@ -40,9 +40,8 @@ public class CheckMovieSubtitlesTest {
 	public void should_get_subtitles_for_movie_by_imdb() throws Exception {
 		// given
 		CheckMovieSubtitles checkMovieSubtitles = new CheckMovieSubtitles(
-				session, new Movie(
-						"The Girl With The Dragon Tattoo", 2011, 1568346,
-						new File("")));
+				session, new File(""), new Movie(
+						"The Girl With The Dragon Tattoo", 2011, 1568346));
 
 		// when
 		Collection<SearchSubtitlesResult> checkMovieHash2Entities = checkMovieSubtitles
@@ -65,9 +64,8 @@ public class CheckMovieSubtitlesTest {
 	public void should_get_subtitles_for_movie_by_title() throws Exception {
 		// given
 		CheckMovieSubtitles checkMovieSubtitles = new CheckMovieSubtitles(
-				session, new Movie(
-						"The Girl With The Dragon Tattoo", 2011, 1568346,
-						new File("")));
+				session, new File(""), new Movie(
+						"The Girl With The Dragon Tattoo", 2011, 1568346));
 
 		// when
 		Collection<SearchSubtitlesResult> checkMovieHash2Entities = checkMovieSubtitles
@@ -93,9 +91,8 @@ public class CheckMovieSubtitlesTest {
 		File movieFile = new File(
 				"C:/torrents/!old/The Girl With A Dragon Tattoo 2011 DVDSCR XviD AC3-FTW/The Girl With A Dragon Tattoo 2011 DVDSCR XviD AC3-FTW.avi");
 		CheckMovieSubtitles checkMovieSubtitles = new CheckMovieSubtitles(
-				session, new Movie(
-						"The Girl With The Dragon Tattoo", 2011, 1568346,
-						movieFile));
+				session, movieFile, new Movie(
+						"The Girl With The Dragon Tattoo", 2011, 1568346));
 
 		long timeoutMs = 10000L;
 		// when

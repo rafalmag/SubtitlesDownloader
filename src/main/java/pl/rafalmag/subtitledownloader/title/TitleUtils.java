@@ -113,8 +113,8 @@ public class TitleUtils {
 				new Function<MovieDb, Movie>() {
 
 					@Override
-					public Movie apply(MovieDb movieDb) {
-						return new Movie(movieDb, movieFile);
+					public Movie apply(MovieDb input) {
+						return new Movie(input);
 					}
 
 				});
@@ -133,8 +133,8 @@ public class TitleUtils {
 				new Function<MovieEntity, Movie>() {
 
 					@Override
-					public Movie apply(MovieEntity movieEntity) {
-						return new Movie(movieEntity, movieFile);
+					public Movie apply(MovieEntity input) {
+						return new Movie(input);
 					}
 
 				});

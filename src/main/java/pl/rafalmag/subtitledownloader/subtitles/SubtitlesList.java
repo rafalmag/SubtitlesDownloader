@@ -1,5 +1,6 @@
 package pl.rafalmag.subtitledownloader.subtitles;
 
+import java.io.File;
 import java.util.SortedSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -15,6 +16,7 @@ import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pl.rafalmag.subtitledownloader.gui.SelectMovieProperties;
 import pl.rafalmag.subtitledownloader.title.Movie;
 import pl.rafalmag.subtitledownloader.title.SelectTitleProperties;
 import pl.rafalmag.subtitledownloader.utils.TaskWithProgressCallback;
@@ -50,14 +52,14 @@ public class SubtitlesList {
 		progressBar.disableProperty().set(false);
 		final Movie selectedMovie = SelectTitleProperties.getInstance()
 				.getSelectedMovie();
-		// final File selectedFile =
-		// SelectMovieProperties.getInstance().getFile();
+		final File selectedFile = SelectMovieProperties.getInstance().getFile();
 		TaskWithProgressCallback<Void> task = new TaskWithProgressCallback<Void>() {
 
 			@Override
 			protected Void call() throws Exception {
 				SubtitlesUtils subtitlesUtils = new SubtitlesUtils(
-						selectedMovie, timeoutMs, this);
+						selectedMovie,
+						selectedFile, timeoutMs, this);
 				final SortedSet<Subtitles> subtitles = subtitlesUtils
 						.getSubtitles();
 				Platform.runLater(new Runnable() {

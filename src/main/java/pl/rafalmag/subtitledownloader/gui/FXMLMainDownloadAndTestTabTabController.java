@@ -78,7 +78,6 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
 	}
 
 	private void initTestButton() {
-		// TODO add movie file file watcher.
 		final BooleanBinding disabledTestProperty = SelectMovieProperties
 				.getInstance().movieFileProperty()
 				.isEqualTo(SelectMovieProperties.NO_MOVIE_SELECTED);

@@ -49,7 +49,7 @@ public class MovieTitlesList {
 			throws InterruptedException {
 
 		LOGGER.debug("updateList timeoutMs=" + timeoutMs);
-		final File movieFile = SelectMovieProperties.getInstance().getFile();
+		final File file = SelectMovieProperties.getInstance().getFile();
 		progressBar.disableProperty().set(false);
 
 		TaskWithProgressCallback<Void> task = new TaskWithProgressCallback<Void>() {
@@ -57,7 +57,7 @@ public class MovieTitlesList {
 			@Override
 			protected Void call() throws Exception {
 
-				TitleUtils titleUtils = new TitleUtils(movieFile, timeoutMs, this);
+				TitleUtils titleUtils = new TitleUtils(file, timeoutMs, this);
 				final SortedSet<Movie> titles = titleUtils.getTitles();
 				Platform.runLater(new Runnable() {
 

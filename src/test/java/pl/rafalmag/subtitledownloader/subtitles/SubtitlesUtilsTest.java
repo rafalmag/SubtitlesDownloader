@@ -27,12 +27,12 @@ public class SubtitlesUtilsTest {
 	@Test
 	public void should_get_valid_subtitles() throws Exception {
 		// given
+		Movie movie = new Movie("Midnight in Paris", 2011, 1605783);
 		File movieFile = new File(
 				"I:/filmy/!old/Midnight.in.Paris.DVDRip.XviD-TARGET/target-paris-xvid.avi");
-		Movie movie = new Movie("Midnight in Paris", 2011, 1605783, movieFile);
 
 		// when
-		SubtitlesUtils subtitlesUtils = new SubtitlesUtils(movie,
+		SubtitlesUtils subtitlesUtils = new SubtitlesUtils(movie, movieFile,
 				TIMEOUT_MS, new ProgressCallbackDummy());
 		SortedSet<Subtitles> subtitles = subtitlesUtils.getSubtitles();
 

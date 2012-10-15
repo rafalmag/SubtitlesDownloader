@@ -1,10 +1,7 @@
 package pl.rafalmag.subtitledownloader.subtitles;
 
-import java.io.File;
-
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
@@ -21,9 +18,6 @@ public class Subtitles implements Comparable<Subtitles> {
 	private final IntegerProperty downloadsCount = new SimpleIntegerProperty();
 	private final StringProperty fileName = new SimpleStringProperty();
 	private final StringProperty downloadLink = new SimpleStringProperty();
-	// private final SimpleObjectProperty<Movie> movie = new
-	// SimpleObjectProperty<>();
-	private final SimpleObjectProperty<File> movieFile = new SimpleObjectProperty<>();
 
 	public Subtitles(SearchSubtitlesResult result) {
 		setFileName(result.getSubFileName());
@@ -44,14 +38,6 @@ public class Subtitles implements Comparable<Subtitles> {
 		return fileName;
 	}
 
-	// public SimpleObjectProperty<Movie> movieProperty() {
-	// return movie;
-	// }
-
-	public SimpleObjectProperty<File> movieFileProperty() {
-		return movieFile;
-	}
-
 	public int getDownloadsCount() {
 		return downloadsCount.get();
 	}
@@ -68,29 +54,10 @@ public class Subtitles implements Comparable<Subtitles> {
 		this.fileName.set(fileName);
 	}
 
-	// public Movie getMovie() {
-	// return movie.get();
-	// }
-	//
-	// public void setDownloadsCount(Movie movie) {
-	// this.movie.set(movie);
-	// }
-
-	public File getMovieFile() {
-		return movieFile.get();
-	}
-
-	public void setMovieFile(File movieFile) {
-		this.movieFile.set(movieFile);
-	}
-
 	@Override
 	public String toString() {
-		return "Subtitles [getDownloadsCount()=" + getDownloadsCount()
-				+ ", getFileName()=" + getFileName()
-				// + ", getMovie()=" + getMovie()
-				+ ", getMovieFile()=" + getMovieFile()
-				+ ", getDownloadLink()=" + getDownloadLink() + "]";
+		return "Subtitles [getFileName()=" + getFileName()
+				+ ", getDownloadsCount()=" + getDownloadsCount() + "]";
 	}
 
 	public StringProperty downloadLinkProperty() {
