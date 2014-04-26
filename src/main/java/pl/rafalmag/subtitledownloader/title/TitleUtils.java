@@ -1,21 +1,14 @@
 package pl.rafalmag.subtitledownloader.title;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.annotation.Nullable;
-
+import com.google.common.base.Function;
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.omertron.themoviedbapi.model.MovieDb;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
 import pl.rafalmag.subtitledownloader.opensubtitles.CheckMovie;
 import pl.rafalmag.subtitledownloader.opensubtitles.Session;
@@ -25,12 +18,16 @@ import pl.rafalmag.subtitledownloader.utils.NamedCallable;
 import pl.rafalmag.subtitledownloader.utils.ProgressCallback;
 import pl.rafalmag.subtitledownloader.utils.Utils;
 
-import com.google.common.base.Function;
-import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.moviejukebox.themoviedb.model.MovieDb;
+import javax.annotation.Nullable;
+import java.io.File;
+import java.util.Collection;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TitleUtils {
 	private static final Logger LOGGER = LoggerFactory
@@ -61,7 +58,7 @@ public class TitleUtils {
 	private final ProgressCallback progressCallback;
 
 	public TitleUtils(File movieFile, long timeoutMs,
-			ProgressCallback progressCallback) {
+					  ProgressCallback progressCallback) {
 		this.movieFile = movieFile;
 		this.timeoutMs = timeoutMs;
 		this.progressCallback = progressCallback;
@@ -95,8 +92,9 @@ public class TitleUtils {
 									throws SubtitlesDownloaderException {
 								return getByFileHash();
 							}
-						})
-				);
+						}
+				)
+		);
 		Collection<List<Movie>> solve = Utils.solve(EXECUTOR,
 				solvers, timeoutMs, progressCallback);
 
@@ -117,7 +115,8 @@ public class TitleUtils {
 						return new Movie(input);
 					}
 
-				});
+				}
+		);
 		LOGGER.debug("TheMovieDb returned: {}", list);
 		return list;
 	}
@@ -137,7 +136,8 @@ public class TitleUtils {
 						return new Movie(input);
 					}
 
-				});
+				}
+		);
 		return list;
 	}
 }

@@ -1,20 +1,17 @@
 package pl.rafalmag.subtitledownloader.title;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import com.google.common.base.Strings;
+import com.omertron.themoviedbapi.model.MovieDb;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.MovieEntity;
 
-import com.google.common.base.Strings;
-import com.moviejukebox.themoviedb.model.MovieDb;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Movie implements Comparable<Movie> {
 
@@ -22,7 +19,7 @@ public class Movie implements Comparable<Movie> {
 		@Override
 		public String toString() {
 			return "";
-		};
+		}
 	};
 
 	private final StringProperty title = new SimpleStringProperty();

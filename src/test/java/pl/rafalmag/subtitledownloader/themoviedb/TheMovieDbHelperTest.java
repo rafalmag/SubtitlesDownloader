@@ -1,19 +1,17 @@
 package pl.rafalmag.subtitledownloader.themoviedb;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertThat;
+import com.omertron.themoviedbapi.model.MovieDb;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.List;
 
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertThat;
 
-import com.moviejukebox.themoviedb.model.MovieDb;
 
 public class TheMovieDbHelperTest {
 

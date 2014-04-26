@@ -1,15 +1,14 @@
 package com.moviejukebox.themoviedb;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
+import com.omertron.themoviedbapi.TheMovieDbApi;
+import com.omertron.themoviedbapi.model.MovieDb;
+import org.junit.Test;
+import pl.rafalmag.subtitledownloader.themoviedb.TheMovieDbHelper;
 
 import java.util.List;
 
-import org.junit.Test;
-
-import pl.rafalmag.subtitledownloader.themoviedb.TheMovieDbHelper;
-
-import com.moviejukebox.themoviedb.model.MovieDb;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 public class TheMovieDbTest {
 
@@ -23,9 +22,9 @@ public class TheMovieDbTest {
 		boolean allResults = true;
 
 		// when
-		TheMovieDb theMovieDb = new TheMovieDb(TM_DB_API_KEY);
-		List<MovieDb> searchMovie = theMovieDb.searchMovie(title, language,
-				allResults);
+		TheMovieDbApi theMovieDb = new TheMovieDbApi(TM_DB_API_KEY);
+		List<MovieDb> searchMovie = theMovieDb.searchMovie(title, 0, language,
+				allResults, 0).getResults();
 
 		// then
 		MovieDb firstMovieDb = searchMovie.get(0);
@@ -46,7 +45,7 @@ public class TheMovieDbTest {
 		String language = "english";
 
 		// when
-		TheMovieDb theMovieDb = new TheMovieDb(TM_DB_API_KEY);
+		TheMovieDbApi theMovieDb = new TheMovieDbApi(TM_DB_API_KEY);
 		MovieDb movieInfo = theMovieDb.getMovieInfo(id, language);
 
 		// then
@@ -61,9 +60,9 @@ public class TheMovieDbTest {
 		int id = 11;
 
 		// when
-		TheMovieDb theMovieDb = new TheMovieDb(TM_DB_API_KEY);
-		List<MovieDb> searchMovie = theMovieDb.searchMovie(title, language,
-				true);
+		TheMovieDbApi theMovieDb = new TheMovieDbApi(TM_DB_API_KEY);
+		List<MovieDb> searchMovie = theMovieDb.searchMovie(title, 0, language,
+				true, 0).getResults();
 		MovieDb firstMovieDb = searchMovie.get(0);
 
 		MovieDb movieDbById = theMovieDb.getMovieInfo(id, language);

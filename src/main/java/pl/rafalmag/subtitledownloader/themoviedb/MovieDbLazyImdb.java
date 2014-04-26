@@ -1,13 +1,9 @@
 package pl.rafalmag.subtitledownloader.themoviedb;
 
-import java.util.List;
+import com.omertron.themoviedbapi.MovieDbException;
+import com.omertron.themoviedbapi.model.*;
 
-import com.moviejukebox.themoviedb.model.Collection;
-import com.moviejukebox.themoviedb.model.Genre;
-import com.moviejukebox.themoviedb.model.Language;
-import com.moviejukebox.themoviedb.model.MovieDb;
-import com.moviejukebox.themoviedb.model.ProductionCompany;
-import com.moviejukebox.themoviedb.model.ProductionCountry;
+import java.util.List;
 
 public class MovieDbLazyImdb extends MovieDb {
 	private volatile MovieDb movieDb;
@@ -17,7 +13,11 @@ public class MovieDbLazyImdb extends MovieDb {
 	}
 
 	private void reInit() {
-		movieDb = TheMovieDbHelper.getInstance().getFullMovieDb(getId());
+		try {
+			movieDb = TheMovieDbHelper.getInstance().getFullMovieDb(getId());
+		} catch (MovieDbException e) {
+			throw new IllegalStateException("Could not init MovieDb, because of " + e.getMessage(), e);
+		}
 	}
 
 	@Override
@@ -245,11 +245,6 @@ public class MovieDbLazyImdb extends MovieDb {
 	@Override
 	public void setVoteCount(int voteCount) {
 		movieDb.setVoteCount(voteCount);
-	}
-
-	@Override
-	public void handleUnknown(String key, Object value) {
-		movieDb.handleUnknown(key, value);
 	}
 
 	@Override

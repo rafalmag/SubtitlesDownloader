@@ -1,11 +1,11 @@
 package pl.rafalmag.subtitledownloader.title;
 
+import com.omertron.themoviedbapi.model.MovieDb;
+import org.junit.Test;
+
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-import org.junit.Test;
-
-import com.moviejukebox.themoviedb.model.MovieDb;
 
 public class MovieTest {
 
