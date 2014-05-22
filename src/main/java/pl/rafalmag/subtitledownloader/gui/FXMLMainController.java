@@ -1,5 +1,6 @@
 package pl.rafalmag.subtitledownloader.gui;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -14,6 +15,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -110,6 +114,63 @@ public class FXMLMainController implements Initializable {
 	protected void previousTab() {
 		int selectedIndex = tabPane.getSelectionModel().getSelectedIndex();
 		tabPane.getSelectionModel().select(selectedIndex - 1);
+	}
+
+	@FXML
+	protected void setOnDragOver(DragEvent event) {
+		// LOGGER.trace("setOnDragOver {}", event);
+		Dragboard dragboard = event.getDragboard();
+		if (isOneFileDragged(dragboard)) {
+			event.acceptTransferModes(TransferMode.LINK);
+		}
+		event.consume();
+	}
+
+	@FXML
+	protected void setOnDragEntered(DragEvent event) {
+		LOGGER.trace("setOnDragEntered {}", event);
+		Dragboard dragboard = event.getDragboard();
+		if (isOneFileDragged(dragboard)) {
+			event.acceptTransferModes(TransferMode.LINK);
+		}
+		event.consume();
+	}
+
+	@FXML
+	protected void setOnDragExited(DragEvent event) {
+		LOGGER.trace("setOnDragExited {}", event);
+		event.consume();
+	}
+
+	@FXML
+	protected void setOnDragDropped(DragEvent event) {
+		LOGGER.trace("setOnDragDropped {}", event);
+		Dragboard dragboard = event.getDragboard();
+		if (isOneFileDragged(dragboard)) {
+			File droppedFile = dragboard.getFiles().get(0);
+			LOGGER.debug("setOnDragDropped file: {}", droppedFile);
+			selectFile(droppedFile, false);
+		}
+		event.consume();
+	}
+
+	private boolean isOneFileDragged(Dragboard dragboard) {
+		return dragboard.hasFiles() && dragboard.getFiles().size() == 1;
+	}
+
+	void selectFile(File file, boolean setInitialDir) {
+		if (file != null) {
+			SelectMovieProperties.getInstance().setFile(file);
+			if (setInitialDir) {
+				SelectMovieProperties.getInstance().setInitialDir(
+						file.getParentFile());
+			}
+			openTitleTab();
+		}
+	}
+
+	private void openTitleTab() {
+		tabPane.getSelectionModel().select(1);
 	}
 
 }
