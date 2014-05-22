@@ -158,7 +158,7 @@ public class FXMLMainController implements Initializable {
 		return dragboard.hasFiles() && dragboard.getFiles().size() == 1;
 	}
 
-	void selectFile(File file, boolean setInitialDir) {
+	public void selectFile(File file, boolean setInitialDir) {
 		if (file != null) {
 			SelectMovieProperties.getInstance().setFile(file);
 			if (setInitialDir) {

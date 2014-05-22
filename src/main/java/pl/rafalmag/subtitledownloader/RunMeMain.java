@@ -1,18 +1,19 @@
 package pl.rafalmag.subtitledownloader;
 
-import java.io.InputStream;
-import java.net.URL;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.rafalmag.subtitledownloader.gui.FXMLMainController;
+
+import javax.annotation.Nullable;
+import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.List;
 
 public class RunMeMain extends Application {
 
@@ -22,6 +23,22 @@ public class RunMeMain extends Application {
 	public static void main(String[] args) {
 		LOGGER.debug("SubtitlesDownloader app started");
 		launch(args);
+	}
+
+	/*
+	 * To allow drag "file on JAR" functionality please drop files on bat/sh "similar" to this:
+	 * "java.exe" -jar "subtitlesdownloader.jar" %*
+	 */
+	@Nullable
+	private File getFileFromCommandLine() {
+		List<String> args = getParameters().getRaw();
+		if (args.size() == 1) {
+			File fileFromArg = new File(args.get(0));
+			if (fileFromArg.exists()) {
+				return fileFromArg;
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -37,8 +54,9 @@ public class RunMeMain extends Application {
 		try (InputStream is = resource.openStream()) {
 			root = (Parent) fxmlLoader.load(is);
 		}
-		FXMLMainController controller = (FXMLMainController) fxmlLoader
+		FXMLMainController controller = fxmlLoader
 				.getController();
+		controller.selectFile(getFileFromCommandLine(), false);
 		controller.setWindow(primaryStage);
 		primaryStage.setScene(new Scene(root));
 		primaryStage.show();
