@@ -14,7 +14,8 @@
           <children>
             <Button id="button1" fx:id="download" onAction="#download" text="Download" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER" />
             <Button id="button2" fx:id="test" onAction="#test" text="Test" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-            <Button id="button3" fx:id="markValid" onAction="#markValid" text="Mark subtitles as valid" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+            <Button id="button2a" fx:id="downloadAndtest" onAction="#downloadAndTest" text="Download  &amp; Test" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+            <Button id="button3" fx:id="markValid" onAction="#markValid" text="Mark subtitles as valid" GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
           </children>
           <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />

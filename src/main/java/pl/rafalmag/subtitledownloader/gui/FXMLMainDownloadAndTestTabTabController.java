@@ -12,6 +12,7 @@ import java.util.concurrent.Executors;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.binding.BooleanBinding;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -43,6 +44,10 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
 	protected Button download;
 
 	@FXML
+	protected Button downloadAndtest;
+
+
+	@FXML
 	protected Button test;
 
 	@FXML
@@ -60,6 +65,7 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
 				.getInstance().selectedSubtitlesProperty()
 				.isEqualTo(Subtitles.DUMMY_SUBTITLES);
 		download.disableProperty().bind(disabledDownloadProperty);
+		downloadAndtest.disableProperty().bind(disabledDownloadProperty);
 
 		disabledDownloadProperty.addListener(new InvalidationListener() {
 
@@ -75,6 +81,7 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
 
 			}
 		});
+
 	}
 
 	private void initTestButton() {
@@ -138,5 +145,10 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
 		// TODO
 		// http://trac.opensubtitles.org/projects/opensubtitles/wiki/XMLRPC#TryUploadSubtitles
 
+	}
+
+	public void downloadAndTest() {
+		download();
+		test();
 	}
 }
