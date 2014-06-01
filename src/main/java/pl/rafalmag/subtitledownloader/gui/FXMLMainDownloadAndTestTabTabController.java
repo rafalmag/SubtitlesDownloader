@@ -147,6 +147,7 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
 
 	}
 
+	@FXML
 	public void downloadAndTest() {
 		download();
 		test();
