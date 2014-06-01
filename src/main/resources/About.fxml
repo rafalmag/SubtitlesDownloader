@@ -1,29 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.paint.*?>
-<?import javafx.scene.text.*?>
-
-<AnchorPane id="AnchorPane" minWidth="286.0" prefHeight="117.0" prefWidth="286.0" xmlns:fx="http://javafx.com/fxml" fx:controller="pl.rafalmag.subtitledownloader.gui.FXMLAboutController">
-  <children>
-    <VBox id="vBox1" alignment="CENTER" layoutX="14.0" layoutY="14.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="89.0" prefWidth="258.0">
-      <children>
-        <Text id="text2" scaleX="1.2271511421926773" stroke="BLACK" text="SubtitlesDownloader by Rafal Magda" />
-        <Button id="" onAction="#openUrl" style="-fx-cursor: hand; -fx-background-color: white;">
-          <graphic>
-            <ImageView>
-              <image>
-                <Image url="@opensubtitles-logo-transparent.png" preserveRatio="false" smooth="false" />
-              </image>
-            </ImageView>
-          </graphic>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<AnchorPane minWidth="286.0" prefHeight="117.0" prefWidth="286.0" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="pl.rafalmag.subtitledownloader.gui.FXMLAboutController">
+    <VBox alignment="CENTER" layoutX="14.0" layoutY="14.0" maxHeight="-Infinity" maxWidth="-Infinity"
+          minHeight="-Infinity" minWidth="-Infinity" prefHeight="89.0" prefWidth="258.0">
+        <Text scaleX="1.2271511421926773" stroke="BLACK" text="SubtitlesDownloader by Rafal Magda"/>
+        <Button onAction="#openUrl" style="-fx-cursor: hand; -fx-background-color: white;">
+            <graphic>
+                <ImageView>
+                    <Image url="@opensubtitles-logo-transparent.png" preserveRatio="false" smooth="false"/>
+                </ImageView>
+            </graphic>
         </Button>
-        <Text id="text1" scaleX="0.8638451451172655" scaleY="1.0651003426333823" stroke="BLACK" text="Subtitles service powered by www.OpenSubtitles.org" />
-      </children>
+        <Text scaleX="0.8638451451172655" scaleY="1.0651003426333823" stroke="BLACK"
+              text="Subtitles service powered by www.OpenSubtitles.org"/>
     </VBox>
-  </children>
 </AnchorPane>

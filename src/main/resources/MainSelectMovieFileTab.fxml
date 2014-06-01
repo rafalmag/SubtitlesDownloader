@@ -1,23 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.paint.*?>
-
-<Tab id="tab1" fx:id="selectMovieFileTab" text="Select movie file" xmlns:fx="http://javafx.com/fxml" fx:controller="pl.rafalmag.subtitledownloader.gui.FXMLMainSelectedMovieFileTabController">
-	<content>
-		<AnchorPane id="AnchorPane" >
-		  <children>
-		    <Label id="label1" alignment="CENTER" contentDisplay="CENTER" prefHeight="289.0" prefWidth="600.0" text="Drop file here" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-		    <ToolBar id="toolBar1" prefWidth="2500.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-		      <items>
-		        <Button id="button1" onAction="#browseFile" text="Browse file" />
-		      </items>
-		    </ToolBar>
-		    <Label id="label2" fx:id="selectedFile" alignment="BOTTOM_LEFT" prefHeight="70.0" prefWidth="600.0" text="Selected movie: " wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-		  </children>
-		</AnchorPane>
-	</content>
+<Tab fx:id="selectMovieFileTab" text="Select movie file" xmlns:fx="http://javafx.com/fxml"
+     fx:controller="pl.rafalmag.subtitledownloader.gui.FXMLMainSelectedMovieFileTabController">
+    <AnchorPane>
+        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="289.0" prefWidth="600.0"
+               text="Drop file here" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="0.0"
+               AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+        <ToolBar prefWidth="2500.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                 AnchorPane.topAnchor="0.0">
+            <Button onAction="#browseFile" text="Browse file"/>
+        </ToolBar>
+        <Label fx:id="selectedFile" alignment="BOTTOM_LEFT" prefHeight="70.0" prefWidth="600.0"
+               text="Selected movie: " wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+               AnchorPane.rightAnchor="0.0"/>
+    </AnchorPane>
 </Tab>

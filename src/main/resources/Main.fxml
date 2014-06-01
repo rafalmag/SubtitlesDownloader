@@ -1,40 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.paint.*?>
-
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml" fx:controller="pl.rafalmag.subtitledownloader.gui.FXMLMainController">
-  <children>
-    <VBox id="vBox1" onDragDropped="#setOnDragDropped" onDragEntered="#setOnDragEntered" onDragExited="#setOnDragExited" onDragOver="#setOnDragOver" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-      <children>
-        <MenuBar id="menuBar1" VBox.vgrow="ALWAYS">
-          <menus>
-            <Menu id="fileMenu1" text="File">
-              <items>
-                <MenuItem id="close1" onAction="#closeApp" text="Close" />
-              </items>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="pl.rafalmag.subtitledownloader.gui.FXMLMainController">
+    <VBox onDragDropped="#setOnDragDropped" onDragEntered="#setOnDragEntered" onDragExited="#setOnDragExited"
+          onDragOver="#setOnDragOver" alignment="CENTER" prefHeight="200.0" prefWidth="100.0"
+          AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+          AnchorPane.topAnchor="0.0">
+        <MenuBar VBox.vgrow="ALWAYS">
+            <Menu text="File">
+                <MenuItem onAction="#closeApp" text="Close"/>
             </Menu>
-            <Menu id="helpMenu1" text="Help">
-              <items>
-                <MenuItem id="about1" onAction="#openAbout" text="About" />
-              </items>
+            <Menu text="Help">
+                <MenuItem onAction="#openAbout" text="About"/>
             </Menu>
-          </menus>
         </MenuBar>
-        <TabPane id="tabPane1" fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS" />
-        <ToolBar id="toolBar1" VBox.vgrow="NEVER">
-          <items>
-            <ProgressBar id="progressBar1" fx:id="progressBar" prefWidth="200.0" progress="0.0" />
-            <Button id="button1" onAction="#openAbout" text="About" />
-            <Button id="button2" fx:id="previousButton" onAction="#previousTab" text="Previous" />
-            <Button id="button3" fx:id="nextButton" onAction="#nextTab" text="Next" />
-            <Button id="button4" onAction="#closeApp" text="Finish" />
-          </items>
+        <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS"/>
+        <ToolBar VBox.vgrow="NEVER">
+            <ProgressBar fx:id="progressBar" prefWidth="200.0" progress="0.0"/>
+            <Button onAction="#openAbout" text="About"/>
+            <Button fx:id="previousButton" onAction="#previousTab" text="Previous"/>
+            <Button fx:id="nextButton" onAction="#nextTab" text="Next"/>
+            <Button onAction="#closeApp" text="Finish"/>
         </ToolBar>
-      </children>
     </VBox>
-  </children>
 </AnchorPane>

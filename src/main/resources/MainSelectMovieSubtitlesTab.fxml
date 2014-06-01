@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.paint.*?>
-
-<Tab id="tab1" fx:id="selectMovieSubtitlesTab" text="Select subtitles" xmlns:fx="http://javafx.com/fxml" fx:controller="pl.rafalmag.subtitledownloader.gui.FXMLMainSelectedMovieSubtitlesTabController">
-  <content>
-    <VBox id="VBox">
-      <children>
-        <TableView id="tableView1" fx:id="table" VBox.vgrow="ALWAYS" />
-        <Label id="label2" fx:id="selectedSubtitles" alignment="BOTTOM_LEFT" prefWidth="2500.0" text="Selected subtitle:" VBox.vgrow="SOMETIMES" />
-      </children>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+<Tab fx:id="selectMovieSubtitlesTab" text="Select subtitles" xmlns:fx="http://javafx.com/fxml"
+     fx:controller="pl.rafalmag.subtitledownloader.gui.FXMLMainSelectedMovieSubtitlesTabController">
+    <VBox>
+        <TableView fx:id="table" VBox.vgrow="ALWAYS"/>
+        <Label fx:id="selectedSubtitles" alignment="BOTTOM_LEFT" prefWidth="2500.0" text="Selected subtitle:"
+               VBox.vgrow="SOMETIMES"/>
     </VBox>
-  </content>
 </Tab>
