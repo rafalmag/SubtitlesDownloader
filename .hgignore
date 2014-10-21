@@ -2,6 +2,6 @@ syntax: regexp
 ^target$
 ^src/main/resources/.*\.bak$
 ^rebel\.xml$
-
-syntax: regexp
 \.properties$
+^\.idea$
+^.*\.iml$
