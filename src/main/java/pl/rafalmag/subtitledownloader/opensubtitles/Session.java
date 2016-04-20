@@ -1,26 +1,22 @@
 package pl.rafalmag.subtitledownloader.opensubtitles;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
+import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
-import pl.rafalmag.subtitledownloader.opensubtitles.entities.ImdbMovieDetails;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.MovieEntity;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
-
-import com.google.common.base.Throwables;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SubtitleLanguage;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Session {
 
@@ -30,9 +26,9 @@ public class Session {
 //	@formatter:off
 	/**
 	 * See restrictions here: 
-	 * {@link http://trac.opensubtitles.org/projects/opensubtitles/wiki/DevReadFirst}
+	 * {@see http://trac.opensubtitles.org/projects/opensubtitles/wiki/DevReadFirst}
 	 */
-	private static final String USER_AGENT = "SubtitlesDownloader v1.2";
+	private static final String USER_AGENT = "SubtitlesDownloader v1.3";
 //	@formatter:on
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Session.class);
@@ -128,10 +124,12 @@ public class Session {
 
 	public List<SubtitleLanguage> getSubLanguages() throws SubtitlesDownloaderException{
 		try {
+			@SuppressWarnings("unchecked")
 			Map<String,Object> response = (Map<String, Object>) client.execute("GetSubLanguages", new Object[]{});
 			Object [] languages = (Object[]) response.get("data");
 			return Arrays.stream(languages).map(o -> {
-                Map<String,String> languageEntry = (Map<String, String>) o;
+				@SuppressWarnings("unchecked")
+				Map<String,String> languageEntry = (Map<String, String>) o;
                 return new SubtitleLanguage(languageEntry.get("SubLanguageID"), languageEntry.get("LanguageName"), languageEntry.get("ISO639"));
             }).collect(Collectors.toList());
 		} catch (XmlRpcException e) {
@@ -182,42 +180,6 @@ public class Session {
 	// this can be also easily implemented
 	// http://trac.opensubtitles.org/projects/opensubtitles/wiki/XMLRPC#SearchMoviesOnIMDB
 
-	/**
-	 * @deprecated Use TheMovieDb methods
-	 * 
-	 * @see {@link link
-	 *      http://trac.opensubtitles.org/projects/opensubtitles/wiki/XMLRPC
-	 *      #GetIMDBMovieDetails}
-	 * @param imdbId
-	 * @return
-	 * @throws SubtitlesDownloaderException
-	 */
-	@Deprecated
-	public ImdbMovieDetails getImdbMovieDetails(int imdbId)
-			throws SubtitlesDownloaderException {
-		Object[] params = new Object[] { token, imdbId };
-		try {
-			@SuppressWarnings("unchecked")
-			Map<String, Object> execute = (Map<String, Object>) client.execute(
-					"GetIMDBMovieDetails", params);
-			LOGGER.debug("GetIMDBMovieDetails response: " + execute);
-			String status = (String) execute.get("status");
-			if (!status.contains("OK")) {
-				throw new SubtitlesDownloaderException(
-						"could not GetIMDBMovieDetails because of wrong status "
-								+ status);
-			}
-			@SuppressWarnings("unchecked")
-			Map<String, Object> data = (Map<String, Object>) execute
-					.get("data");
-			return new ImdbMovieDetails(data);
-		} catch (XmlRpcException e) {
-			throw new SubtitlesDownloaderException(
-					"could not invoke GetIMDBMovieDetails because of "
-							+ e.getMessage(), e);
-		}
-	}
-
 	public List<MovieEntity> checkMovieHash2(String hashCode)
 			throws SubtitlesDownloaderException {
 		Object[] params = new Object[] { token, new Object[] { hashCode } };
@@ -232,8 +194,7 @@ public class Session {
 						"could not CheckMovieHash2 because of wrong status "
 								+ status);
 			}
-			List<MovieEntity> result = parseData(response);
-			return result;
+			return parseData(response);
 		} catch (XmlRpcException e) {
 			throw new SubtitlesDownloaderException(
 					"could not invoke CheckMovieHash2 because of "

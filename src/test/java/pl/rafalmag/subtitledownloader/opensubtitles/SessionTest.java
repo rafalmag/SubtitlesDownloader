@@ -3,7 +3,6 @@ package pl.rafalmag.subtitledownloader.opensubtitles;
 import static ch.lambdaj.Lambda.having;
 import static ch.lambdaj.Lambda.on;
 import static ch.lambdaj.Lambda.select;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.not;
@@ -17,7 +16,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import pl.rafalmag.subtitledownloader.opensubtitles.entities.ImdbMovieDetails;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SubtitleLanguage;
 
@@ -34,19 +32,6 @@ public class SessionTest {
 	@After
 	public void logout() {
 		session.logout();
-	}
-
-	@Deprecated
-	@Test
-	public void should_get_title_from_imdbId() throws Exception {
-		// given
-		int imdbId = 1422136;
-
-		// when
-		ImdbMovieDetails imdbMovieDetails = session.getImdbMovieDetails(imdbId);
-
-		assertThat(imdbMovieDetails.getTitle(),
-				equalTo("A Lonely Place to Die"));
 	}
 
 	@Test
