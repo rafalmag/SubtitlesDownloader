@@ -2,10 +2,9 @@ package pl.rafalmag.subtitledownloader.opensubtitles;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
@@ -21,6 +20,7 @@ import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResu
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import pl.rafalmag.subtitledownloader.opensubtitles.entities.SubtitleLanguage;
 
 public class Session {
 
@@ -124,6 +124,21 @@ public class Session {
 				new Object[] { ImmutableMap.of("sublanguageid", ENG, "query",
 						title) } };
 		return searchSubtitles(params);
+	}
+
+	public List<SubtitleLanguage> getSubLanguages() throws SubtitlesDownloaderException{
+		try {
+			Map<String,Object> response = (Map<String, Object>) client.execute("GetSubLanguages", new Object[]{});
+			Object [] languages = (Object[]) response.get("data");
+			return Arrays.stream(languages).map(o -> {
+                Map<String,String> languageEntry = (Map<String, String>) o;
+                return new SubtitleLanguage(languageEntry.get("SubLanguageID"), languageEntry.get("LanguageName"), languageEntry.get("ISO639"));
+            }).collect(Collectors.toList());
+		} catch (XmlRpcException e) {
+			throw new SubtitlesDownloaderException(
+					"could not invoke GetSubLanguages because of "
+							+ e.getMessage(), e);
+		}
 	}
 
 	// TODO searchSubtitlesByTag - filename

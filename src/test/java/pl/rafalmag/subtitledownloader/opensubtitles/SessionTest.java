@@ -12,12 +12,14 @@ import static org.junit.Assert.assertThat;
 import java.util.Collection;
 import java.util.List;
 
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.ImdbMovieDetails;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
+import pl.rafalmag.subtitledownloader.opensubtitles.entities.SubtitleLanguage;
 
 public class SessionTest {
 
@@ -112,4 +114,14 @@ public class SessionTest {
 				select2, not(hasSize(0)));
 	}
 
+	@Test
+	public void should_get_sub_languages() throws Exception {
+		// given
+		// when
+		List<SubtitleLanguage> subtitleLanguages = session.getSubLanguages();
+		// then
+		SubtitleLanguage english = new SubtitleLanguage("eng", "English", "en");
+		SubtitleLanguage polish = new SubtitleLanguage("pol", "Polish", "pl");
+		assertThat(subtitleLanguages, Matchers.hasItems(english, polish));
+	}
 }
