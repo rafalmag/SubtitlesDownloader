@@ -1,22 +1,15 @@
 package pl.rafalmag.subtitledownloader.subtitles;
 
-import static ch.lambdaj.Lambda.having;
-import static ch.lambdaj.Lambda.on;
-import static ch.lambdaj.Lambda.select;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertThat;
-
-import java.io.File;
-import java.util.List;
-import java.util.SortedSet;
-
 import org.junit.Ignore;
 import org.junit.Test;
-
 import pl.rafalmag.subtitledownloader.title.Movie;
 import pl.rafalmag.subtitledownloader.utils.ProgressCallbackDummy;
+
+import java.io.File;
+import java.util.SortedSet;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 
 public class SubtitlesUtilsTest {
 
@@ -27,9 +20,9 @@ public class SubtitlesUtilsTest {
 	@Test
 	public void should_get_valid_subtitles() throws Exception {
 		// given
-		Movie movie = new Movie("Midnight in Paris", 2011, 1605783);
+		Movie movie = new Movie("Dead Snow", 2009, 1278340);
 		File movieFile = new File(
-				"I:/filmy/!old/Midnight.in.Paris.DVDRip.XviD-TARGET/target-paris-xvid.avi");
+				"E:/filmy/!old/Dead.Snow.(Doed.Snoe).2009.1080p.BluRay.x264.anoXmous/Dead.Snow.(Doed.Snoe).2009.1080p.BluRay.x264.anoXmous_.mp4");
 
 		// when
 		SubtitlesUtils subtitlesUtils = new SubtitlesUtils(movie, movieFile,
@@ -37,16 +30,6 @@ public class SubtitlesUtilsTest {
 		SortedSet<Subtitles> subtitles = subtitlesUtils.getSubtitles();
 
 		// then
-		List<Subtitles> downloadsOver1000 = select(
-				subtitles,
-				having(on(Subtitles.class).getDownloadsCount(),
-						greaterThan(1000)));
-		assertThat(downloadsOver1000, hasSize(greaterThan(1)));
-		List<Subtitles> downloadsOver1000WithPropperTitle = select(
-				downloadsOver1000,
-				having(on(Subtitles.class).getFileName(),
-						containsString("Midnight.in.Paris.DVDRip.XviD")));
-		assertThat(downloadsOver1000WithPropperTitle, hasSize(greaterThan(1)));
-
+		assertThat(subtitles.first().getFileName(),equalTo("Doed.Snoe.2009.NORWEGIAN.DVDRip.XviD-DnB.srt"));
 	}
 }
