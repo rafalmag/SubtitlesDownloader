@@ -24,48 +24,48 @@ import java.util.stream.StreamSupport;
 
 public class SubtitlesUtils {
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(SubtitlesUtils.class);
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(SubtitlesUtils.class);
 
-	private final Movie movie;
-	private final File movieFile;
-	private final long timeoutMs;
-	private final ProgressCallback progressCallback;
+    private final Movie movie;
+    private final File movieFile;
+    private final long timeoutMs;
+    private final ProgressCallback progressCallback;
 
-	public SubtitlesUtils(Movie movie, File movieFile, long timeoutMs,
-			ProgressCallback progressCallback) {
-		this.movie = movie;
-		this.movieFile = movieFile;
-		this.timeoutMs = timeoutMs;
-		this.progressCallback = progressCallback;
-	}
+    public SubtitlesUtils(Movie movie, File movieFile, long timeoutMs,
+                          ProgressCallback progressCallback) {
+        this.movie = movie;
+        this.movieFile = movieFile;
+        this.timeoutMs = timeoutMs;
+        this.progressCallback = progressCallback;
+    }
 
-	private final static ExecutorService EXECUTOR = Executors
-			.newCachedThreadPool(new BasicThreadFactory.Builder().daemon(true)
-					.namingPattern("Subtitle-%d").build());
+    private final static ExecutorService EXECUTOR = Executors
+            .newCachedThreadPool(new BasicThreadFactory.Builder().daemon(true)
+                    .namingPattern("Subtitle-%d").build());
 
-	public SortedSet<Subtitles> getSubtitles()
-			throws InterruptedException {
-		LOGGER.debug("search subtitles for {} with timeout {}ms", movie,
-				timeoutMs);
-		Callable<List<Subtitles>> callable = new NamedCallable<>(
-				"-FromOpenSub", () -> getSubtitlesFromOpenSubtitles(timeoutMs));
-		Collection<List<Subtitles>> solve = Utils.solve(EXECUTOR,
-				ImmutableList
-						.of(callable), timeoutMs, progressCallback);
+    public SortedSet<Subtitles> getSubtitles()
+            throws InterruptedException {
+        LOGGER.debug("search subtitles for {} with timeout {}ms", movie,
+                timeoutMs);
+        Callable<List<Subtitles>> callable = new NamedCallable<>(
+                "-FromOpenSub", () -> getSubtitlesFromOpenSubtitles(timeoutMs));
+        Collection<List<Subtitles>> solve = Utils.solve(EXECUTOR,
+                ImmutableList
+                        .of(callable), timeoutMs, progressCallback);
 
-		Supplier<TreeSet<Subtitles>> supplier = () -> new TreeSet<>(Collections.reverseOrder());
-		return StreamSupport.stream(solve.spliterator(), false)
-				.flatMap(i -> StreamSupport.stream(i.spliterator(), false))
-				.collect(Collectors.toCollection(supplier));
-	}
+        Supplier<TreeSet<Subtitles>> supplier = () -> new TreeSet<>(Collections.reverseOrder());
+        return StreamSupport.stream(solve.spliterator(), false)
+                .flatMap(i -> StreamSupport.stream(i.spliterator(), false))
+                .collect(Collectors.toCollection(supplier));
+    }
 
-	protected List<Subtitles> getSubtitlesFromOpenSubtitles(long timeoutMs)
-			throws SubtitlesDownloaderException, InterruptedException {
-		Session session = new Session();
-		session.login(); // mandatory
-		List<SearchSubtitlesResult> subtitlesFromOpenSubtitles = new CheckMovieSubtitles(
-				session, movieFile, movie).getSubtitles(timeoutMs);
-		return subtitlesFromOpenSubtitles.stream().map(Subtitles::new).collect(Collectors.toList());
-	}
+    protected List<Subtitles> getSubtitlesFromOpenSubtitles(long timeoutMs)
+            throws SubtitlesDownloaderException, InterruptedException {
+        Session session = new Session();
+        session.login(); // mandatory
+        List<SearchSubtitlesResult> subtitlesFromOpenSubtitles = new CheckMovieSubtitles(
+                session, movieFile, movie).getSubtitles(timeoutMs);
+        return subtitlesFromOpenSubtitles.stream().map(Subtitles::new).collect(Collectors.toList());
+    }
 }

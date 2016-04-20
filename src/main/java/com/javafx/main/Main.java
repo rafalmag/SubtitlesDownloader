@@ -25,6 +25,9 @@
 
 package com.javafx.main;
 
+import sun.misc.BASE64Decoder;
+
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -41,48 +44,44 @@ import java.util.List;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
-import javax.swing.JApplet;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-import sun.misc.BASE64Decoder;
 
 /**
  * This class loads com.sun.javafx.application.LauncherImpl and calls the
  * launchApplication method.
- *
+ * <p>
  * It is used by packager to include it as part of the application jar file
  * so that we can run and locate the JavaFX runtime. Note that we cannot
  * assume that JavaFX is on the classpath so we must use reflection and not
  * have any direct reference to any JavaFX runtime class.
- *
+ * <p>
  * We will do the following:
- *
+ * <p>
  * 1. Verify the version of Java and produce error message if not JDK6+
- *
+ * <p>
  * 2. Locate the jar file from which the Main class was launched. Read the
- *    jar manifest and extract
- *    the application class using the JavaFX-Application-Class manifest entry.
- *    Alternatively, we will read the application class from a system property.
- *
+ * jar manifest and extract
+ * the application class using the JavaFX-Application-Class manifest entry.
+ * Alternatively, we will read the application class from a system property.
+ * <p>
  * 3. Try to locate the JavaFX runtime by loading the
  * com.sun.javafx.application.LauncherImpl class using the following mechanisms
  * in order:
- *
- *     A. Try loading it directly in case it is on the classpath.
- *     B. If the javafx.runtime.path System Property is set, try
- *        loading it from ${javafx.runtime.path}/lib/jfxrt.jar
- *     C. If on Windows, read the registry key associated with the JavaFX
- *        runtime (if running in a 64-bit JVM, use the 64-bit path)
- *     D. Try a few hard-coded relative paths which will allow applications
- *        to be run from the SDK without first having to install the runtime.
- *
+ * <p>
+ * A. Try loading it directly in case it is on the classpath.
+ * B. If the javafx.runtime.path System Property is set, try
+ * loading it from ${javafx.runtime.path}/lib/jfxrt.jar
+ * C. If on Windows, read the registry key associated with the JavaFX
+ * runtime (if running in a 64-bit JVM, use the 64-bit path)
+ * D. Try a few hard-coded relative paths which will allow applications
+ * to be run from the SDK without first having to install the runtime.
+ * <p>
  * 4. Create a custom URLClassLoader from the appropriate jar files, and then
- *    call the launchApplication method. If the application class is not a
- *    subclass of javafx.application.Application then we will call the main
- *    method in the application class instead.
- *
+ * call the launchApplication method. If the application class is not a
+ * subclass of javafx.application.Application then we will call the main
+ * method in the application class instead.
+ * <p>
  * 5. If the LauncherImpl class cannot be found, then show a Swing dialog
- *    (again, using reflection).
+ * (again, using reflection).
  */
 
 public class Main {
@@ -125,7 +124,7 @@ public class Main {
 
     private static Method findLaunchMethod(File jfxRtPath, String fxClassPath) {
         final Class[] argTypes =
-                new Class[] { Class.class, Class.class, (new String[0]).getClass() };
+                new Class[]{Class.class, Class.class, (new String[0]).getClass()};
 
         try {
             List<URL> urlList = new ArrayList<>();
@@ -161,7 +160,8 @@ public class Main {
                     if (!baseDir.exists()) {
                         baseDir = null;
                     }
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
                 while (cp.length() > 0) {
                     int pathSepIdx = cp.indexOf(" ");
                     if (pathSepIdx < 0) {
@@ -206,7 +206,7 @@ public class Main {
                 }
             }
 
-            URL[] urls = (URL[])urlList.toArray(new URL[0]);
+            URL[] urls = (URL[]) urlList.toArray(new URL[0]);
             if (verbose) {
                 System.err.println("===== URL list");
                 for (URL url : urls) {
@@ -445,7 +445,7 @@ public class Main {
         String theClassFile = "Main.class";
         Class theClass = Main.class;
         String classUrlString = theClass.getResource(theClassFile).toString();
-        if (!classUrlString.startsWith("jar:file:") || !classUrlString.contains("!")){
+        if (!classUrlString.startsWith("jar:file:") || !classUrlString.contains("!")) {
             return null;
         }
         // Strip out the "jar:" and everything after and including the "!"
@@ -578,27 +578,27 @@ public class Main {
             if (attrs != null) {
                 String proxySetting = attrs.getValue(manifestAutoProxy);
                 if (proxySetting != null && !"auto".equals(proxySetting.toLowerCase())) {
-                   if (verbose) {
-                       System.out.println("Auto proxy detection is disabled in manifest.");
-                   }
-                   return;
+                    if (verbose) {
+                        System.out.println("Auto proxy detection is disabled in manifest.");
+                    }
+                    return;
                 }
             }
 
             //if explicit proxy settings are proxided we will skip autoproxy
             //Note: we only check few most popular settings.
             if (System.getProperty("http.proxyHost") != null
-                 || System.getProperty("https.proxyHost") != null
-                 || System.getProperty("ftp.proxyHost") != null
-                 || System.getProperty("socksProxyHost") != null) {
-               if (verbose) {
-                   System.out.println("Explicit proxy settings detected. Skip autoconfig.");
-                   System.out.println("  http.proxyHost=" + System.getProperty("http.proxyHost"));
-                   System.out.println("  https.proxyHost=" + System.getProperty("https.proxyHost"));
-                   System.out.println("  ftp.proxyHost=" + System.getProperty("ftp.proxyHost"));
-                   System.out.println("  socksProxyHost=" + System.getProperty("socksProxyHost"));
-               }
-               return;
+                    || System.getProperty("https.proxyHost") != null
+                    || System.getProperty("ftp.proxyHost") != null
+                    || System.getProperty("socksProxyHost") != null) {
+                if (verbose) {
+                    System.out.println("Explicit proxy settings detected. Skip autoconfig.");
+                    System.out.println("  http.proxyHost=" + System.getProperty("http.proxyHost"));
+                    System.out.println("  https.proxyHost=" + System.getProperty("https.proxyHost"));
+                    System.out.println("  ftp.proxyHost=" + System.getProperty("ftp.proxyHost"));
+                    System.out.println("  socksProxyHost=" + System.getProperty("socksProxyHost"));
+                }
+                return;
             }
             if (System.getProperty("javafx.autoproxy.disable") != null) {
                 if (verbose) {
@@ -641,7 +641,7 @@ public class Main {
             }
         } catch (Exception e) {
             if (verbose) {
-                System.out.println("Failed to autoconfig proxy due to "+e);
+                System.out.println("Failed to autoconfig proxy due to " + e);
             }
         }
     }
@@ -667,21 +667,21 @@ public class Main {
             Method mainMethod = hookClass.getMethod("main",
                     (new String[0]).getClass());
             String args[] = null;
-            mainMethod.invoke(null, new Object[] {args});
+            mainMethod.invoke(null, new Object[]{args});
 
         } catch (Exception ex) {
             if (verbose) {
-                System.err.println("Failed to run update hook: "+ex.getMessage());
+                System.err.println("Failed to run update hook: " + ex.getMessage());
                 ex.printStackTrace();
             }
         }
     }
 
     private static void launchApp(Method launchMethod,
-            String appName,
-            String preloaderName,
-            String updateHookName,
-            String[] args) {
+                                  String appName,
+                                  String preloaderName,
+                                  String updateHookName,
+                                  String[] args) {
 
         Class preloaderClass = null;
         if (preloaderName != null) {
@@ -691,7 +691,7 @@ public class Main {
         Class fxApplicationClass = null;
         try {
             fxApplicationClass = Class.forName(fxApplicationClassName,
-                true, Thread.currentThread().getContextClassLoader());
+                    true, Thread.currentThread().getContextClassLoader());
         } catch (NoClassDefFoundError ex) {
             errorExit("Cannot find " + fxApplicationClassName);
         } catch (ClassNotFoundException ex) {
@@ -723,7 +723,7 @@ public class Main {
                 }
                 Method mainMethod = appClass.getMethod("main",
                         (new String[0]).getClass());
-                mainMethod.invoke(null, new Object[] { args });
+                mainMethod.invoke(null, new Object[]{args});
             } catch (Exception ex) {
                 ex.printStackTrace();
                 errorExit("Unable to invoke main method");
@@ -779,7 +779,7 @@ public class Main {
 
         if (verbose) {
             System.err.println("3) Look for cobundled JavaFX ... " +
-                    "[java.home="+System.getProperty("java.home"));
+                    "[java.home=" + System.getProperty("java.home"));
         }
         launchMethod = findLaunchMethodInJar(
                 System.getProperty("java.home"), fxClassPath);
@@ -812,10 +812,10 @@ public class Main {
             System.err.println("5) Look in hardcoded paths");
         }
         String[] hardCodedPaths = {
-            "../rt",
-            "../../../../rt", /* this is for sample code in the sdk/apps/src/BrickBreaker/dist */
-            "../../sdk/rt",
-            "../../../artifacts/sdk/rt"
+                "../rt",
+                "../../../../rt", /* this is for sample code in the sdk/apps/src/BrickBreaker/dist */
+                "../../sdk/rt",
+                "../../../artifacts/sdk/rt"
         };
 
         for (String hardCodedPath : hardCodedPaths) {
@@ -829,7 +829,7 @@ public class Main {
         return launchMethod;
     }
 
-    public static void main(String [] args) {
+    public static void main(String[] args) {
         // Set verbose flag
         verbose = Boolean.getBoolean("javafx.verbose");
 
@@ -867,21 +867,21 @@ public class Main {
 
         String updateHook = attrs.getValue(manifestUpdateHook);
         if (verbose && updateHook != null) {
-             System.err.println("updateHook = " + updateHook);
+            System.err.println("updateHook = " + updateHook);
         }
 
         // Get JavaFX-Class-Path entry
         String fxClassPath;
         if (attrs != null) {
-           fxClassPath = attrs.getValue(manifestClassPath);
+            fxClassPath = attrs.getValue(manifestClassPath);
         } else {
-           fxClassPath = "";
+            fxClassPath = "";
         }
 
         Method launchMethod = findLaunchMethod(fxClassPath);
         if (launchMethod != null) {
             launchApp(launchMethod, appName, preloaderName, updateHook,
-                    args.length > 0 ? args: embeddedArgs);
+                    args.length > 0 ? args : embeddedArgs);
             return;
         }
 
@@ -911,7 +911,7 @@ public class Main {
                     // default JavaFX fallback we want to use other way to launch it
                     if (customFallback != null
                             && !NoJavaFXFallback.class.getName().equals(
-                                   customFallback.getName())) {
+                            customFallback.getName())) {
                         try {
                             japp = (JApplet) customFallback.newInstance();
                         } catch (Exception e) {

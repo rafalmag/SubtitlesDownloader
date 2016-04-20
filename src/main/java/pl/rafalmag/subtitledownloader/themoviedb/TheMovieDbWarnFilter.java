@@ -6,13 +6,13 @@ import ch.qos.logback.core.spi.FilterReply;
 
 public class TheMovieDbWarnFilter extends Filter<ILoggingEvent> {
 
-	@Override
-	public FilterReply decide(ILoggingEvent event) {
-		if (event.getMessage()
-				.contains("Unknown property: 'logo_sizes' value:")) {
-			return FilterReply.DENY;
-		} else {
-			return FilterReply.NEUTRAL;
-		}
-	}
+    @Override
+    public FilterReply decide(ILoggingEvent event) {
+        if (event.getMessage()
+                .contains("Unknown property: 'logo_sizes' value:")) {
+            return FilterReply.DENY;
+        } else {
+            return FilterReply.NEUTRAL;
+        }
+    }
 }

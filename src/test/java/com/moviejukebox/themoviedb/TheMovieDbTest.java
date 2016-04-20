@@ -7,85 +7,86 @@ import pl.rafalmag.subtitledownloader.themoviedb.TheMovieDbHelper;
 
 import java.util.List;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertThat;
 
 public class TheMovieDbTest {
 
-	private static String TM_DB_API_KEY = TheMovieDbHelper.API_KEY;
+    private static String TM_DB_API_KEY = TheMovieDbHelper.API_KEY;
 
-	@Test
-	public void should_get_info_for_starWars_movie() throws Exception {
-		// given
-		String title = "Star Wars New Hope";
-		String language = "english";
-		boolean allResults = true;
+    @Test
+    public void should_get_info_for_starWars_movie() throws Exception {
+        // given
+        String title = "Star Wars New Hope";
+        String language = "english";
+        boolean allResults = true;
 
-		// when
-		TheMovieDbApi theMovieDb = new TheMovieDbApi(TM_DB_API_KEY);
-		List<MovieDb> searchMovie = theMovieDb.searchMovie(title, 0, language,
-				allResults, 0).getResults();
+        // when
+        TheMovieDbApi theMovieDb = new TheMovieDbApi(TM_DB_API_KEY);
+        List<MovieDb> searchMovie = theMovieDb.searchMovie(title, 0, language,
+                allResults, 0).getResults();
 
-		// then
-		MovieDb firstMovieDb = searchMovie.get(0);
-		assertThat(firstMovieDb.getTitle(),
-				startsWith("Star Wars"));
-		assertThat(firstMovieDb.getOriginalTitle(),
-				startsWith("Star Wars"));
-		assertThat(firstMovieDb.getId(), equalTo(11));
-		// assertThat(firstMovieDb.getImdbID(), equalTo("tt0076759")); // null
-		// :(
-	}
+        // then
+        MovieDb firstMovieDb = searchMovie.get(0);
+        assertThat(firstMovieDb.getTitle(),
+                startsWith("Star Wars"));
+        assertThat(firstMovieDb.getOriginalTitle(),
+                startsWith("Star Wars"));
+        assertThat(firstMovieDb.getId(), equalTo(11));
+        // assertThat(firstMovieDb.getImdbID(), equalTo("tt0076759")); // null
+        // :(
+    }
 
-	@Test
-	public void should_get_imdb_id_for_id() throws Exception {
-		// given
-		int id = 11;
-		String expectedImdb = "tt0076759";
-		String language = "english";
+    @Test
+    public void should_get_imdb_id_for_id() throws Exception {
+        // given
+        int id = 11;
+        String expectedImdb = "tt0076759";
+        String language = "english";
 
-		// when
-		TheMovieDbApi theMovieDb = new TheMovieDbApi(TM_DB_API_KEY);
-		MovieDb movieInfo = theMovieDb.getMovieInfo(id, language);
+        // when
+        TheMovieDbApi theMovieDb = new TheMovieDbApi(TM_DB_API_KEY);
+        MovieDb movieInfo = theMovieDb.getMovieInfo(id, language);
 
-		// then
-		assertThat(movieInfo.getImdbID(), equalTo(expectedImdb));
-	}
+        // then
+        assertThat(movieInfo.getImdbID(), equalTo(expectedImdb));
+    }
 
-	@Test
-	public void should_get_the_same_obj_by_title_and_id() throws Exception {
-		// given
-		String title = "Star Wars New Hope";
-		String language = "english";
-		int id = 11;
+    @Test
+    public void should_get_the_same_obj_by_title_and_id() throws Exception {
+        // given
+        String title = "Star Wars New Hope";
+        String language = "english";
+        int id = 11;
 
-		// when
-		TheMovieDbApi theMovieDb = new TheMovieDbApi(TM_DB_API_KEY);
-		List<MovieDb> searchMovie = theMovieDb.searchMovie(title, 0, language,
-				true, 0).getResults();
-		MovieDb firstMovieDb = searchMovie.get(0);
+        // when
+        TheMovieDbApi theMovieDb = new TheMovieDbApi(TM_DB_API_KEY);
+        List<MovieDb> searchMovie = theMovieDb.searchMovie(title, 0, language,
+                true, 0).getResults();
+        MovieDb firstMovieDb = searchMovie.get(0);
 
-		MovieDb movieDbById = theMovieDb.getMovieInfo(id, language);
+        MovieDb movieDbById = theMovieDb.getMovieInfo(id, language);
 
-		// then
-		assertThat(movieDbById.getId(), equalTo(firstMovieDb.getId()));
-		assertThat(movieDbById.getTitle(), equalTo(firstMovieDb.getTitle()));
-		assertThat(movieDbById.getOriginalTitle(),
-				equalTo(firstMovieDb.getOriginalTitle()));
-		assertThat(movieDbById.getReleaseDate(),
-				equalTo(firstMovieDb.getReleaseDate()));
-		// does'n not equal !
-		// assertThat(movieDbById, equalTo(firstMovieDb));
+        // then
+        assertThat(movieDbById.getId(), equalTo(firstMovieDb.getId()));
+        assertThat(movieDbById.getTitle(), equalTo(firstMovieDb.getTitle()));
+        assertThat(movieDbById.getOriginalTitle(),
+                equalTo(firstMovieDb.getOriginalTitle()));
+        assertThat(movieDbById.getReleaseDate(),
+                equalTo(firstMovieDb.getReleaseDate()));
+        // does'n not equal !
+        // assertThat(movieDbById, equalTo(firstMovieDb));
 
-		// firstMovieDb doesn't have imdb
-		// assertThat(movieDbById.getImdbID(),
-		// equalTo(firstMovieDb.getImdbID()));
-		// popularity differs - mystery !
+        // firstMovieDb doesn't have imdb
+        // assertThat(movieDbById.getImdbID(),
+        // equalTo(firstMovieDb.getImdbID()));
+        // popularity differs - mystery !
 //		assertThat(movieDbById.getPopularity(),
 //				equalTo(firstMovieDb.getPopularity()));
 
 		/*
-		 * movieDbById:
+         * movieDbById:
 		 * [MovieDB=[backdropPath=/4iJfYYoQzZcONB9hNzg0J0wWyPH.jpg],[id=11],
 		 * [originalTitle=Star Wars],[popularity=7.311884],
 		 * [posterPath=/tvSlBzAdRE29bZe5yYWrJ2ds137.jpg],
@@ -127,5 +128,5 @@ public class TheMovieDbTest {
 		 * [revenue=0],[runtime=0],[spokenLanguages=null],[tagline=null],
 		 * [voteAverage=7.79],[voteCount=3554]]
 		 */
-	}
+    }
 }

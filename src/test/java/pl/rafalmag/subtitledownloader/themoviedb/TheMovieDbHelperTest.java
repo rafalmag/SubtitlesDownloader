@@ -15,47 +15,47 @@ import static org.junit.Assert.assertThat;
 
 public class TheMovieDbHelperTest {
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(TheMovieDbHelperTest.class);
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(TheMovieDbHelperTest.class);
 
-	@Test
-	public void should_hide_apiKey_from_logs() throws Exception {
-		// given
-		PrintStream out = System.out;
-		try {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			System.setOut(new PrintStream(baos));
+    @Test
+    public void should_hide_apiKey_from_logs() throws Exception {
+        // given
+        PrintStream out = System.out;
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            System.setOut(new PrintStream(baos));
 
-			// when
-			LOGGER.warn("api hidden = {}", TheMovieDbHelper.API_KEY);
+            // when
+            LOGGER.warn("api hidden = {}", TheMovieDbHelper.API_KEY);
 
-			// then
-			assertThat(baos.toString(),
-					containsString("api hidden = [API-KEY]"));
-			assertThat(baos.toString(),
-					not(containsString(TheMovieDbHelper.API_KEY)));
-		} finally {
-			System.setOut(out);
-		}
-	}
+            // then
+            assertThat(baos.toString(),
+                    containsString("api hidden = [API-KEY]"));
+            assertThat(baos.toString(),
+                    not(containsString(TheMovieDbHelper.API_KEY)));
+        } finally {
+            System.setOut(out);
+        }
+    }
 
-	@Test
-	public void should_get_movieDb_with_imdb() throws Exception {
-		// given
-		String title = "Star Wars New Hope";
+    @Test
+    public void should_get_movieDb_with_imdb() throws Exception {
+        // given
+        String title = "Star Wars New Hope";
 
-		// when
-		List<MovieDb> searchMovie = TheMovieDbHelper.getInstance().searchMovie(
-				title);
-		MovieDb firstMovieDb = searchMovie.get(0);
-		String imdbID = firstMovieDb.getImdbID();
+        // when
+        List<MovieDb> searchMovie = TheMovieDbHelper.getInstance().searchMovie(
+                title);
+        MovieDb firstMovieDb = searchMovie.get(0);
+        String imdbID = firstMovieDb.getImdbID();
 
-		// then
-		assertThat(firstMovieDb.getTitle(),
-				startsWith("Star Wars"));
-		assertThat(firstMovieDb.getOriginalTitle(),
-				startsWith("Star Wars"));
-		assertThat(firstMovieDb.getId(), equalTo(11));
-		assertThat(imdbID, equalTo("tt0076759"));
-	}
+        // then
+        assertThat(firstMovieDb.getTitle(),
+                startsWith("Star Wars"));
+        assertThat(firstMovieDb.getOriginalTitle(),
+                startsWith("Star Wars"));
+        assertThat(firstMovieDb.getId(), equalTo(11));
+        assertThat(imdbID, equalTo("tt0076759"));
+    }
 }

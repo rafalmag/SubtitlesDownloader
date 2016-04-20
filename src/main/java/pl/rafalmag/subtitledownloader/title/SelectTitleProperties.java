@@ -5,30 +5,30 @@ import javafx.beans.property.SimpleObjectProperty;
 
 public class SelectTitleProperties {
 
-	private static class SelectTitlePropertiesHolder {
-		static SelectTitleProperties instance = new SelectTitleProperties();
-	}
+    private static class SelectTitlePropertiesHolder {
+        static SelectTitleProperties instance = new SelectTitleProperties();
+    }
 
-	public static SelectTitleProperties getInstance() {
-		return SelectTitlePropertiesHolder.instance;
-	}
+    public static SelectTitleProperties getInstance() {
+        return SelectTitlePropertiesHolder.instance;
+    }
 
-	private SelectTitleProperties() {
-	}
+    private SelectTitleProperties() {
+    }
 
-	private final ObjectProperty<Movie> selectedMovie = new SimpleObjectProperty<>(
-			Movie.DUMMY_MOVIE);
+    private final ObjectProperty<Movie> selectedMovie = new SimpleObjectProperty<>(
+            Movie.DUMMY_MOVIE);
 
-	public ObjectProperty<Movie> selectedMovieProperty() {
-		return selectedMovie;
-	}
+    public ObjectProperty<Movie> selectedMovieProperty() {
+        return selectedMovie;
+    }
 
-	public void setSelectedMovie(Movie movie) {
-		selectedMovie.set(movie);
-	}
+    public void setSelectedMovie(Movie movie) {
+        selectedMovie.set(movie);
+    }
 
-	public Movie getSelectedMovie() {
-		return selectedMovie.get();
-	}
+    public Movie getSelectedMovie() {
+        return selectedMovie.get();
+    }
 
 }

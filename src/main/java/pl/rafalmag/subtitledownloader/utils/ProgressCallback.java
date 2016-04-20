@@ -2,9 +2,9 @@ package pl.rafalmag.subtitledownloader.utils;
 
 public interface ProgressCallback {
 
-	void updateProgress(long progress, long max);
+    void updateProgress(long progress, long max);
 
-	void updateProgress(double procDone);
+    void updateProgress(double procDone);
 
-	double getProgress();
+    double getProgress();
 }

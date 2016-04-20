@@ -17,49 +17,49 @@ import java.util.List;
 
 public class RunMeMain extends Application {
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(RunMeMain.class);
+    private static final Logger LOGGER = LoggerFactory
+            .getLogger(RunMeMain.class);
 
-	public static void main(String[] args) {
-		LOGGER.debug("SubtitlesDownloader app started");
-		launch(args);
-	}
+    public static void main(String[] args) {
+        LOGGER.debug("SubtitlesDownloader app started");
+        launch(args);
+    }
 
-	/*
-	 * To allow drag "file on JAR" functionality please drop files on bat/sh "similar" to this:
-	 * "java.exe" -jar "subtitlesdownloader.jar" %*
-	 */
-	@Nullable
-	private File getFileFromCommandLine() {
-		List<String> args = getParameters().getRaw();
-		if (args.size() == 1) {
-			File fileFromArg = new File(args.get(0));
-			if (fileFromArg.exists()) {
-				return fileFromArg;
-			}
-		}
-		return null;
-	}
+    /*
+     * To allow drag "file on JAR" functionality please drop files on bat/sh "similar" to this:
+     * "java.exe" -jar "subtitlesdownloader.jar" %*
+     */
+    @Nullable
+    private File getFileFromCommandLine() {
+        List<String> args = getParameters().getRaw();
+        if (args.size() == 1) {
+            File fileFromArg = new File(args.get(0));
+            if (fileFromArg.exists()) {
+                return fileFromArg;
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public void start(Stage primaryStage) throws Exception {
-		LOGGER.trace("App started: start");
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        LOGGER.trace("App started: start");
 
-		primaryStage.setTitle("Subtitles Downloader");
+        primaryStage.setTitle("Subtitles Downloader");
 
-		URL resource = getClass().getResource("/Main.fxml");
-		FXMLLoader fxmlLoader = new FXMLLoader(resource);
+        URL resource = getClass().getResource("/Main.fxml");
+        FXMLLoader fxmlLoader = new FXMLLoader(resource);
 
-		Parent root;
-		try (InputStream is = resource.openStream()) {
-			root = fxmlLoader.load(is);
-		}
-		FXMLMainController controller = fxmlLoader
-				.getController();
-		controller.selectFile(getFileFromCommandLine(), false);
-		controller.setWindow(primaryStage);
-		primaryStage.setScene(new Scene(root));
-		primaryStage.show();
-	}
+        Parent root;
+        try (InputStream is = resource.openStream()) {
+            root = fxmlLoader.load(is);
+        }
+        FXMLMainController controller = fxmlLoader
+                .getController();
+        controller.selectFile(getFileFromCommandLine(), false);
+        controller.setWindow(primaryStage);
+        primaryStage.setScene(new Scene(root));
+        primaryStage.show();
+    }
 
 }

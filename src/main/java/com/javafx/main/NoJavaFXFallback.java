@@ -25,17 +25,13 @@
 
 package com.javafx.main;
 
+import javax.swing.*;
 import java.applet.Applet;
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.awt.Desktop;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Method;
 import java.net.URL;
-import javax.swing.JApplet;
-import javax.swing.JButton;
-import javax.swing.JTextPane;
 
 public class NoJavaFXFallback extends JApplet implements ActionListener {
     boolean isInBrowser = false;
@@ -64,32 +60,33 @@ public class NoJavaFXFallback extends JApplet implements ActionListener {
         StringBuilder sb = new StringBuilder();
 
         int firstDot = versionString.indexOf(".");
-        sb.append(versionString.substring(0,firstDot));
+        sb.append(versionString.substring(0, firstDot));
 
-        int secondDot = versionString.indexOf(".", firstDot+1);
-        sb.append(versionString.substring(firstDot+1, secondDot));
+        int secondDot = versionString.indexOf(".", firstDot + 1);
+        sb.append(versionString.substring(firstDot + 1, secondDot));
 
-        int underscore = versionString.indexOf("_", secondDot+1);
+        int underscore = versionString.indexOf("_", secondDot + 1);
         if (underscore >= 0) {
-            int dash = versionString.indexOf("-", underscore+1);
+            int dash = versionString.indexOf("-", underscore + 1);
             if (dash < 0) {
                 dash = versionString.length();
             }
-            sb.append(versionString.substring(secondDot+1, underscore)).
-                append(".").
-                append(versionString.substring(underscore+1, dash));
+            sb.append(versionString.substring(secondDot + 1, underscore)).
+                    append(".").
+                    append(versionString.substring(underscore + 1, dash));
         } else {
-            int dash = versionString.indexOf("-", secondDot+1);
+            int dash = versionString.indexOf("-", secondDot + 1);
             if (dash < 0) {
                 dash = versionString.length();
             }
-            sb.append(versionString.substring(secondDot+1, dash));
+            sb.append(versionString.substring(secondDot + 1, dash));
         }
 
         float version = 150.0f;
         try {
             version = Float.parseFloat(sb.toString());
-        } catch (NumberFormatException e) {}
+        } catch (NumberFormatException e) {
+        }
 
         return version;
     }
@@ -97,17 +94,18 @@ public class NoJavaFXFallback extends JApplet implements ActionListener {
     private void test() {
         oldJRE = getJavaVersionAsFloat() < 160.18f; //< 6u18
         try {
-           // if run in browser then should be able to get JSObject
-           Class jclass = Class.forName("netscape.javascript.JSObject");
-           Method m = jclass.getMethod("getWindow", Applet.class);
-           isInBrowser = (m.invoke(null, this) != null);
-        } catch (Exception e) {}
+            // if run in browser then should be able to get JSObject
+            Class jclass = Class.forName("netscape.javascript.JSObject");
+            Method m = jclass.getMethod("getWindow", Applet.class);
+            isInBrowser = (m.invoke(null, this) != null);
+        } catch (Exception e) {
+        }
     }
 
     String getText() {
         String text = "This application requires a newer version "
-                    + "of the Java runtime. Please download and install the "
-                    + "latest Java runtime from java.com.";
+                + "of the Java runtime. Please download and install the "
+                + "latest Java runtime from java.com.";
         if (isInBrowser) {
             text = text + " Then restart the browser.";
         } else {

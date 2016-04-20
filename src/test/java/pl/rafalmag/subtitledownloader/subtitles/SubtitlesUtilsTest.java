@@ -13,23 +13,23 @@ import static org.junit.Assert.assertThat;
 
 public class SubtitlesUtilsTest {
 
-	private static final int TIMEOUT_MS = 10_000;
+    private static final int TIMEOUT_MS = 10_000;
 
-	// this test requires a big file in specified path
-	@Ignore
-	@Test
-	public void should_get_valid_subtitles() throws Exception {
-		// given
-		Movie movie = new Movie("Dead Snow", 2009, 1278340);
-		File movieFile = new File(
-				"E:/filmy/!old/Dead.Snow.(Doed.Snoe).2009.1080p.BluRay.x264.anoXmous/Dead.Snow.(Doed.Snoe).2009.1080p.BluRay.x264.anoXmous_.mp4");
+    // this test requires a big file in specified path
+    @Ignore
+    @Test
+    public void should_get_valid_subtitles() throws Exception {
+        // given
+        Movie movie = new Movie("Dead Snow", 2009, 1278340);
+        File movieFile = new File(
+                "E:/filmy/!old/Dead.Snow.(Doed.Snoe).2009.1080p.BluRay.x264.anoXmous/Dead.Snow.(Doed.Snoe).2009.1080p.BluRay.x264.anoXmous_.mp4");
 
-		// when
-		SubtitlesUtils subtitlesUtils = new SubtitlesUtils(movie, movieFile,
-				TIMEOUT_MS, new ProgressCallbackDummy());
-		SortedSet<Subtitles> subtitles = subtitlesUtils.getSubtitles();
+        // when
+        SubtitlesUtils subtitlesUtils = new SubtitlesUtils(movie, movieFile,
+                TIMEOUT_MS, new ProgressCallbackDummy());
+        SortedSet<Subtitles> subtitles = subtitlesUtils.getSubtitles();
 
-		// then
-		assertThat(subtitles.first().getFileName(),equalTo("Doed.Snoe.2009.NORWEGIAN.DVDRip.XviD-DnB.srt"));
-	}
+        // then
+        assertThat(subtitles.first().getFileName(), equalTo("Doed.Snoe.2009.NORWEGIAN.DVDRip.XviD-DnB.srt"));
+    }
 }
