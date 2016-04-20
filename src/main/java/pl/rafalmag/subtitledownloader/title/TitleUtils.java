@@ -1,10 +1,8 @@
 package pl.rafalmag.subtitledownloader.title;
 
-import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.omertron.themoviedbapi.model.MovieDb;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
@@ -20,14 +18,15 @@ import pl.rafalmag.subtitledownloader.utils.Utils;
 
 import javax.annotation.Nullable;
 import java.io.File;
-import java.util.Collection;
-import java.util.List;
-import java.util.SortedSet;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class TitleUtils {
 	private static final Logger LOGGER = LoggerFactory
@@ -76,47 +75,22 @@ public class TitleUtils {
 
 	private SortedSet<Movie> startTasksAndGetResults(final String title)
 			throws InterruptedException {
-		SortedSet<Movie> set = Sets.newTreeSet();
 		Collection<? extends Callable<List<Movie>>> solvers = ImmutableList.of(
-				new NamedCallable<>("-movByTitle", new Callable<List<Movie>>() {
-
-					@Override
-					public List<Movie> call() {
-						return getByTitle(title);
-					}
-				}), new NamedCallable<>("-movByFileHash",
-						new Callable<List<Movie>>() {
-
-							@Override
-							public List<Movie> call()
-									throws SubtitlesDownloaderException {
-								return getByFileHash();
-							}
-						}
-				)
+				new NamedCallable<>("-movByTitle", () -> getByTitle(title)),
+				new NamedCallable<>("-movByFileHash", this::getByFileHash)
 		);
 		Collection<List<Movie>> solve = Utils.solve(EXECUTOR,
 				solvers, timeoutMs, progressCallback);
 
-		for (List<Movie> item : solve) {
-			set.addAll(item);
-		}
-		return set;
+		return StreamSupport.stream(solve.spliterator(), false)
+				.flatMap(i -> StreamSupport.stream(i.spliterator(), false))
+				.collect(Collectors.toCollection(TreeSet::new));
 	}
 
 	protected List<Movie> getByTitle(String title) {
 		List<MovieDb> searchMovie = TheMovieDbHelper.getInstance().searchMovie(
 				title);
-		List<Movie> list = Lists.transform(searchMovie,
-				new Function<MovieDb, Movie>() {
-
-					@Override
-					public Movie apply(MovieDb input) {
-						return new Movie(input);
-					}
-
-				}
-		);
+		List<Movie> list = Lists.transform(searchMovie, Movie::new);
 		LOGGER.debug("TheMovieDb returned: {}", list);
 		return list;
 	}
@@ -128,16 +102,6 @@ public class TitleUtils {
 
 		List<MovieEntity> checkMovieHash2Entities = checkMovie.getTitleInfo();
 
-		List<Movie> list = Lists.transform(checkMovieHash2Entities,
-				new Function<MovieEntity, Movie>() {
-
-					@Override
-					public Movie apply(MovieEntity input) {
-						return new Movie(input);
-					}
-
-				}
-		);
-		return list;
+		return Lists.transform(checkMovieHash2Entities, Movie::new);
 	}
 }

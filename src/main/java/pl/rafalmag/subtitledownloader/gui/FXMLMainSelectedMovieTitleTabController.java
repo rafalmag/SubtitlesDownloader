@@ -68,25 +68,21 @@ public class FXMLMainSelectedMovieTitleTabController extends FXMLMainTab {
 		final BooleanBinding shouldUpdateTitlesListBinding = tabSelectedProperty
 				.and(movieFilePathChangedBinding);
 
-		InvalidationListener shouldUpdateTitlesListListener = new InvalidationListener() {
+		InvalidationListener shouldUpdateTitlesListListener = observable -> {
+            LOGGER.trace("observable: " + observable);
+            if (shouldUpdateTitlesListBinding.get()) {
+                refreshTable();
 
-			@Override
-			public void invalidated(Observable observable) {
-				LOGGER.trace("observable: " + observable);
-				if (shouldUpdateTitlesListBinding.get()) {
-					refreshTable();
+                // clear table
+                MovieTitlesList.listProperty().clear();
 
-					// clear table
-					MovieTitlesList.listProperty().clear();
+                SelectTitleProperties
+                        .getInstance()
+                        .setSelectedMovie(Movie.DUMMY_MOVIE);
 
-					SelectTitleProperties
-							.getInstance()
-							.setSelectedMovie(Movie.DUMMY_MOVIE);
+            }
 
-				}
-
-			}
-		};
+        };
 
 		tabSelectedProperty.addListener(shouldUpdateTitlesListListener);
 		movieFileProperty.addListener(shouldUpdateTitlesListListener);
@@ -98,11 +94,11 @@ public class FXMLMainSelectedMovieTitleTabController extends FXMLMainTab {
 		table.setItems(MovieTitlesList.listProperty());
 
 		TableColumn<Movie, String> title = new TableColumn<>("Title");
-		title.setCellValueFactory(new PropertyValueFactory<Movie, String>(
+		title.setCellValueFactory(new PropertyValueFactory<>(
 				"title"));
 		title.setPrefWidth(500);
 		TableColumn<Movie, Integer> year = new TableColumn<>("Year");
-		year.setCellValueFactory(new PropertyValueFactory<Movie, Integer>(
+		year.setCellValueFactory(new PropertyValueFactory<>(
 				"year"));
 		// year.setCellFactory(new Callback<TableColumn<Movie, Integer>,
 		// TableCell<Movie, Integer>>() {
@@ -134,31 +130,27 @@ public class FXMLMainSelectedMovieTitleTabController extends FXMLMainTab {
 		// .bind(table.getSelectionModel().selectedItemProperty());
 
 		table.getSelectionModel().getSelectedItems()
-				.addListener(new InvalidationListener() {
+				.addListener((InvalidationListener) observable -> {
+                    if (table.getSelectionModel().getSelectedItems().size() == 1) {
+                        Movie movie = table.getSelectionModel()
+                                .getSelectedItems().get(0);
+                        Movie oldSelectedMovie = SelectTitleProperties
+                                .getInstance()
+                                .getSelectedMovie();
+                        LOGGER.debug("Selected movie: {}, old: {}", movie,
+                                oldSelectedMovie);
 
-					@Override
-					public void invalidated(Observable observable) {
-						if (table.getSelectionModel().getSelectedItems().size() == 1) {
-							Movie movie = table.getSelectionModel()
-									.getSelectedItems().get(0);
-							Movie oldSelectedMovie = SelectTitleProperties
-									.getInstance()
-									.getSelectedMovie();
-							LOGGER.debug("Selected movie: {}, old: {}", movie,
-									oldSelectedMovie);
-
-							SelectTitleProperties.getInstance()
-									.setSelectedMovie(movie);
-							if (oldSelectedMovie == movie) {
-								// item was double clicked
-								fxmlMainController.nextTab();
-							}
-						} else {
-							// SelectTitleProperties.getInstance()
-							// .setSelectedMovie(Movie.DUMMY_MOVIE);
-						}
-					}
-				});
+                        SelectTitleProperties.getInstance()
+                                .setSelectedMovie(movie);
+                        if (oldSelectedMovie == movie) {
+                            // item was double clicked
+                            fxmlMainController.nextTab();
+                        }
+                    } else {
+                        // SelectTitleProperties.getInstance()
+                        // .setSelectedMovie(Movie.DUMMY_MOVIE);
+                    }
+                });
 	}
 
 	@FXML

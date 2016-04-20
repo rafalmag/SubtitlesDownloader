@@ -128,7 +128,7 @@ public class Main {
                 new Class[] { Class.class, Class.class, (new String[0]).getClass() };
 
         try {
-            ArrayList urlList = new ArrayList();
+            List<URL> urlList = new ArrayList<>();
 
             // Add in the elements of the classpath
             String cp = System.getProperty("java.class.path");
@@ -136,8 +136,7 @@ public class Main {
                 while (cp.length() > 0) {
                     int pathSepIdx = cp.indexOf(File.pathSeparatorChar);
                     if (pathSepIdx < 0) {
-                        String pathElem = cp;
-                        urlList.add(fileToURL(new File(pathElem)));
+                        urlList.add(fileToURL(new File(cp)));
                         break;
                     } else if (pathSepIdx > 0) {
                         String pathElem = cp.substring(0, pathSepIdx);
@@ -166,9 +165,8 @@ public class Main {
                 while (cp.length() > 0) {
                     int pathSepIdx = cp.indexOf(" ");
                     if (pathSepIdx < 0) {
-                        String pathElem = cp;
                         File f = (baseDir == null) ?
-                                new File(pathElem) : new File(baseDir, pathElem);
+                                new File(cp) : new File(baseDir, cp);
                         urlList.add(fileToURL(f));
                         break;
                     } else if (pathSepIdx > 0) {
@@ -211,8 +209,8 @@ public class Main {
             URL[] urls = (URL[])urlList.toArray(new URL[0]);
             if (verbose) {
                 System.err.println("===== URL list");
-                for (int i = 0; i < urls.length; i++) {
-                    System.err.println("" + urls[i]);
+                for (URL url : urls) {
+                    System.err.println("" + url);
                 }
                 System.err.println("=====");
             }
@@ -359,7 +357,7 @@ public class Main {
             try {
                 // Load and initialize the native deploy library, ignore exception
                 String configClassName = "com.sun.deploy.config.Config";
-                Class configClass = Class.forName(configClassName, true,
+                Class<?> configClass = Class.forName(configClassName, true,
                         deployClassLoader);
                 Method m = configClass.getMethod("getInstance", null);
                 Object config = m.invoke(null, null);
@@ -376,11 +374,9 @@ public class Main {
                     winRegistryWrapperClassName, true, deployClassLoader);
 
             Method mGetSubKeys = winRegistryWrapperClass.getMethod(
-                    "WinRegGetSubKeys", new Class[]{
-                        Integer.TYPE,
-                        String.class,
-                        Integer.TYPE
-                    });
+                    "WinRegGetSubKeys", Integer.TYPE,
+                    String.class,
+                    Integer.TYPE);
 
             Field HKEY_LOCAL_MACHINE_Field2 =
                     winRegistryWrapperClass.getField("HKEY_LOCAL_MACHINE");
@@ -389,11 +385,9 @@ public class Main {
 
             // Read the registry and find all installed JavaFX runtime versions
             // under HKLM\Software\Oracle\JavaFX\
-            String[] fxVersions = (String[]) mGetSubKeys.invoke(null, new Object[]{
-                        new Integer(HKEY_LOCAL_MACHINE2),
-                        registryKey,
-                        new Integer(255)
-                    });
+            String[] fxVersions = (String[]) mGetSubKeys.invoke(null, HKEY_LOCAL_MACHINE2,
+                    registryKey,
+                    255);
 
             if (fxVersions == null) {
                 // No JavaFX runtime installed in the system
@@ -401,19 +395,19 @@ public class Main {
             }
             String version = ZERO_VERSION;
             // Iterate thru all installed JavaFX runtime verions in the system
-            for (int i = 0; i < fxVersions.length; i++) {
+            for (String fxVersion : fxVersions) {
                 // get the latest version that is compatibible with the
                 // launcher JavaFX family version and meets minimum version requirement
-                if (fxVersions[i].startsWith(JAVAFX_FAMILY_VERSION)
-                        && fxVersions[i].compareTo(JAVAFX_REQUIRED_VERSION) >= 0) {
+                if (fxVersion.startsWith(JAVAFX_FAMILY_VERSION)
+                        && fxVersion.compareTo(JAVAFX_REQUIRED_VERSION) >= 0) {
                     int[] v1Array = convertVersionStringtoArray(version);
-                    int[] v2Array = convertVersionStringtoArray(fxVersions[i]);
+                    int[] v2Array = convertVersionStringtoArray(fxVersion);
                     if (compareVersionArray(v1Array, v2Array) > 0) {
-                        version = fxVersions[i];
+                        version = fxVersion;
                     }
                 } else {
                     if (verbose) {
-                        System.err.println("  Skip version " + fxVersions[i]
+                        System.err.println("  Skip version " + fxVersion
                                 + " (required=" + JAVAFX_REQUIRED_VERSION + ")");
                     }
                 }
@@ -428,18 +422,14 @@ public class Main {
             String winRegistryClassName = "com.sun.deploy.util.WinRegistry";
             Class winRegistryClass = Class.forName(winRegistryClassName, true,
                     deployClassLoader);
-            Method mGet = winRegistryClass.getMethod("getString", new Class[]{
-                        Integer.TYPE,
-                        String.class,
-                        String.class
-                    });
+            Method mGet = winRegistryClass.getMethod("getString", Integer.TYPE,
+                    String.class,
+                    String.class);
             Field HKEY_LOCAL_MACHINE_Field = winRegistryClass.getField("HKEY_LOCAL_MACHINE");
             final int HKEY_LOCAL_MACHINE = HKEY_LOCAL_MACHINE_Field.getInt(null);
-            String path = (String) mGet.invoke(null, new Object[]{
-                        new Integer(HKEY_LOCAL_MACHINE),
-                        registryKey + version,
-                        "Path"
-                    });
+            String path = (String) mGet.invoke(null, HKEY_LOCAL_MACHINE,
+                    registryKey + version,
+                    "Path");
             if (verbose) {
                 System.err.println("FOUND KEY: " + registryKey + version + " = " + path);
             }
@@ -455,7 +445,7 @@ public class Main {
         String theClassFile = "Main.class";
         Class theClass = Main.class;
         String classUrlString = theClass.getResource(theClassFile).toString();
-        if (!classUrlString.startsWith("jar:file:") || classUrlString.indexOf("!") == -1){
+        if (!classUrlString.startsWith("jar:file:") || !classUrlString.contains("!")){
             return null;
         }
         // Strip out the "jar:" and everything after and including the "!"
@@ -488,7 +478,7 @@ public class Main {
     }
 
     private static String[] getAppArguments(Attributes attrs) {
-        List args = new LinkedList();
+        List<String> args = new LinkedList<>();
 
         try {
             int idx = 1;
@@ -539,7 +529,7 @@ public class Main {
         }
 
         if (preloader) {
-            appName = (String)attrs.getValue(manifestPreloaderClass);
+            appName = attrs.getValue(manifestPreloaderClass);
             if (appName == null || appName.length() == 0) {
                 if (verbose) {
                     System.err.println("Unable to find preloader class name");
@@ -548,7 +538,7 @@ public class Main {
             }
             return appName;
         } else {
-            appName = (String)attrs.getValue(manifestAppClass);
+            appName = attrs.getValue(manifestAppClass);
             if (appName == null || appName.length() == 0) {
                 System.err.println("Unable to find application class name");
                 return null;
@@ -644,8 +634,8 @@ public class Main {
                     "com.sun.deploy.net.proxy.DeployProxySelector",
                     true,
                     Thread.currentThread().getContextClassLoader());
-            Method m = dps.getDeclaredMethod("reset", new Class[0]);
-            m.invoke(null, new Object[0]);
+            Method m = dps.getDeclaredMethod("reset");
+            m.invoke(null);
             if (verbose) {
                 System.out.println("Autoconfig of proxy is completed.");
             }
@@ -675,7 +665,7 @@ public class Main {
             }
 
             Method mainMethod = hookClass.getMethod("main",
-                        new Class[] { (new String[0]).getClass() });
+                    (new String[0]).getClass());
             String args[] = null;
             mainMethod.invoke(null, new Object[] {args});
 
@@ -717,7 +707,7 @@ public class Main {
                 }
                 tryToSetProxy();
                 processUpdateHook(updateHookName);
-                launchMethod.invoke(null, new Object[] { appClass, preloaderClass, args });
+                launchMethod.invoke(null, appClass, preloaderClass, args);
             } catch (InvocationTargetException ex) {
                 ex.printStackTrace();
                 errorExit("Exception while running Application");
@@ -732,7 +722,7 @@ public class Main {
                             + ".main(String[])");
                 }
                 Method mainMethod = appClass.getMethod("main",
-                        new Class[] { (new String[0]).getClass() });
+                        (new String[0]).getClass());
                 mainMethod.invoke(null, new Object[] { args });
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -828,8 +818,8 @@ public class Main {
             "../../../artifacts/sdk/rt"
         };
 
-        for (int i = 0; i < hardCodedPaths.length; i++) {
-            javafxRuntimePath = hardCodedPaths[i];
+        for (String hardCodedPath : hardCodedPaths) {
+            javafxRuntimePath = hardCodedPath;
             launchMethod = findLaunchMethodInJar(javafxRuntimePath, fxClassPath);
             if (launchMethod != null) {
                 return launchMethod;
@@ -875,7 +865,7 @@ public class Main {
             System.err.println("commandLineArgs = " + Arrays.toString(args));
         }
 
-        String updateHook = (String) attrs.getValue(manifestUpdateHook);
+        String updateHook = attrs.getValue(manifestUpdateHook);
         if (verbose && updateHook != null) {
              System.err.println("updateHook = " + updateHook);
         }
@@ -883,7 +873,7 @@ public class Main {
         // Get JavaFX-Class-Path entry
         String fxClassPath;
         if (attrs != null) {
-           fxClassPath = (String)attrs.getValue(manifestClassPath);
+           fxClassPath = attrs.getValue(manifestClassPath);
         } else {
            fxClassPath = "";
         }
@@ -963,13 +953,12 @@ public class Main {
                         final int ERROR_MESSAGE = ERROR_MESSAGE_Field.getInt(null);
                         Method showMessageDialogMethod = jOptionPaneClass.getMethod(
                                 "showMessageDialog",
-                                new Class[] { componentClass,
-                                              Object.class,
-                                              String.class,
-                                              Integer.TYPE });
-                        showMessageDialogMethod.invoke(null, new Object[] {
-                                    null, string, "JavaFX Launcher Error",
-                                    new Integer(ERROR_MESSAGE) });
+                                componentClass,
+                                Object.class,
+                                String.class,
+                                Integer.TYPE);
+                        showMessageDialogMethod.invoke(null, null, string, "JavaFX Launcher Error",
+                                ERROR_MESSAGE);
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
@@ -978,8 +967,8 @@ public class Main {
 
             Class swingUtilsClass = Class.forName("javax.swing.SwingUtilities");
             Method invokeAndWaitMethod = swingUtilsClass.getMethod("invokeAndWait",
-                    new Class[] { Runnable.class });
-            invokeAndWaitMethod.invoke(null, new Object[] { runnable });
+                    Runnable.class);
+            invokeAndWaitMethod.invoke(null, runnable);
             if (verbose) {
                 System.err.println("Done with invoke and wait");
             }

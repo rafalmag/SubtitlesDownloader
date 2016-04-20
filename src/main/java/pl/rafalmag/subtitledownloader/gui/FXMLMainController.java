@@ -13,7 +13,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -66,7 +65,7 @@ public class FXMLMainController implements Initializable {
 		URL resource = getClass().getResource(resourceStr);
 		try (InputStream openStream = resource.openStream()) {
 			FXMLLoader fxmlLoader = new FXMLLoader(resource);
-			tabPane.getTabs().add((Tab) fxmlLoader.load(openStream));
+			tabPane.getTabs().add(fxmlLoader.load(openStream));
 			((FXMLMainTab) fxmlLoader.getController()).setMainController(this);
 		} catch (IOException e) {
 			throw Throwables.propagate(e);

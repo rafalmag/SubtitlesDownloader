@@ -29,7 +29,7 @@ public class SubtitlesList {
 	private static final ObservableList<Subtitles> list = FXCollections
 			.observableArrayList();
 
-	private static final ObjectProperty<Movie> lastUpdatedForMovie = new SimpleObjectProperty<Movie>(
+	private static final ObjectProperty<Movie> lastUpdatedForMovie = new SimpleObjectProperty<>(
 			Movie.DUMMY_MOVIE);
 
 	public static ObservableList<Subtitles> listProperty() {
@@ -62,16 +62,11 @@ public class SubtitlesList {
 						selectedFile, timeoutMs, this);
 				final SortedSet<Subtitles> subtitles = subtitlesUtils
 						.getSubtitles();
-				Platform.runLater(new Runnable() {
-
-					@Override
-					public void run() {
-						list.setAll(subtitles);
-						lastUpdatedForMovie.setValue(selectedMovie);
-						progressBar.disableProperty().set(true);
-					}
-
-				});
+				Platform.runLater(() -> {
+                    list.setAll(subtitles);
+                    lastUpdatedForMovie.setValue(selectedMovie);
+                    progressBar.disableProperty().set(true);
+                });
 				return null;
 			}
 		};

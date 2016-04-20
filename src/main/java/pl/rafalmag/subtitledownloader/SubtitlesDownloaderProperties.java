@@ -38,9 +38,7 @@ public class SubtitlesDownloaderProperties {
 		try {
 			properties.load(new FileInputStream(PROPERTIES_FILE_NAME));
 		} catch (IOException e) {
-			LOGGER.debug(
-					"Could not load properties, because of " + e.getMessage(),
-					e);
+			LOGGER.debug("Could not load properties, because of " + e.getMessage(), e);
 		}
 	}
 
@@ -49,9 +47,7 @@ public class SubtitlesDownloaderProperties {
 			properties.store(new FileOutputStream(PROPERTIES_FILE_NAME),
 					"Subtitle Downloader properties");
 		} catch (IOException e) {
-			LOGGER.error(
-					"Could not store properties, because of " + e.getMessage(),
-					e);
+			LOGGER.error("Could not store properties, because of " + e.getMessage(), e);
 		}
 	}
 

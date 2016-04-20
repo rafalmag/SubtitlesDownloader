@@ -52,7 +52,7 @@ public class RunMeMain extends Application {
 
 		Parent root;
 		try (InputStream is = resource.openStream()) {
-			root = (Parent) fxmlLoader.load(is);
+			root = fxmlLoader.load(is);
 		}
 		FXMLMainController controller = fxmlLoader
 				.getController();

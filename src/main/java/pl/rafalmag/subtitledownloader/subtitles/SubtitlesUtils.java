@@ -55,7 +55,9 @@ public class SubtitlesUtils {
 						.of(callable), timeoutMs, progressCallback);
 
 		Supplier<TreeSet<Subtitles>> supplier = () -> new TreeSet<>(Collections.reverseOrder());
-		return StreamSupport.stream(solve.spliterator(), false).flatMap(i -> StreamSupport.stream(i.spliterator(), false)).collect(Collectors.toCollection(supplier));
+		return StreamSupport.stream(solve.spliterator(), false)
+				.flatMap(i -> StreamSupport.stream(i.spliterator(), false))
+				.collect(Collectors.toCollection(supplier));
 	}
 
 	protected List<Subtitles> getSubtitlesFromOpenSubtitles(long timeoutMs)

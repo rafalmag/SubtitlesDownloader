@@ -1,13 +1,12 @@
 package pl.rafalmag.subtitledownloader.themoviedb;
 
-import com.google.common.base.Function;
 import com.google.common.base.Throwables;
-import com.google.common.collect.Lists;
 import com.omertron.themoviedbapi.MovieDbException;
 import com.omertron.themoviedbapi.TheMovieDbApi;
 import com.omertron.themoviedbapi.model.MovieDb;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TheMovieDbHelper {
 
@@ -19,6 +18,7 @@ public class TheMovieDbHelper {
 		return TheMovieDbHelperHolder.instance;
 	}
 
+	//TODO language set
 	private static final String LANGUAGE = "english";
 	public static final String API_KEY = "d59492cb5d91e31ca1832ce5c447a099";
 
@@ -33,22 +33,14 @@ public class TheMovieDbHelper {
 	}
 
 	public List<MovieDb> searchMovie(String title) {
-		List<MovieDb> searchMovie = null;
 		try {
-			searchMovie = theMovieDb.searchMovie(title, 0, LANGUAGE,
+			List<MovieDb> searchMovie = theMovieDb.searchMovie(title, 0, LANGUAGE,
 					true, 0).getResults();
+			return searchMovie.stream().map(MovieDbLazyImdb::new).collect(Collectors.toList());
 		} catch (MovieDbException e) {
 			throw new IllegalStateException("Could not get list of movies for title " + title +
 					", because of " + e.getMessage(), e);
 		}
-
-		return Lists.transform(searchMovie, new Function<MovieDb, MovieDb>() {
-
-			@Override
-			public MovieDb apply(MovieDb input) {
-				return new MovieDbLazyImdb(input);
-			}
-		});
 	}
 
 	public MovieDb getFullMovieDb(MovieDb movieDb) throws MovieDbException {

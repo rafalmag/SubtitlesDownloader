@@ -9,10 +9,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.binding.BooleanBinding;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -67,20 +64,16 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
 		download.disableProperty().bind(disabledDownloadProperty);
 		downloadAndtest.disableProperty().bind(disabledDownloadProperty);
 
-		disabledDownloadProperty.addListener(new InvalidationListener() {
+		disabledDownloadProperty.addListener(observable -> {
+            if (!disabledDownloadProperty.get()) {
+                download.tooltipProperty().set(
+                        new Tooltip("Download subtitles: "
+                                + SelectSubtitlesProperties.getInstance()
+                                        .selectedSubtitlesProperty().get()
+                                        .getFileName()));
+            }
 
-			@Override
-			public void invalidated(Observable observable) {
-				if (!disabledDownloadProperty.get()) {
-					download.tooltipProperty().set(
-							new Tooltip("Download subtitles: "
-									+ SelectSubtitlesProperties.getInstance()
-											.selectedSubtitlesProperty().get()
-											.getFileName()));
-				}
-
-			}
-		});
+        });
 
 	}
 
@@ -90,19 +83,15 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
 				.isEqualTo(SelectMovieProperties.NO_MOVIE_SELECTED);
 		test.disableProperty().bind(disabledTestProperty);
 
-		disabledTestProperty.addListener(new InvalidationListener() {
+		disabledTestProperty.addListener(observable -> {
+            if (!disabledTestProperty.get()) {
+                test.tooltipProperty().set(
+                        new Tooltip("View movie: "
+                                + SelectMovieProperties.getInstance()
+                                        .getFilePath()));
+            }
 
-			@Override
-			public void invalidated(Observable observable) {
-				if (!disabledTestProperty.get()) {
-					test.tooltipProperty().set(
-							new Tooltip("View movie: "
-									+ SelectMovieProperties.getInstance()
-											.getFilePath()));
-				}
-
-			}
-		});
+        });
 	}
 
 	private void initMarkValid() {

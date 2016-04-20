@@ -30,9 +30,7 @@ public class CheckMovie {
 	public List<MovieEntity> getTitleInfo()
 			throws SubtitlesDownloaderException {
 		String hashCode = getHashCode();
-		List<MovieEntity> checkMovieHash2Map = session
-				.checkMovieHash2(hashCode);
-		return checkMovieHash2Map;
+		return session.checkMovieHash2(hashCode);
 	}
 
 	public String getHashCode() throws SubtitlesDownloaderException {

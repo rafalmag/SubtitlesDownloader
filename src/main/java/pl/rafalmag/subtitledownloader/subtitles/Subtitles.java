@@ -12,7 +12,7 @@ public class Subtitles implements Comparable<Subtitles> {
 		@Override
 		public String toString() {
 			return "";
-		};
+		}
 	};
 
 	private final IntegerProperty downloadsCount = new SimpleIntegerProperty();
@@ -74,8 +74,7 @@ public class Subtitles implements Comparable<Subtitles> {
 
 	@Override
 	public int compareTo(Subtitles o) {
-		return new Integer(getDownloadsCount()).compareTo(new Integer(o
-				.getDownloadsCount()));
+		return new Integer(getDownloadsCount()).compareTo(o.getDownloadsCount());
 	}
 
 }

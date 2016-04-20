@@ -61,7 +61,7 @@ public class NoJavaFXFallback extends JApplet implements ActionListener {
     private static float getJavaVersionAsFloat() {
         String versionString = System.getProperty("java.version", "1.5.0");
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
 
         int firstDot = versionString.indexOf(".");
         sb.append(versionString.substring(0,firstDot));
@@ -99,8 +99,8 @@ public class NoJavaFXFallback extends JApplet implements ActionListener {
         try {
            // if run in browser then should be able to get JSObject
            Class jclass = Class.forName("netscape.javascript.JSObject");
-           Method m = jclass.getMethod("getWindow", new Class[] {Applet.class});
-           isInBrowser = (m.invoke(null, new Object[] {this}) != null);
+           Method m = jclass.getMethod("getWindow", Applet.class);
+           isInBrowser = (m.invoke(null, this) != null);
         } catch (Exception e) {}
     }
 
@@ -150,12 +150,12 @@ public class NoJavaFXFallback extends JApplet implements ActionListener {
                     Class sm = Class.forName("javax.jnlp.ServiceManager");
                     Class bs = Class.forName("javax.jnlp.BasicService");
                     Method lookup = sm.getMethod(
-                            "lookup", new Class[]{String.class});
+                            "lookup", String.class);
                     Method showDoc = bs.getMethod(
-                            "showDocument", new Class[]{java.net.URL.class});
+                            "showDocument", URL.class);
                     Object s = lookup.invoke(
-                            null, new Object[]{"javax.jnlp.BasicService"});
-                    showDoc.invoke(s, new Object[]{u});
+                            null, "javax.jnlp.BasicService");
+                    showDoc.invoke(s, u);
                 } else { //running standalone app?
                     //use awt.Desktop. if we got here then it must be available
                     Desktop d = Desktop.getDesktop();

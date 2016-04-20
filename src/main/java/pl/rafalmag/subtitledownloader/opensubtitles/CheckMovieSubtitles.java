@@ -1,17 +1,12 @@
 package pl.rafalmag.subtitledownloader.opensubtitles;
 
-import static ch.lambdaj.Lambda.having;
-import static ch.lambdaj.Lambda.on;
-import static ch.lambdaj.Lambda.select;
-import static org.hamcrest.Matchers.equalTo;
-
 import java.io.File;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
@@ -24,7 +19,6 @@ import pl.rafalmag.subtitledownloader.utils.NamedCallable;
 import pl.rafalmag.subtitledownloader.utils.Utils;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Sets;
 
 public class CheckMovieSubtitles extends CheckMovie {
 
@@ -59,50 +53,15 @@ public class CheckMovieSubtitles extends CheckMovie {
 				timeoutMs);
 		Collection<? extends Callable<List<SearchSubtitlesResult>>> solvers = ImmutableList
 				.of(
-						new NamedCallable<>(
-								"-ByTitle",
-								new Callable<List<SearchSubtitlesResult>>() {
-
-									@Override
-									public List<SearchSubtitlesResult> call()
-											throws SubtitlesDownloaderException {
-										return getSubtitlesByTitle();
-									}
-								}),
-						new NamedCallable<>(
-								"-ByImdb",
-								new Callable<List<SearchSubtitlesResult>>() {
-
-									@Override
-									public List<SearchSubtitlesResult> call()
-											throws SubtitlesDownloaderException {
-										return getSubtitlesByImdb();
-									}
-								}),
-						new NamedCallable<>(
-								"-ByMovieHashAndByteSize",
-								new Callable<List<SearchSubtitlesResult>>() {
-
-									@Override
-									public List<SearchSubtitlesResult> call()
-											throws SubtitlesDownloaderException {
-										return getSubtitlesByMovieHashAndByteSize();
-									}
-								})
+						new NamedCallable<>("-ByTitle", this::getSubtitlesByTitle),
+						new NamedCallable<>("-ByImdb", this::getSubtitlesByImdb),
+						new NamedCallable<>("-ByMovieHashAndByteSize", this::getSubtitlesByMovieHashAndByteSize)
 				);
-		Collection<List<SearchSubtitlesResult>> solve = Utils.solve(
-				EXECUTOR, solvers, timeoutMs);
-		// TODO maybe other custom collection :
-		// Multimap<SearchSubtitlesResult, SearchMethod>
-		Set<SearchSubtitlesResult> set = Sets.newHashSet();
-		for (List<SearchSubtitlesResult> item : solve) {
-			set.addAll(item);
-		}
+		Collection<List<SearchSubtitlesResult>> solve = Utils.solve(EXECUTOR, solvers, timeoutMs);
 
-		List<SearchSubtitlesResult> validImdbSubtitles = select(
-				set,
-				having(on(SearchSubtitlesResult.class).getIDMovieImdb(),
-						equalTo(movie.getImdbId())));
-		return validImdbSubtitles;
+		return StreamSupport.stream(solve.spliterator(), false)
+				.flatMap(i -> StreamSupport.stream(i.spliterator(), false))
+				.filter(i->i.getIDMovieImdb() == movie.getImdbId())
+				.collect(Collectors.toList());
 	}
 }

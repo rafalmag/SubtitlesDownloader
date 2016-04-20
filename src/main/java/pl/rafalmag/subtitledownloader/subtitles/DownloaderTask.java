@@ -82,14 +82,7 @@ public class DownloaderTask extends Task<Void> {
 			LOGGER.error("Could not download substitles " + subtitles, e);
 		} finally {
 			updateProgress(DONE, DONE);
-			Platform.runLater(new Runnable() {
-
-				@Override
-				public void run() {
-					disableProgressBarProperty.set(true);
-				}
-
-			});
+			Platform.runLater(() -> disableProgressBarProperty.set(true));
 		}
 		return null;
 	}

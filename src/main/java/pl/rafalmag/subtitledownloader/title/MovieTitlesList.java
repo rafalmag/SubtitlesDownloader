@@ -59,18 +59,13 @@ public class MovieTitlesList {
 
 				TitleUtils titleUtils = new TitleUtils(file, timeoutMs, this);
 				final SortedSet<Movie> titles = titleUtils.getTitles();
-				Platform.runLater(new Runnable() {
-
-					@Override
-					public void run() {
-						list.setAll(titles);
-						lastUpdatedForFilePath.setValue(SelectMovieProperties
-								.getInstance()
-								.getFilePath());
-						progressBar.disableProperty().set(true);
-					}
-
-				});
+				Platform.runLater(() -> {
+                    list.setAll(titles);
+                    lastUpdatedForFilePath.setValue(SelectMovieProperties
+                            .getInstance()
+                            .getFilePath());
+                    progressBar.disableProperty().set(true);
+                });
 				return null;
 			}
 		};
