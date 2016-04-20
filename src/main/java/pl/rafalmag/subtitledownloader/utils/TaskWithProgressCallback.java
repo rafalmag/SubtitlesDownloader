@@ -12,8 +12,8 @@ public class TaskWithProgressCallback<T> extends Task<T> implements
 
 	@Override
 	public void updateProgress(double procDone) {
-		long multiplyer = 1000;
-		updateProgress((long) (procDone * multiplyer), 1000);
+		long multiplier = 1000;
+		updateProgress((long) (procDone * multiplier), 1000);
 	}
 
 	@Override

@@ -33,7 +33,7 @@ public class Utils {
 			throws InterruptedException {
 		List<T> results = Lists.newLinkedList();
 
-		CompletionService<T> ecs = new ExecutorCompletionService<T>(executor);
+		CompletionService<T> ecs = new ExecutorCompletionService<>(executor);
 		List<Future<T>> futuresList = Lists.newArrayList();
 		for (Callable<T> s : solvers) {
 			Future<T> future = ecs.submit(s);
