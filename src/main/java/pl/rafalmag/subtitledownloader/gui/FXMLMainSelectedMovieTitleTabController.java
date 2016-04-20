@@ -32,12 +32,14 @@ public class FXMLMainSelectedMovieTitleTabController extends FXMLMainTab {
 
     @FXML
     protected TableView<Movie> table;
+    private ResourceBundle resources;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.resources = resources;
         StringExpression selectedTitleText = Bindings.concat(
-                "Selected title: ", SelectTitleProperties.getInstance()
-                        .selectedMovieProperty());
+                resources.getString("SelectedTitle"),
+                SelectTitleProperties.getInstance().selectedMovieProperty());
         selectedTitle.textProperty().bind(selectedTitleText);
 
         setTable();
@@ -84,14 +86,13 @@ public class FXMLMainSelectedMovieTitleTabController extends FXMLMainTab {
 
     private void setTable() {
         table.setItems(MovieTitlesList.listProperty());
+        table.setPlaceholder(new Label(resources.getString("NoContentInTable")));
 
-        TableColumn<Movie, String> title = new TableColumn<>("Title");
-        title.setCellValueFactory(new PropertyValueFactory<>(
-                "title"));
+        TableColumn<Movie, String> title = new TableColumn<>(resources.getString("Title"));
+        title.setCellValueFactory(new PropertyValueFactory<>("title"));
         title.setPrefWidth(500);
-        TableColumn<Movie, Integer> year = new TableColumn<>("Year");
-        year.setCellValueFactory(new PropertyValueFactory<>(
-                "year"));
+        TableColumn<Movie, Integer> year = new TableColumn<>(resources.getString("Year"));
+        year.setCellValueFactory(new PropertyValueFactory<>("year"));
         // year.setCellFactory(new Callback<TableColumn<Movie, Integer>,
         // TableCell<Movie, Integer>>() {
         //

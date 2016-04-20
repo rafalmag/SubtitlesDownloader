@@ -2,7 +2,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<Tab fx:id="downloadAndTestTab" text="Download and Test" xmlns:fx="http://javafx.com/fxml"
+<Tab fx:id="downloadAndTestTab" text="%DownloadAndTest" xmlns:fx="http://javafx.com/fxml"
      fx:controller="pl.rafalmag.subtitledownloader.gui.FXMLMainDownloadAndTestTabTabController">
     <VBox>
         <GridPane VBox.vgrow="ALWAYS">
@@ -14,14 +14,14 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
             </rowConstraints>
-            <Button fx:id="download" onAction="#download" text="Download" GridPane.columnIndex="0"
+            <Button fx:id="download" onAction="#download" text="%Download" GridPane.columnIndex="0"
                     GridPane.halignment="CENTER" GridPane.rowIndex="0" GridPane.valignment="CENTER"/>
-            <Button fx:id="test" onAction="#test" text="Test" GridPane.columnIndex="0"
+            <Button fx:id="test" onAction="#test" text="%Test" GridPane.columnIndex="0"
                     GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER"/>
-            <Button fx:id="downloadAndtest" onAction="#downloadAndTest" text="Download  &amp; Test"
+            <Button fx:id="downloadAndtest" onAction="#downloadAndTest" text="%DownloadAndTest"
                     GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="2"
                     GridPane.valignment="CENTER"/>
-            <Button fx:id="markValid" onAction="#markValid" text="Mark subtitles as valid"
+            <Button fx:id="markValid" onAction="#markValid" text="%MarkSubtitlesAsValid"
                     GridPane.columnIndex="0" GridPane.halignment="CENTER" GridPane.rowIndex="3"
                     GridPane.valignment="CENTER"/>
         </GridPane>

@@ -18,11 +18,14 @@ import javafx.stage.StageStyle;
 import javafx.stage.Window;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.rafalmag.subtitledownloader.SubtitlesDownloaderProperties;
+import pl.rafalmag.subtitledownloader.utils.UTF8Control;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class FXMLMainController implements Initializable {
@@ -63,6 +66,8 @@ public class FXMLMainController implements Initializable {
         URL resource = getClass().getResource(resourceStr);
         try (InputStream openStream = resource.openStream()) {
             FXMLLoader fxmlLoader = new FXMLLoader(resource);
+            Locale locale = SubtitlesDownloaderProperties.getInstance().getUiLocale();
+            fxmlLoader.setResources(ResourceBundle.getBundle("opensubtitles", locale, new UTF8Control()));
             tabPane.getTabs().add(fxmlLoader.load(openStream));
             ((FXMLMainTab) fxmlLoader.getController()).setMainController(this);
         } catch (IOException e) {

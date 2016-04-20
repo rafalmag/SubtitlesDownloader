@@ -10,20 +10,20 @@
           AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
           AnchorPane.topAnchor="0.0">
         <MenuBar VBox.vgrow="ALWAYS">
-            <Menu text="File">
-                <MenuItem onAction="#closeApp" text="Close"/>
+            <Menu text="%File">
+                <MenuItem onAction="#closeApp" text="%Close"/>
             </Menu>
-            <Menu text="Help">
-                <MenuItem onAction="#openAbout" text="About"/>
+            <Menu text="%Help">
+                <MenuItem onAction="#openAbout" text="%About"/>
             </Menu>
         </MenuBar>
         <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS"/>
         <ToolBar VBox.vgrow="NEVER">
             <ProgressBar fx:id="progressBar" prefWidth="200.0" progress="0.0"/>
-            <Button onAction="#openAbout" text="About"/>
-            <Button fx:id="previousButton" onAction="#previousTab" text="Previous"/>
-            <Button fx:id="nextButton" onAction="#nextTab" text="Next"/>
-            <Button onAction="#closeApp" text="Finish"/>
+            <Button onAction="#openAbout" text="%About"/>
+            <Button fx:id="previousButton" onAction="#previousTab" text="%Previous"/>
+            <Button fx:id="nextButton" onAction="#nextTab" text="%Next"/>
+            <Button onAction="#closeApp" text="%Finish"/>
         </ToolBar>
     </VBox>
 </AnchorPane>

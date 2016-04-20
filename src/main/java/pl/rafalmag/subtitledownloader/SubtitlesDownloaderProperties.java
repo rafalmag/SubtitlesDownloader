@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Properties;
 
 public class SubtitlesDownloaderProperties {
@@ -18,6 +19,8 @@ public class SubtitlesDownloaderProperties {
     private static final String PROPERTIES_FILE_NAME = "subtitleDownloader.properties";
 
     private static final String INITIAL_DIR = "initialDir";
+    private static final String UI_LANGUAGE = "uiLanguage";
+    private static final String SUBTITLES_LANGUAGE = "subtitlesLanguage";
 
     private static class SubtitlesDownloaderPropertiesHolder {
         private static SubtitlesDownloaderProperties instance = new SubtitlesDownloaderProperties();
@@ -58,6 +61,14 @@ public class SubtitlesDownloaderProperties {
         } else {
             return new File(initialDir);
         }
+    }
+
+    public Locale getUiLocale() {
+        return new Locale(properties.getProperty(UI_LANGUAGE, "en_US"));
+    }
+
+    public String getSubtitlesLanguage() {
+        return properties.getProperty(SUBTITLES_LANGUAGE, "en");
     }
 
     public void setInitialDir(@Nullable File initialDir) {

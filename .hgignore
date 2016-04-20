@@ -2,6 +2,9 @@ syntax: regexp
 ^target$
 ^src/main/resources/.*\.bak$
 ^rebel\.xml$
-\.properties$
-^\.idea$
+
 ^.*\.iml$
+
+syntax: glob
+subtitleDownloader.properties
+.idea

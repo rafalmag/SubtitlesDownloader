@@ -34,11 +34,13 @@ public class FXMLMainSelectedMovieSubtitlesTabController extends FXMLMainTab {
 
     @FXML
     protected TableView<Subtitles> table;
+    private ResourceBundle resources;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.resources = resources;
         StringExpression selectedSubtitlesText = Bindings.concat(
-                "Selected subtitles: ", SelectSubtitlesProperties.getInstance()
+                resources.getString("SelectedSubtitle"), SelectSubtitlesProperties.getInstance()
                         .selectedSubtitlesProperty());
         selectedSubtitles.textProperty().bind(selectedSubtitlesText);
 
@@ -88,13 +90,14 @@ public class FXMLMainSelectedMovieSubtitlesTabController extends FXMLMainTab {
 
     private void setTable() {
         table.setItems(SubtitlesList.listProperty());
+        table.setPlaceholder(new Label(resources.getString("NoContentInTable")));
 
-        TableColumn<Subtitles, String> fileName = new TableColumn<>("File Name");
+        TableColumn<Subtitles, String> fileName = new TableColumn<>(resources.getString("FileName"));
         fileName.setCellValueFactory(new PropertyValueFactory<>(
                 "fileName"));
         fileName.setPrefWidth(500);
         TableColumn<Subtitles, Integer> downloadsCount = new TableColumn<>(
-                "Downloads");
+                resources.getString("Downloads"));
         downloadsCount
                 .setCellValueFactory(new PropertyValueFactory<>(
                         "downloadsCount"));

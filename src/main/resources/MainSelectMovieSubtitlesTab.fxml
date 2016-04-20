@@ -4,11 +4,11 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.VBox?>
-<Tab fx:id="selectMovieSubtitlesTab" text="Select subtitles" xmlns:fx="http://javafx.com/fxml"
+<Tab fx:id="selectMovieSubtitlesTab" text="%SelectSubtitles" xmlns:fx="http://javafx.com/fxml"
      fx:controller="pl.rafalmag.subtitledownloader.gui.FXMLMainSelectedMovieSubtitlesTabController">
     <VBox>
         <TableView fx:id="table" VBox.vgrow="ALWAYS"/>
-        <Label fx:id="selectedSubtitles" alignment="BOTTOM_LEFT" prefWidth="2500.0" text="Selected subtitle:"
+        <Label fx:id="selectedSubtitles" alignment="BOTTOM_LEFT" prefWidth="2500.0" text="%SelectedSubtitle"
                VBox.vgrow="SOMETIMES"/>
     </VBox>
 </Tab>

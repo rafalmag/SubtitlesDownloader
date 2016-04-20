@@ -26,10 +26,13 @@ public class FXMLMainSelectedMovieFileTabController extends FXMLMainTab {
     @FXML
     protected Label selectedFile;
 
+    private ResourceBundle resources;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.resources = resources;
         StringExpression selectedMovieText = Bindings.concat(
-                "Selected movie: ", SelectMovieProperties.getInstance()
+                resources.getString("SelectedMovie"), SelectMovieProperties.getInstance()
                         .movieFileProperty());
         selectedFile.textProperty().bind(selectedMovieText);
     }
@@ -40,7 +43,7 @@ public class FXMLMainSelectedMovieFileTabController extends FXMLMainTab {
         File initialDir = SelectMovieProperties.getInstance().getInitialDir();
         LOGGER.trace("browseFile initialDir {}", initialDir);
         fileChooser.setInitialDirectory(initialDir);
-        fileChooser.setTitle("Choose movie file");
+        fileChooser.setTitle(resources.getString("ChooseMovieFile"));
         File file = fileChooser.showOpenDialog(fxmlMainController.getWindow());
         fxmlMainController.selectFile(file, true);
         event.consume();
