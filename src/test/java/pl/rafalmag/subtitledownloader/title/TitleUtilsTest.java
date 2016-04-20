@@ -39,7 +39,7 @@ public class TitleUtilsTest {
 	@Test
 	public void should_get_title_for_not_exact_title() throws Exception {
 		// given
-		String titleWithError = "The Girl With A Dragon Tattoo";
+		String titleWithError = "The Girl With The";
 		TitleUtils titleUtils = new TitleUtils(new File("ble"), TIMEOUT_MS,
 				new ProgressCallbackDummy());
 		// when

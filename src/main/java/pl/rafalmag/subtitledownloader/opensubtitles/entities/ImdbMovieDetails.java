@@ -15,7 +15,6 @@ public class ImdbMovieDetails {
 	double rating;
 	String coverUrl;
 	int id;
-	int votes;
 	String title;
 	Collection<String> aka;
 	int year;
@@ -26,7 +25,6 @@ public class ImdbMovieDetails {
 		rating = Double.parseDouble((String) data.get("rating"));
 		coverUrl = (String) data.get("cover");
 		id = Integer.parseInt((String) data.get("id"));
-		votes = Integer.parseInt((String) data.get("votes"));
 		title = (String) data.get("title");
 		year = Integer.parseInt((String) data.get("year"));
 		LOGGER.debug("parsed imdbMovieDetails=" + this);
@@ -64,14 +62,6 @@ public class ImdbMovieDetails {
 		this.id = id;
 	}
 
-	public int getVotes() {
-		return votes;
-	}
-
-	public void setVotes(int votes) {
-		this.votes = votes;
-	}
-
 	public String getTitle() {
 		return title;
 	}
@@ -99,7 +89,7 @@ public class ImdbMovieDetails {
 	@Override
 	public String toString() {
 		return "ImdbMovieDetails [cast=" + cast + ", rating=" + rating
-				+ ", coverUrl=" + coverUrl + ", id=" + id + ", votes=" + votes
+				+ ", coverUrl=" + coverUrl + ", id=" + id
 				+ ", title=" + title + ", aka=" + aka + ", year=" + year + "]";
 	}
 
@@ -116,7 +106,6 @@ public class ImdbMovieDetails {
 		temp = Double.doubleToLongBits(rating);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((title == null) ? 0 : title.hashCode());
-		result = prime * result + votes;
 		result = prime * result + year;
 		return result;
 	}
@@ -154,8 +143,6 @@ public class ImdbMovieDetails {
 			if (other.title != null)
 				return false;
 		} else if (!title.equals(other.title))
-			return false;
-		if (votes != other.votes)
 			return false;
 		if (year != other.year)
 			return false;

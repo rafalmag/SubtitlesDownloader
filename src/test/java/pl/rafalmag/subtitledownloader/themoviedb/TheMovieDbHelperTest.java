@@ -52,9 +52,9 @@ public class TheMovieDbHelperTest {
 
 		// then
 		assertThat(firstMovieDb.getTitle(),
-				equalTo("Star Wars: Episode IV - A New Hope"));
+				startsWith("Star Wars"));
 		assertThat(firstMovieDb.getOriginalTitle(),
-				equalTo("Star Wars: Episode IV - A New Hope"));
+				startsWith("Star Wars"));
 		assertThat(firstMovieDb.getId(), equalTo(11));
 		assertThat(imdbID, equalTo("tt0076759"));
 	}
