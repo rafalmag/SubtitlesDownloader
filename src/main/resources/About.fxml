@@ -6,10 +6,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
-<AnchorPane minWidth="286.0" prefHeight="117.0" prefWidth="286.0" xmlns:fx="http://javafx.com/fxml"
+<AnchorPane prefHeight="117.0" prefWidth="300.0" xmlns:fx="http://javafx.com/fxml"
             fx:controller="pl.rafalmag.subtitledownloader.gui.FXMLAboutController">
-    <VBox alignment="CENTER" layoutX="14.0" layoutY="14.0" maxHeight="-Infinity" maxWidth="-Infinity"
-          minHeight="-Infinity" minWidth="-Infinity" prefHeight="89.0" prefWidth="258.0">
+    <VBox alignment="CENTER">
         <Text scaleX="1.2271511421926773" stroke="BLACK" text="SubtitlesDownloader by Rafal Magda"/>
         <Button onAction="#openUrl" style="-fx-cursor: hand; -fx-background-color: white;">
             <graphic>

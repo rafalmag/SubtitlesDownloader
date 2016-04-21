@@ -13,6 +13,9 @@
             <Menu text="%File">
                 <MenuItem onAction="#closeApp" text="%Close"/>
             </Menu>
+            <Menu text="%Options">
+                <MenuItem onAction="#openLanguage" text="%Language"/>
+            </Menu>
             <Menu text="%Help">
                 <MenuItem onAction="#openAbout" text="%About"/>
             </Menu>
@@ -22,8 +25,9 @@
             <ProgressBar fx:id="progressBar" prefWidth="200.0" progress="0.0"/>
             <Button onAction="#openAbout" text="%About"/>
             <Button fx:id="previousButton" onAction="#previousTab" text="%Previous"/>
+
             <Button fx:id="nextButton" onAction="#nextTab" text="%Next"/>
-            <Button onAction="#closeApp" text="%Finish"/>
+            <Button text="%Finish" cancelButton="true"/>
         </ToolBar>
     </VBox>
 </AnchorPane>

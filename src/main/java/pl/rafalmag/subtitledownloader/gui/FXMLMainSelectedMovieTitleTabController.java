@@ -121,7 +121,10 @@ public class FXMLMainSelectedMovieTitleTabController extends FXMLMainTab {
         table.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         // SelectTitleProperties.getInstance().selectedMovieProperty()
         // .bind(table.getSelectionModel().selectedItemProperty());
-
+        Movie selectedMovie = SelectTitleProperties.getInstance().getSelectedMovie();
+        if (selectedMovie != Movie.DUMMY_MOVIE) {
+            table.getSelectionModel().select(selectedMovie);
+        }
         table.getSelectionModel().getSelectedItems()
                 .addListener((InvalidationListener) observable -> {
                     if (table.getSelectionModel().getSelectedItems().size() == 1) {

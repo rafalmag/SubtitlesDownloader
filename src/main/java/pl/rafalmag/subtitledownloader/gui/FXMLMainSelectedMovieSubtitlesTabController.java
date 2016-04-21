@@ -109,6 +109,11 @@ public class FXMLMainSelectedMovieSubtitlesTabController extends FXMLMainTab {
     private void setSelectionStuff() {
         table.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
+        Subtitles selectedSubtitles = SelectSubtitlesProperties.getInstance().getSelectedSubtitles();
+        if (selectedSubtitles != Subtitles.DUMMY_SUBTITLES) {
+            table.getSelectionModel().select(selectedSubtitles);
+        }
+
         table.getSelectionModel().getSelectedItems()
                 .addListener((InvalidationListener) observable -> {
                     if (table.getSelectionModel().getSelectedItems().size() == 1) {

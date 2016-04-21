@@ -4,11 +4,13 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.rafalmag.subtitledownloader.entities.InterfaceLanguage;
 import pl.rafalmag.subtitledownloader.gui.FXMLMainController;
+import pl.rafalmag.subtitledownloader.gui.SelectMovieProperties;
 import pl.rafalmag.subtitledownloader.utils.UTF8Control;
 
 import javax.annotation.Nullable;
@@ -24,10 +26,21 @@ public class RunMeMain extends Application {
 
     private static final Logger LOGGER = LoggerFactory
             .getLogger(RunMeMain.class);
+    private Stage primaryStage;
 
     public static void main(String[] args) {
         LOGGER.debug("SubtitlesDownloader app started");
         launch(args);
+    }
+
+    private static RunMeMain INSTANCE;
+
+    public RunMeMain() {
+        INSTANCE = this;
+    }
+
+    public static RunMeMain getInstance() {
+        return INSTANCE;
     }
 
     /*
@@ -49,7 +62,7 @@ public class RunMeMain extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         LOGGER.trace("App started: start");
-
+        this.primaryStage = primaryStage;
         primaryStage.setTitle("Subtitles Downloader");
 
         Parent root = getParent(primaryStage);
@@ -60,8 +73,10 @@ public class RunMeMain extends Application {
     private Parent getParent(Stage primaryStage) throws IOException {
         URL resource = getClass().getResource("/Main.fxml");
         FXMLLoader fxmlLoader = new FXMLLoader(resource);
-        Locale locale = SubtitlesDownloaderProperties.getInstance().getUiLocale();
-        fxmlLoader.setResources(ResourceBundle.getBundle("opensubtitles", locale, new UTF8Control()));
+        InterfaceLanguage interfaceLanguage = SubtitlesDownloaderProperties.getInstance().getInterfaceLanguage();
+        Locale locale = interfaceLanguage.getLocale();
+        Locale.setDefault(locale);
+        fxmlLoader.setResources(ResourceBundle.getBundle("opensubtitles", new UTF8Control()));
 
         Parent root;
         try (InputStream is = resource.openStream()) {
@@ -73,12 +88,17 @@ public class RunMeMain extends Application {
         return root;
     }
 
-    private void reloadView(Stage stage) throws IOException {
-        Parent parent = getParent(stage);
+    public void reloadView() throws IOException {
+        Parent parent = getParent(primaryStage);
         // replace the content
-        AnchorPane content = (AnchorPane) stage.getScene().getRoot();
+        AnchorPane content = (AnchorPane) primaryStage.getScene().getRoot();
         content.getChildren().clear();
-        content.getChildren().add(parent);
+
+        File fileBeforeReload = SelectMovieProperties.getInstance().getFile();
+        Parent newParent = getParent(primaryStage);
+        SelectMovieProperties.getInstance().setFile(fileBeforeReload);
+        // replace the content
+        content.getChildren().add(newParent);
     }
 
 }

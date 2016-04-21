@@ -2,13 +2,13 @@ package pl.rafalmag.subtitledownloader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.rafalmag.subtitledownloader.entities.InterfaceLanguage;
 
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Locale;
 import java.util.Properties;
 
 public class SubtitlesDownloaderProperties {
@@ -63,8 +63,13 @@ public class SubtitlesDownloaderProperties {
         }
     }
 
-    public Locale getUiLocale() {
-        return new Locale(properties.getProperty(UI_LANGUAGE, "en_US"));
+    public InterfaceLanguage getInterfaceLanguage() {
+        return InterfaceLanguage.fromLanguageTag(properties.getProperty(UI_LANGUAGE, "en-US"));
+    }
+
+    public void setInterfaceLanguage(InterfaceLanguage interfaceLanguage) {
+        properties.setProperty(UI_LANGUAGE, interfaceLanguage.getLanguageTag());
+        store();
     }
 
     public String getSubtitlesLanguage() {
