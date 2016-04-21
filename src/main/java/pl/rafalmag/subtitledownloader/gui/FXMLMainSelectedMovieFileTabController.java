@@ -32,8 +32,7 @@ public class FXMLMainSelectedMovieFileTabController extends FXMLMainTab {
     public void initialize(URL location, ResourceBundle resources) {
         this.resources = resources;
         StringExpression selectedMovieText = Bindings.concat(
-                resources.getString("SelectedMovie"), SelectMovieProperties.getInstance()
-                        .movieFileProperty());
+                resources.getString("SelectedMovie"), SelectMovieProperties.getInstance().movieFileProperty());
         selectedFile.textProperty().bind(selectedMovieText);
     }
 

@@ -29,8 +29,7 @@ import java.util.ResourceBundle;
 
 public class FXMLMainController implements Initializable {
 
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(FXMLMainController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FXMLMainController.class);
 
     private Window window;
 
@@ -56,11 +55,8 @@ public class FXMLMainController implements Initializable {
         initTab("/MainDownloadAndTestTab.fxml");
         progressBar.disableProperty().set(true);
 
-        previousButton.disableProperty().bind(
-                tabPane.getTabs().get(0).selectedProperty());
-        nextButton.disableProperty().bind(
-                tabPane.getTabs().get(tabPane.getTabs().size() - 1)
-                        .selectedProperty());
+        previousButton.disableProperty().bind(tabPane.getTabs().get(0).selectedProperty());
+        nextButton.disableProperty().bind(tabPane.getTabs().get(tabPane.getTabs().size() - 1).selectedProperty());
     }
 
     private void initTab(String resourceStr) {
@@ -163,8 +159,7 @@ public class FXMLMainController implements Initializable {
         if (file != null) {
             SelectMovieProperties.getInstance().setFile(file);
             if (setInitialDir) {
-                SelectMovieProperties.getInstance().setInitialDir(
-                        file.getParentFile());
+                SelectMovieProperties.getInstance().setInitialDir(file.getParentFile());
             }
             openTitleTab();
         }

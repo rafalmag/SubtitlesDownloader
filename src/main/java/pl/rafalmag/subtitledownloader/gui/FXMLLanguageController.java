@@ -19,8 +19,7 @@ import java.util.ResourceBundle;
 
 public class FXMLLanguageController implements Initializable {
 
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(FXMLLanguageController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FXMLLanguageController.class);
 
     @FXML
     private AnchorPane anchorPane;

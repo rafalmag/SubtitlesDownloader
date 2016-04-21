@@ -21,8 +21,7 @@ import java.util.ResourceBundle;
 
 public class FXMLMainSelectedMovieTitleTabController extends FXMLMainTab {
 
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(FXMLMainSelectedMovieTitleTabController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FXMLMainSelectedMovieTitleTabController.class);
 
     @FXML
     protected Tab selectMovieTitleTab;
@@ -48,19 +47,14 @@ public class FXMLMainSelectedMovieTitleTabController extends FXMLMainTab {
     }
 
     private void addUpdateTableListener() {
-        StringProperty movieFileProperty = SelectMovieProperties.getInstance()
-                .movieFileProperty();
+        StringProperty movieFileProperty = SelectMovieProperties.getInstance().movieFileProperty();
 
-        StringProperty lastUpdatedForFilePathProperty = MovieTitlesList
-                .lastUpdatedForFilePathProperty();
+        StringProperty lastUpdatedForFilePathProperty = MovieTitlesList.lastUpdatedForFilePathProperty();
 
-        BooleanBinding movieFilePathChangedBinding = Bindings.notEqual(
-                movieFileProperty, lastUpdatedForFilePathProperty);
-        ReadOnlyBooleanProperty tabSelectedProperty = selectMovieTitleTab
-                .selectedProperty();
+        BooleanBinding movieFilePathChangedBinding = Bindings.notEqual(movieFileProperty, lastUpdatedForFilePathProperty);
+        ReadOnlyBooleanProperty tabSelectedProperty = selectMovieTitleTab.selectedProperty();
 
-        final BooleanBinding shouldUpdateTitlesListBinding = tabSelectedProperty
-                .and(movieFilePathChangedBinding);
+        final BooleanBinding shouldUpdateTitlesListBinding = tabSelectedProperty.and(movieFilePathChangedBinding);
 
         InvalidationListener shouldUpdateTitlesListListener = observable -> {
             LOGGER.trace("observable: " + observable);
@@ -70,18 +64,13 @@ public class FXMLMainSelectedMovieTitleTabController extends FXMLMainTab {
                 // clear table
                 MovieTitlesList.listProperty().clear();
 
-                SelectTitleProperties
-                        .getInstance()
-                        .setSelectedMovie(Movie.DUMMY_MOVIE);
-
+                SelectTitleProperties.getInstance().setSelectedMovie(Movie.DUMMY_MOVIE);
             }
-
         };
 
         tabSelectedProperty.addListener(shouldUpdateTitlesListListener);
         movieFileProperty.addListener(shouldUpdateTitlesListListener);
-        lastUpdatedForFilePathProperty
-                .addListener(shouldUpdateTitlesListListener);
+        lastUpdatedForFilePathProperty.addListener(shouldUpdateTitlesListListener);
     }
 
     private void setTable() {
@@ -128,16 +117,11 @@ public class FXMLMainSelectedMovieTitleTabController extends FXMLMainTab {
         table.getSelectionModel().getSelectedItems()
                 .addListener((InvalidationListener) observable -> {
                     if (table.getSelectionModel().getSelectedItems().size() == 1) {
-                        Movie movie = table.getSelectionModel()
-                                .getSelectedItems().get(0);
-                        Movie oldSelectedMovie = SelectTitleProperties
-                                .getInstance()
-                                .getSelectedMovie();
-                        LOGGER.debug("Selected movie: {}, old: {}", movie,
-                                oldSelectedMovie);
+                        Movie movie = table.getSelectionModel().getSelectedItems().get(0);
+                        Movie oldSelectedMovie = SelectTitleProperties.getInstance().getSelectedMovie();
+                        LOGGER.debug("Selected movie: {}, old: {}", movie, oldSelectedMovie);
 
-                        SelectTitleProperties.getInstance()
-                                .setSelectedMovie(movie);
+                        SelectTitleProperties.getInstance().setSelectedMovie(movie);
                         if (oldSelectedMovie == movie) {
                             // item was double clicked
                             fxmlMainController.nextTab();

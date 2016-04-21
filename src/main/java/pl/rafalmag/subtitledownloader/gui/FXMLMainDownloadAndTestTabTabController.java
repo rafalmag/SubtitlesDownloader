@@ -83,17 +83,15 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
 
         disabledTestProperty.addListener(observable -> {
             if (!disabledTestProperty.get()) {
-                test.tooltipProperty().set(
-                        new Tooltip("View movie: "
-                                + SelectMovieProperties.getInstance()
-                                .getFilePath()));
+                // TODO localization
+                test.tooltipProperty().set(new Tooltip("View movie: " + SelectMovieProperties.getInstance().getFilePath()));
             }
 
         });
     }
 
     private void initMarkValid() {
-        // TODO
+        // TODO mark valid
         markValid.disableProperty().set(true);
     }
 
@@ -101,13 +99,11 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
     protected void download() {
         fxmlMainController.progressBar.disableProperty().set(false);
         LOGGER.trace("download");
-        Subtitles subtitles = SelectSubtitlesProperties.getInstance()
-                .getSelectedSubtitles();
+        Subtitles subtitles = SelectSubtitlesProperties.getInstance().getSelectedSubtitles();
         File movieFile = SelectMovieProperties.getInstance().getFile();
         DownloaderTask downloader = new DownloaderTask(subtitles, movieFile,
                 fxmlMainController.progressBar.disableProperty());
-        fxmlMainController.progressBar.progressProperty().bind(
-                downloader.progressProperty());
+        fxmlMainController.progressBar.progressProperty().bind(downloader.progressProperty());
 
         EXECUTOR.submit(downloader);
     }
@@ -120,9 +116,7 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
             URI uri = file.toURI();
             Desktop.getDesktop().browse(uri);
         } catch (IOException e) {
-            LOGGER.error(
-                    "Could not open URL " + file + " because of "
-                            + e.getMessage(), e);
+            LOGGER.error("Could not open URL " + file + ", because of " + e.getMessage(), e);
         }
     }
 
@@ -131,7 +125,6 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
         LOGGER.trace("markValid");
         // TODO
         // http://trac.opensubtitles.org/projects/opensubtitles/wiki/XMLRPC#TryUploadSubtitles
-
     }
 
     @FXML

@@ -23,8 +23,7 @@ import java.util.ResourceBundle;
 
 public class FXMLMainSelectedMovieSubtitlesTabController extends FXMLMainTab {
 
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(FXMLMainSelectedMovieSubtitlesTabController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(FXMLMainSelectedMovieSubtitlesTabController.class);
 
     @FXML
     protected Tab selectMovieSubtitlesTab;
@@ -50,31 +49,24 @@ public class FXMLMainSelectedMovieSubtitlesTabController extends FXMLMainTab {
     }
 
     private void addUpdateTableListener() {
-        ObjectProperty<Movie> selectedMovieProperty = SelectTitleProperties
-                .getInstance().selectedMovieProperty();
+        ObjectProperty<Movie> selectedMovieProperty = SelectTitleProperties.getInstance().selectedMovieProperty();
 
-        ObjectProperty<Movie> lastUpdatedForMovieProperty = SubtitlesList
-                .lastUpdatedForMovieProperty();
+        ObjectProperty<Movie> lastUpdatedForMovieProperty = SubtitlesList.lastUpdatedForMovieProperty();
 
-        BooleanBinding selectedMovieChangedBinding = Bindings.notEqual(
-                selectedMovieProperty, lastUpdatedForMovieProperty);
-        ReadOnlyBooleanProperty tabSelectedProperty = selectMovieSubtitlesTab
-                .selectedProperty();
+        BooleanBinding selectedMovieChangedBinding =
+                Bindings.notEqual(selectedMovieProperty, lastUpdatedForMovieProperty);
+        ReadOnlyBooleanProperty tabSelectedProperty = selectMovieSubtitlesTab.selectedProperty();
 
-        final BooleanBinding shouldUpdateTitlesListBinding = tabSelectedProperty
-                .and(selectedMovieChangedBinding);
+        final BooleanBinding shouldUpdateTitlesListBinding = tabSelectedProperty.and(selectedMovieChangedBinding);
 
         InvalidationListener shouldUpdateSubtitlesListListener = observable -> {
             LOGGER.trace("observable: " + observable);
             if (shouldUpdateTitlesListBinding.get()) {
                 try {
-                    SubtitlesList.updateList(
-                            fxmlMainController.progressBar, 10000);
+                    SubtitlesList.updateList(fxmlMainController.progressBar, 10000);
                     // clear table
                     SubtitlesList.listProperty().clear();
-                    SelectSubtitlesProperties
-                            .getInstance()
-                            .setSelectedSubtitles(Subtitles.DUMMY_SUBTITLES);
+                    SelectSubtitlesProperties.getInstance().setSelectedSubtitles(Subtitles.DUMMY_SUBTITLES);
                 } catch (InterruptedException e) {
                     LOGGER.error("Could not update subtitles list", e);
                 }
@@ -84,8 +76,7 @@ public class FXMLMainSelectedMovieSubtitlesTabController extends FXMLMainTab {
 
         tabSelectedProperty.addListener(shouldUpdateSubtitlesListListener);
         selectedMovieProperty.addListener(shouldUpdateSubtitlesListListener);
-        lastUpdatedForMovieProperty
-                .addListener(shouldUpdateSubtitlesListListener);
+        lastUpdatedForMovieProperty.addListener(shouldUpdateSubtitlesListListener);
     }
 
     private void setTable() {
@@ -93,14 +84,10 @@ public class FXMLMainSelectedMovieSubtitlesTabController extends FXMLMainTab {
         table.setPlaceholder(new Label(resources.getString("NoContentInTable")));
 
         TableColumn<Subtitles, String> fileName = new TableColumn<>(resources.getString("FileName"));
-        fileName.setCellValueFactory(new PropertyValueFactory<>(
-                "fileName"));
+        fileName.setCellValueFactory(new PropertyValueFactory<>("fileName"));
         fileName.setPrefWidth(500);
-        TableColumn<Subtitles, Integer> downloadsCount = new TableColumn<>(
-                resources.getString("Downloads"));
-        downloadsCount
-                .setCellValueFactory(new PropertyValueFactory<>(
-                        "downloadsCount"));
+        TableColumn<Subtitles, Integer> downloadsCount = new TableColumn<>(resources.getString("Downloads"));
+        downloadsCount.setCellValueFactory(new PropertyValueFactory<>("downloadsCount"));
 
         table.getColumns().setAll(ImmutableList.of(fileName, downloadsCount));
         setSelectionStuff();
@@ -117,15 +104,10 @@ public class FXMLMainSelectedMovieSubtitlesTabController extends FXMLMainTab {
         table.getSelectionModel().getSelectedItems()
                 .addListener((InvalidationListener) observable -> {
                     if (table.getSelectionModel().getSelectedItems().size() == 1) {
-                        Subtitles subtitles = table.getSelectionModel()
-                                .getSelectedItems().get(0);
-                        Subtitles oldSubtitles = SelectSubtitlesProperties
-                                .getInstance()
-                                .getSelectedSubtitles();
-                        LOGGER.debug("Selected subtitles: {} old: {}",
-                                subtitles, oldSubtitles);
-                        SelectSubtitlesProperties.getInstance()
-                                .setSelectedSubtitles(subtitles);
+                        Subtitles subtitles = table.getSelectionModel().getSelectedItems().get(0);
+                        Subtitles oldSubtitles = SelectSubtitlesProperties.getInstance().getSelectedSubtitles();
+                        LOGGER.debug("Selected subtitles: {} old: {}", subtitles, oldSubtitles);
+                        SelectSubtitlesProperties.getInstance().setSelectedSubtitles(subtitles);
                         if (oldSubtitles == subtitles) {
                             // item was double clicked
                             fxmlMainController.nextTab();
