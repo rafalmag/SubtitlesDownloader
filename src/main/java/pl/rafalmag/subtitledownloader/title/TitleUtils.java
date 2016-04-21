@@ -3,7 +3,7 @@ package pl.rafalmag.subtitledownloader.title;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.omertron.themoviedbapi.model.MovieDb;
+import com.omertron.themoviedbapi.model.movie.MovieInfo;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,8 +46,7 @@ public class TitleUtils {
             String digits = matcher.group(1);
             return Integer.parseInt(digits);
         } else {
-            LOGGER.warn("imdbId (" + imdbStr + ") doesn't match "
-                    + IMDB_PATTERN);
+            LOGGER.warn("imdbId (" + imdbStr + ") doesn't match " + IMDB_PATTERN);
             return -1;
         }
     }
@@ -58,22 +57,19 @@ public class TitleUtils {
 
     private final ProgressCallback progressCallback;
 
-    public TitleUtils(File movieFile, long timeoutMs,
-                      ProgressCallback progressCallback) {
+    public TitleUtils(File movieFile, long timeoutMs, ProgressCallback progressCallback) {
         this.movieFile = movieFile;
         this.timeoutMs = timeoutMs;
         this.progressCallback = progressCallback;
     }
 
-    public SortedSet<Movie> getTitles()
-            throws InterruptedException {
+    public SortedSet<Movie> getTitles() throws InterruptedException {
         String title = TitleNameUtils.getTitleFrom(movieFile.getName());
         return startTasksAndGetResults(title);
     }
 
     private final static ExecutorService EXECUTOR = Executors
-            .newCachedThreadPool(new BasicThreadFactory.Builder().daemon(true)
-                    .namingPattern("Title-%d").build());
+            .newCachedThreadPool(new BasicThreadFactory.Builder().daemon(true).namingPattern("Title-%d").build());
 
     private SortedSet<Movie> startTasksAndGetResults(final String title)
             throws InterruptedException {
@@ -81,8 +77,7 @@ public class TitleUtils {
                 new NamedCallable<>("-movByTitle", () -> getByTitle(title)),
                 new NamedCallable<>("-movByFileHash", this::getByFileHash)
         );
-        Collection<List<Movie>> solve = Utils.solve(EXECUTOR,
-                solvers, timeoutMs, progressCallback);
+        Collection<List<Movie>> solve = Utils.solve(EXECUTOR, solvers, timeoutMs, progressCallback);
 
         return StreamSupport.stream(solve.spliterator(), false)
                 .flatMap(i -> StreamSupport.stream(i.spliterator(), false))
@@ -90,8 +85,7 @@ public class TitleUtils {
     }
 
     protected List<Movie> getByTitle(String title) {
-        List<MovieDb> searchMovie = TheMovieDbHelper.getInstance().searchMovie(
-                title);
+        List<MovieInfo> searchMovie = TheMovieDbHelper.getInstance().searchMovie(title);
         List<Movie> list = Lists.transform(searchMovie, Movie::new);
         LOGGER.debug("TheMovieDb returned: {}", list);
         return list;

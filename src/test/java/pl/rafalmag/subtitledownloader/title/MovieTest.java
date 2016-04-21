@@ -1,6 +1,6 @@
 package pl.rafalmag.subtitledownloader.title;
 
-import com.omertron.themoviedbapi.model.MovieDb;
+import com.omertron.themoviedbapi.model.movie.MovieInfo;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -12,7 +12,7 @@ public class MovieTest {
     @Test
     public void should_get_year() throws Exception {
         // given
-        MovieDb movieDb = new MovieDb();
+        MovieInfo movieDb = new MovieInfo();
         movieDb.setReleaseDate("1977-05-25");
         int expectedYear = 1977;
 
@@ -27,7 +27,7 @@ public class MovieTest {
     public void should_get_year_work_for_not_valid_release_date()
             throws Exception {
         // given
-        MovieDb movieDb = new MovieDb();
+        MovieInfo movieDb = new MovieInfo();
         movieDb.setReleaseDate("invalid");
         int expectedYear = -1;
 
@@ -41,7 +41,7 @@ public class MovieTest {
     @Test
     public void should_get_year_work_for_null_release_date() throws Exception {
         // given
-        MovieDb movieDb = new MovieDb();
+        MovieInfo movieDb = new MovieInfo();
         movieDb.setReleaseDate(null);
         int expectedYear = -1;
 

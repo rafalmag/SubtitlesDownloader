@@ -1,6 +1,6 @@
 package pl.rafalmag.subtitledownloader.themoviedb;
 
-import com.omertron.themoviedbapi.model.MovieDb;
+import com.omertron.themoviedbapi.model.movie.MovieInfo;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.List;
+import java.util.Locale;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -43,11 +44,11 @@ public class TheMovieDbHelperTest {
     public void should_get_movieDb_with_imdb() throws Exception {
         // given
         String title = "Star Wars New Hope";
+        Locale.setDefault(Locale.ENGLISH);
 
         // when
-        List<MovieDb> searchMovie = TheMovieDbHelper.getInstance().searchMovie(
-                title);
-        MovieDb firstMovieDb = searchMovie.get(0);
+        List<MovieInfo> searchMovie = TheMovieDbHelper.getInstance().searchMovie(title);
+        MovieInfo firstMovieDb = searchMovie.get(0);
         String imdbID = firstMovieDb.getImdbID();
 
         // then

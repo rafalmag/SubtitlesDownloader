@@ -1,7 +1,7 @@
 package com.moviejukebox.themoviedb;
 
 import com.omertron.themoviedbapi.TheMovieDbApi;
-import com.omertron.themoviedbapi.model.MovieDb;
+import com.omertron.themoviedbapi.model.movie.MovieInfo;
 import org.junit.Test;
 import pl.rafalmag.subtitledownloader.themoviedb.TheMovieDbHelper;
 
@@ -20,15 +20,14 @@ public class TheMovieDbTest {
         // given
         String title = "Star Wars New Hope";
         String language = "english";
-        boolean allResults = true;
 
         // when
         TheMovieDbApi theMovieDb = new TheMovieDbApi(TM_DB_API_KEY);
-        List<MovieDb> searchMovie = theMovieDb.searchMovie(title, 0, language,
-                allResults, 0).getResults();
+        List<MovieInfo> searchMovie = theMovieDb
+                .searchMovie(title, 0, language, TheMovieDbHelper.INCLUDE_ADULT, 0, 0, null).getResults();
 
         // then
-        MovieDb firstMovieDb = searchMovie.get(0);
+        MovieInfo firstMovieDb = searchMovie.get(0);
         assertThat(firstMovieDb.getTitle(),
                 startsWith("Star Wars"));
         assertThat(firstMovieDb.getOriginalTitle(),
@@ -47,7 +46,7 @@ public class TheMovieDbTest {
 
         // when
         TheMovieDbApi theMovieDb = new TheMovieDbApi(TM_DB_API_KEY);
-        MovieDb movieInfo = theMovieDb.getMovieInfo(id, language);
+        MovieInfo movieInfo = theMovieDb.getMovieInfo(id, language);
 
         // then
         assertThat(movieInfo.getImdbID(), equalTo(expectedImdb));
@@ -62,11 +61,10 @@ public class TheMovieDbTest {
 
         // when
         TheMovieDbApi theMovieDb = new TheMovieDbApi(TM_DB_API_KEY);
-        List<MovieDb> searchMovie = theMovieDb.searchMovie(title, 0, language,
-                true, 0).getResults();
-        MovieDb firstMovieDb = searchMovie.get(0);
+        List<MovieInfo> searchMovie = theMovieDb.searchMovie(title, 0, language, TheMovieDbHelper.INCLUDE_ADULT, 0, 0, null).getResults();
+        MovieInfo firstMovieDb = searchMovie.get(0);
 
-        MovieDb movieDbById = theMovieDb.getMovieInfo(id, language);
+        MovieInfo movieDbById = theMovieDb.getMovieInfo(id, language);
 
         // then
         assertThat(movieDbById.getId(), equalTo(firstMovieDb.getId()));

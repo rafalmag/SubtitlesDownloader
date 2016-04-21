@@ -8,8 +8,8 @@ import java.util.Locale;
 import java.util.Map;
 
 public enum InterfaceLanguage {
-    ENGLISH("english", "en-US"),
-    POLISH("polski", "pl");
+    ENGLISH("English", "en-US"),
+    POLISH("Polski", "pl");
 
     private static final Logger LOG = LoggerFactory.getLogger(InterfaceLanguage.class);
 

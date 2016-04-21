@@ -1,7 +1,7 @@
 package pl.rafalmag.subtitledownloader.title;
 
 import com.google.common.base.Strings;
-import com.omertron.themoviedbapi.model.MovieDb;
+import com.omertron.themoviedbapi.model.movie.MovieInfo;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -33,7 +33,7 @@ public class Movie implements Comparable<Movie> {
                 .getImdbId());
     }
 
-    public Movie(MovieDb input) {
+    public Movie(MovieInfo input) {
         this(input.getTitle(), getYear(input), TitleUtils
                 .getImdbFromString(input.getImdbID()));
     }
@@ -49,7 +49,7 @@ public class Movie implements Comparable<Movie> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Movie.class);
 
-    protected static int getYear(MovieDb input) {
+    protected static int getYear(MovieInfo input) {
         String releaseDate = input.getReleaseDate();
         if (Strings.isNullOrEmpty(releaseDate)) {
             LOGGER.debug("releaseDate is null");

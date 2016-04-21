@@ -1,14 +1,34 @@
 package pl.rafalmag.subtitledownloader.themoviedb;
 
 import com.omertron.themoviedbapi.MovieDbException;
-import com.omertron.themoviedbapi.model.*;
+import com.omertron.themoviedbapi.enumeration.MediaType;
+import com.omertron.themoviedbapi.enumeration.MovieMethod;
+import com.omertron.themoviedbapi.model.Genre;
+import com.omertron.themoviedbapi.model.Language;
+import com.omertron.themoviedbapi.model.artwork.Artwork;
+import com.omertron.themoviedbapi.model.change.ChangeKeyItem;
+import com.omertron.themoviedbapi.model.collection.Collection;
+import com.omertron.themoviedbapi.model.credits.MediaCreditCast;
+import com.omertron.themoviedbapi.model.credits.MediaCreditCrew;
+import com.omertron.themoviedbapi.model.keyword.Keyword;
+import com.omertron.themoviedbapi.model.list.UserList;
+import com.omertron.themoviedbapi.model.media.AlternativeTitle;
+import com.omertron.themoviedbapi.model.media.MediaCreditList;
+import com.omertron.themoviedbapi.model.media.Translation;
+import com.omertron.themoviedbapi.model.media.Video;
+import com.omertron.themoviedbapi.model.movie.MovieInfo;
+import com.omertron.themoviedbapi.model.movie.ProductionCompany;
+import com.omertron.themoviedbapi.model.movie.ProductionCountry;
+import com.omertron.themoviedbapi.model.movie.ReleaseInfo;
+import com.omertron.themoviedbapi.model.review.Review;
+import com.omertron.themoviedbapi.results.*;
 
 import java.util.List;
 
-public class MovieDbLazyImdb extends MovieDb {
-    private volatile MovieDb movieDb;
+public class MovieDbLazyImdb extends MovieInfo {
+    private volatile MovieInfo movieDb;
 
-    public MovieDbLazyImdb(MovieDb movieDb) {
+    public MovieDbLazyImdb(MovieInfo movieDb) {
         this.movieDb = movieDb;
     }
 
@@ -18,6 +38,11 @@ public class MovieDbLazyImdb extends MovieDb {
         } catch (MovieDbException e) {
             throw new IllegalStateException("Could not init MovieDb, because of " + e.getMessage(), e);
         }
+    }
+
+    @Override
+    public Collection getBelongsToCollection() {
+        return movieDb.getBelongsToCollection();
     }
 
     @Override
@@ -61,11 +86,6 @@ public class MovieDbLazyImdb extends MovieDb {
     }
 
     @Override
-    public Collection getBelongsToCollection() {
-        return movieDb.getBelongsToCollection();
-    }
-
-    @Override
     public long getBudget() {
         return movieDb.getBudget();
     }
@@ -91,11 +111,6 @@ public class MovieDbLazyImdb extends MovieDb {
     }
 
     @Override
-    public String getOverview() {
-        return movieDb.getOverview();
-    }
-
-    @Override
     public List<ProductionCompany> getProductionCompanies() {
         return movieDb.getProductionCompanies();
     }
@@ -103,6 +118,11 @@ public class MovieDbLazyImdb extends MovieDb {
     @Override
     public List<ProductionCountry> getProductionCountries() {
         return movieDb.getProductionCountries();
+    }
+
+    @Override
+    public String getOverview() {
+        return movieDb.getOverview();
     }
 
     @Override
@@ -126,6 +146,16 @@ public class MovieDbLazyImdb extends MovieDb {
     }
 
     @Override
+    public String getStatus() {
+        return movieDb.getStatus();
+    }
+
+    @Override
+    public void setBelongsToCollection(Collection belongsToCollection) {
+        movieDb.setBelongsToCollection(belongsToCollection);
+    }
+
+    @Override
     public float getVoteAverage() {
         return movieDb.getVoteAverage();
     }
@@ -143,6 +173,21 @@ public class MovieDbLazyImdb extends MovieDb {
     @Override
     public void setId(int id) {
         movieDb.setId(id);
+    }
+
+    @Override
+    public MediaType getMediaType() {
+        return movieDb.getMediaType();
+    }
+
+    @Override
+    public void setMediaType(String mediaType) {
+        movieDb.setMediaType(mediaType);
+    }
+
+    @Override
+    public void setMediaType(MediaType mediaType) {
+        movieDb.setMediaType(mediaType);
     }
 
     @Override
@@ -171,13 +216,48 @@ public class MovieDbLazyImdb extends MovieDb {
     }
 
     @Override
-    public void setAdult(boolean adult) {
-        movieDb.setAdult(adult);
+    public boolean isVideo() {
+        return movieDb.isVideo();
     }
 
     @Override
-    public void setBelongsToCollection(Collection belongsToCollection) {
-        movieDb.setBelongsToCollection(belongsToCollection);
+    public void setVideo(Boolean video) {
+        movieDb.setVideo(video);
+    }
+
+    @Override
+    public float getUserRating() {
+        return movieDb.getUserRating();
+    }
+
+    @Override
+    public void setUserRating(float userRating) {
+        movieDb.setUserRating(userRating);
+    }
+
+    @Override
+    public List<Integer> getGenreIds() {
+        return movieDb.getGenreIds();
+    }
+
+    @Override
+    public void setGenreIds(List<Integer> genreIds) {
+        movieDb.setGenreIds(genreIds);
+    }
+
+    @Override
+    public String getOriginalLanguage() {
+        return movieDb.getOriginalLanguage();
+    }
+
+    @Override
+    public void setOriginalLanguage(String originalLanguage) {
+        movieDb.setOriginalLanguage(originalLanguage);
+    }
+
+    @Override
+    public void setAdult(boolean adult) {
+        movieDb.setAdult(adult);
     }
 
     @Override
@@ -201,20 +281,18 @@ public class MovieDbLazyImdb extends MovieDb {
     }
 
     @Override
-    public void setOverview(String overview) {
-        movieDb.setOverview(overview);
-    }
-
-    @Override
-    public void setProductionCompanies(
-            List<ProductionCompany> productionCompanies) {
+    public void setProductionCompanies(List<ProductionCompany> productionCompanies) {
         movieDb.setProductionCompanies(productionCompanies);
     }
 
     @Override
-    public void setProductionCountries(
-            List<ProductionCountry> productionCountries) {
+    public void setProductionCountries(List<ProductionCountry> productionCountries) {
         movieDb.setProductionCountries(productionCountries);
+    }
+
+    @Override
+    public void setOverview(String overview) {
+        movieDb.setOverview(overview);
     }
 
     @Override
@@ -235,6 +313,141 @@ public class MovieDbLazyImdb extends MovieDb {
     @Override
     public void setTagline(String tagline) {
         movieDb.setTagline(tagline);
+    }
+
+    @Override
+    public void setStatus(String status) {
+        movieDb.setStatus(status);
+    }
+
+    @Override
+    public List<AlternativeTitle> getAlternativeTitles() {
+        return movieDb.getAlternativeTitles();
+    }
+
+    @Override
+    public List<MediaCreditCast> getCast() {
+        return movieDb.getCast();
+    }
+
+    @Override
+    public List<MediaCreditCrew> getCrew() {
+        return movieDb.getCrew();
+    }
+
+    @Override
+    public List<Artwork> getImages() {
+        return movieDb.getImages();
+    }
+
+    @Override
+    public List<Keyword> getKeywords() {
+        return movieDb.getKeywords();
+    }
+
+    @Override
+    public List<ReleaseInfo> getReleases() {
+        return movieDb.getReleases();
+    }
+
+    @Override
+    public List<Video> getVideos() {
+        return movieDb.getVideos();
+    }
+
+    @Override
+    public List<Translation> getTranslations() {
+        return movieDb.getTranslations();
+    }
+
+    @Override
+    public List<MovieInfo> getSimilarMovies() {
+        return movieDb.getSimilarMovies();
+    }
+
+    @Override
+    public List<UserList> getLists() {
+        return movieDb.getLists();
+    }
+
+    @Override
+    public List<Review> getReviews() {
+        return movieDb.getReviews();
+    }
+
+    @Override
+    public List<ChangeKeyItem> getChanges() {
+        return movieDb.getChanges();
+    }
+
+    @Override
+    public void setAlternativeTitles(WrapperAlternativeTitles alternativeTitles) {
+        movieDb.setAlternativeTitles(alternativeTitles);
+    }
+
+    @Override
+    public void setCredits(MediaCreditList credits) {
+        movieDb.setCredits(credits);
+    }
+
+    @Override
+    public void setImages(WrapperImages images) {
+        movieDb.setImages(images);
+    }
+
+    @Override
+    public void setKeywords(WrapperMovieKeywords keywords) {
+        movieDb.setKeywords(keywords);
+    }
+
+    @Override
+    public void setReleases(WrapperReleaseInfo releases) {
+        movieDb.setReleases(releases);
+    }
+
+    @Override
+    public void setVideos(WrapperVideos trailers) {
+        movieDb.setVideos(trailers);
+    }
+
+    @Override
+    public void setTranslations(WrapperTranslations translations) {
+        movieDb.setTranslations(translations);
+    }
+
+    @Override
+    public void setSimilarMovies(WrapperGenericList<MovieInfo> similarMovies) {
+        movieDb.setSimilarMovies(similarMovies);
+    }
+
+    @Override
+    public void setLists(WrapperGenericList<UserList> lists) {
+        movieDb.setLists(lists);
+    }
+
+    @Override
+    public void setReviews(WrapperGenericList<Review> reviews) {
+        movieDb.setReviews(reviews);
+    }
+
+    @Override
+    public void setChanges(WrapperChanges changes) {
+        movieDb.setChanges(changes);
+    }
+
+    @Override
+    public boolean hasMethod(MovieMethod method) {
+        return movieDb.hasMethod(method);
+    }
+
+    @Override
+    public String getMediaId() {
+        return movieDb.getMediaId();
+    }
+
+    @Override
+    public void setMediaId(String mediaId) {
+        movieDb.setMediaId(mediaId);
     }
 
     @Override

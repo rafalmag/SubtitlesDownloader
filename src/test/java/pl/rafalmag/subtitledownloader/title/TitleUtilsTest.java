@@ -2,6 +2,7 @@ package pl.rafalmag.subtitledownloader.title;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,6 +10,7 @@ import pl.rafalmag.subtitledownloader.utils.ProgressCallbackDummy;
 
 import java.io.File;
 import java.util.List;
+import java.util.Locale;
 import java.util.SortedSet;
 
 import static org.hamcrest.Matchers.*;
@@ -18,6 +20,11 @@ import static org.junit.Assert.assertThat;
 public class TitleUtilsTest {
 
     private static final int TIMEOUT_MS = 10000;
+
+    @BeforeClass
+    public static void initLocale() {
+        Locale.setDefault(Locale.ENGLISH);
+    }
 
     @Parameters({"tt1234,1234", "123,123"})
     @Test

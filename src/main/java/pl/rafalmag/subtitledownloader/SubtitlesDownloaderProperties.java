@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Properties;
 
 public class SubtitlesDownloaderProperties {
@@ -19,7 +20,7 @@ public class SubtitlesDownloaderProperties {
     private static final String PROPERTIES_FILE_NAME = "subtitleDownloader.properties";
 
     private static final String INITIAL_DIR = "initialDir";
-    private static final String UI_LANGUAGE = "uiLanguage";
+    private static final String UI_LANGUAGE_TAG = "uiLanguageTag";
     private static final String SUBTITLES_LANGUAGE = "subtitlesLanguage";
 
     private static class SubtitlesDownloaderPropertiesHolder {
@@ -64,11 +65,12 @@ public class SubtitlesDownloaderProperties {
     }
 
     public InterfaceLanguage getInterfaceLanguage() {
-        return InterfaceLanguage.fromLanguageTag(properties.getProperty(UI_LANGUAGE, "en-US"));
+        return InterfaceLanguage.fromLanguageTag(properties.getProperty(UI_LANGUAGE_TAG, "en-US"));
     }
 
     public void setInterfaceLanguage(InterfaceLanguage interfaceLanguage) {
-        properties.setProperty(UI_LANGUAGE, interfaceLanguage.getLanguageTag());
+        Locale.setDefault(interfaceLanguage.getLocale());
+        properties.setProperty(UI_LANGUAGE_TAG, interfaceLanguage.getLanguageTag());
         store();
     }
 

@@ -12,7 +12,6 @@
 
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder
 import ch.qos.logback.core.ConsoleAppender
-import de.huxhorn.lilith.logback.appender.ClassicMultiplexSocketAppender
 import pl.rafalmag.subtitledownloader.themoviedb.TheMovieDbHelper
 import pl.rafalmag.subtitledownloader.themoviedb.TheMovieDbWarnFilter
 
@@ -23,7 +22,7 @@ def API_KEY = TheMovieDbHelper.API_KEY
 //println "Setting logback in groovy."
 
 
-appender("SOCKET", ClassicMultiplexSocketAppender) {
+appender("SOCKET", de.huxhorn.lilith.logback.appender.ClassicMultiplexSocketAppender) {
     compressing = true
     reconnectionDelay = 10000
     includeCallerData = true
@@ -37,7 +36,7 @@ appender("STDOUT", ConsoleAppender) {
     }
 }
 if (isDev() || isTestMode()) {
-    root(DEBUG, ["STDOUT", "SOCKET"])
+    root(INFO, ["STDOUT", "SOCKET"])
     logger("pl.rafalmag", DEBUG, ["STDOUT", "SOCKET"], additivity = false)
 } else {
     root(WARN, ["STDOUT"])
@@ -49,6 +48,7 @@ if (isDev() || isTestMode()) {
 def isTestMode() {
     try {
         Class.forName("pl.rafalmag.subtitledownloader.opensubtitles.SessionTest");
+        println 'test mode'
         true
     } catch (ClassNotFoundException e) {
         false
@@ -56,6 +56,9 @@ def isTestMode() {
 }
 
 def isDev() {
-    // InetAddress.getLocalHost().getHostName().equals("sdsd")
-    true
+    if (InetAddress.getLocalHost().getHostName().toLowerCase().contains("rafal")) {
+        println "dev mode"
+        true
+    }
+    false
 }
