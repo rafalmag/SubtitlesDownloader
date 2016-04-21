@@ -1,5 +1,6 @@
 package pl.rafalmag.subtitledownloader.opensubtitles;
 
+import org.assertj.core.api.Condition;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -12,9 +13,7 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 
-import static ch.lambdaj.Lambda.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CheckMovieTest {
 
@@ -40,18 +39,14 @@ public class CheckMovieTest {
         CheckMovie checkMovie = new CheckMovie(session, movieFile);
 
         // when
-        List<MovieEntity> movieEntities = checkMovie
-                .getTitleInfo();
+        List<MovieEntity> movieEntities = checkMovie.getTitleInfo();
 
         // then
-        assertThat("Result should has few records", movieEntities,
-                not(hasSize(0)));
-        List<MovieEntity> select = select(
-                movieEntities,
-                having(on(MovieEntity.class).getTitle(),
-                        equalToIgnoringCase("A Lonely Place to Die")));
-        assertThat("Result should has item with title: A Lonely Place To Die",
-                select, not(hasSize(0)));
+        assertThat(movieEntities).isNotEmpty();
+        assertThat(movieEntities).areAtLeast(1,
+                new Condition<>(searchSubtitlesResult ->
+                        searchSubtitlesResult.getTitle().equalsIgnoreCase("The Girl With The Dragon Tattoo"),
+                        "contains movie with The Girl With The Dragon Tattoo title"));
     }
 
     @Ignore
@@ -68,16 +63,12 @@ public class CheckMovieTest {
                 .getSubtitlesByMovieHashAndByteSize();
 
         // then
-        assertThat(checkMovieHash2Entities, not(hasSize(0)));
+        assertThat(checkMovieHash2Entities).isNotEmpty();
 
-        List<SearchSubtitlesResult> select2 = select(
-                checkMovieHash2Entities,
-                having(on(SearchSubtitlesResult.class).getTitle(),
-                        equalToIgnoringCase("The Girl With The Dragon Tattoo")));
-
-        assertThat(
-                "Result should has item with title: The Girl With The Dragon Tattoo",
-                select2, not(hasSize(0)));
+        assertThat(checkMovieHash2Entities).areAtLeast(1,
+                new Condition<>(searchSubtitlesResult ->
+                        searchSubtitlesResult.getTitle().equalsIgnoreCase("The Girl With The Dragon Tattoo"),
+                        "contains movie with The Girl With The Dragon Tattoo title"));
     }
 
     @Test
@@ -88,7 +79,7 @@ public class CheckMovieTest {
         // when
         String hashcode = new CheckMovie(session, file).getHashCode();
         // then
-        assertThat(hashcode, equalTo("8e245d9679d31e12"));
+        assertThat(hashcode).isEqualTo("8e245d9679d31e12");
     }
 
     @Test
@@ -99,7 +90,6 @@ public class CheckMovieTest {
         // when
         long fileSize = new CheckMovie(session, file).getByteSize();
         // then
-        assertThat(fileSize, equalTo(12_909_756L));
-
+        assertThat(fileSize).isEqualTo(12_909_756L);
     }
 }

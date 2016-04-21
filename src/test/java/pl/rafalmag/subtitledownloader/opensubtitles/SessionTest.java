@@ -1,6 +1,6 @@
 package pl.rafalmag.subtitledownloader.opensubtitles;
 
-import org.hamcrest.Matchers;
+import org.assertj.core.api.Condition;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,9 +10,7 @@ import pl.rafalmag.subtitledownloader.opensubtitles.entities.SubtitleLanguage;
 import java.util.Collection;
 import java.util.List;
 
-import static ch.lambdaj.Lambda.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SessionTest {
 
@@ -40,16 +38,12 @@ public class SessionTest {
                 .searchSubtitlesBy(movieHash, movieByteSize);
 
         // then
-        assertThat(checkMovieHash2Entities, not(hasSize(0)));
+        assertThat(checkMovieHash2Entities).isNotEmpty();
 
-        List<SearchSubtitlesResult> select2 = select(
-                checkMovieHash2Entities,
-                having(on(SearchSubtitlesResult.class).getTitle(),
-                        equalToIgnoringCase("The Girl With The Dragon Tattoo")));
-
-        assertThat(
-                "Result should has item with title: The Girl With The Dragon Tattoo",
-                select2, not(hasSize(0)));
+        assertThat(checkMovieHash2Entities).areAtLeast(1,
+                new Condition<>(searchSubtitlesResult ->
+                        searchSubtitlesResult.getTitle().equalsIgnoreCase("The Girl With The Dragon Tattoo"),
+                        "contains movie with The Girl With The Dragon Tattoo title"));
     }
 
     @Test
@@ -61,16 +55,12 @@ public class SessionTest {
                 .searchSubtitlesBy(imdb);
 
         // then
-        assertThat(checkMovieHash2Entities, not(hasSize(0)));
+        assertThat(checkMovieHash2Entities).isNotEmpty();
 
-        List<SearchSubtitlesResult> select2 = select(
-                checkMovieHash2Entities,
-                having(on(SearchSubtitlesResult.class).getTitle(),
-                        equalToIgnoringCase("The Girl With The Dragon Tattoo")));
-
-        assertThat(
-                "Result should has item with title: The Girl With The Dragon Tattoo",
-                select2, not(hasSize(0)));
+        assertThat(checkMovieHash2Entities).areAtLeast(1,
+                new Condition<>(searchSubtitlesResult ->
+                        searchSubtitlesResult.getTitle().equalsIgnoreCase("The Girl With The Dragon Tattoo"),
+                        "contains movie with The Girl With The Dragon Tattoo title"));
     }
 
     @Test
@@ -82,16 +72,12 @@ public class SessionTest {
                 .searchSubtitlesBy(title);
 
         // then
-        assertThat(checkMovieHash2Entities, not(hasSize(0)));
+        assertThat(checkMovieHash2Entities).isNotEmpty();
 
-        List<SearchSubtitlesResult> select2 = select(
-                checkMovieHash2Entities,
-                having(on(SearchSubtitlesResult.class).getTitle(),
-                        equalToIgnoringCase("The Girl With The Dragon Tattoo")));
-
-        assertThat(
-                "Result should has item with title: The Girl With The Dragon Tattoo",
-                select2, not(hasSize(0)));
+        assertThat(checkMovieHash2Entities).areAtLeast(1,
+                new Condition<>(searchSubtitlesResult ->
+                        searchSubtitlesResult.getTitle().equalsIgnoreCase("The Girl With The Dragon Tattoo"),
+                        "contains movie with The Girl With The Dragon Tattoo title"));
     }
 
     @Test
@@ -102,6 +88,6 @@ public class SessionTest {
         // then
         SubtitleLanguage english = new SubtitleLanguage("eng", "English", "en");
         SubtitleLanguage polish = new SubtitleLanguage("pol", "Polish", "pl");
-        assertThat(subtitleLanguages, Matchers.hasItems(english, polish));
+        assertThat(subtitleLanguages).contains(english, polish);
     }
 }

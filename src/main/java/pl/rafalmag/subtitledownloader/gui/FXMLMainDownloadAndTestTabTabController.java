@@ -41,7 +41,6 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
     @FXML
     protected Button downloadAndtest;
 
-
     @FXML
     protected Button test;
 
@@ -71,9 +70,7 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
                                 + SelectSubtitlesProperties.getInstance()
                                 .selectedSubtitlesProperty().get().getFileName()));
             }
-
         });
-
     }
 
     private void initTestButton() {
@@ -87,7 +84,6 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
                 test.tooltipProperty().set(new Tooltip(resources.getString("ViewMovie") + " "
                         + SelectMovieProperties.getInstance().getFilePath()));
             }
-
         });
     }
 

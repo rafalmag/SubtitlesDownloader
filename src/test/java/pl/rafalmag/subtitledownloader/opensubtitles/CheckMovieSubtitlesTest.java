@@ -1,5 +1,6 @@
 package pl.rafalmag.subtitledownloader.opensubtitles;
 
+import org.assertj.core.api.Condition;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -9,11 +10,8 @@ import pl.rafalmag.subtitledownloader.title.Movie;
 
 import java.io.File;
 import java.util.Collection;
-import java.util.List;
 
-import static ch.lambdaj.Lambda.*;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CheckMovieSubtitlesTest {
 
@@ -42,16 +40,12 @@ public class CheckMovieSubtitlesTest {
                 .getSubtitlesByImdb();
 
         // then
-        assertThat(checkMovieHash2Entities, not(hasSize(0)));
+        assertThat(checkMovieHash2Entities).isNotEmpty();
 
-        List<SearchSubtitlesResult> select2 = select(
-                checkMovieHash2Entities,
-                having(on(SearchSubtitlesResult.class).getTitle(),
-                        equalToIgnoringCase("The Girl With The Dragon Tattoo")));
-
-        assertThat(
-                "Result should has item with title: The Girl With The Dragon Tattoo",
-                select2, not(hasSize(0)));
+        assertThat(checkMovieHash2Entities).areAtLeast(1,
+                new Condition<>(searchSubtitlesResult ->
+                        searchSubtitlesResult.getTitle().equalsIgnoreCase("The Girl With The Dragon Tattoo"),
+                        "contains movie with The Girl With The Dragon Tattoo title"));
     }
 
     @Test
@@ -66,15 +60,12 @@ public class CheckMovieSubtitlesTest {
                 .getSubtitlesByTitle();
 
         // then
-        assertThat(checkMovieHash2Entities, not(hasSize(0)));
+        assertThat(checkMovieHash2Entities).isNotEmpty();
 
-        List<SearchSubtitlesResult> select2 = select(
-                checkMovieHash2Entities,
-                having(on(SearchSubtitlesResult.class).getIDMovieImdb(),
-                        equalTo(1568346)));
-
-        assertThat("Result should has item with imdb: 1568346", select2,
-                not(hasSize(0)));
+        assertThat(checkMovieHash2Entities).areAtLeast(1,
+                new Condition<>(searchSubtitlesResult ->
+                        searchSubtitlesResult.getIDMovieImdb() == 1568346,
+                        "Result should have item with imdb: 1568346"));
     }
 
     // requires existing file
@@ -94,15 +85,12 @@ public class CheckMovieSubtitlesTest {
                 .getSubtitles(timeoutMs);
 
         // then
-        assertThat(checkMovieHash2Entities, not(hasSize(0)));
+        assertThat(checkMovieHash2Entities).isNotEmpty();
 
-        List<SearchSubtitlesResult> select2 = select(
-                checkMovieHash2Entities,
-                having(on(SearchSubtitlesResult.class).getIDMovieImdb(),
-                        equalTo(1568346)));
-
-        assertThat("Result should has item with imdb: 1568346", select2,
-                not(hasSize(0)));
+        assertThat(checkMovieHash2Entities).areAtLeast(1,
+                new Condition<>(searchSubtitlesResult ->
+                        searchSubtitlesResult.getIDMovieImdb() == 1568346,
+                        "Result should have item with imdb: 1568346"));
 
     }
 
