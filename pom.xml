@@ -130,12 +130,6 @@
 
 	</dependencies>
 
-	<repositories>
-		<repository>
-			<id>toolchain_eu</id>
-			<url>http://toolchain.eu/maven2/</url>
-		</repository>
-	</repositories>
 	<build>
 		<plugins>
 			<plugin>
