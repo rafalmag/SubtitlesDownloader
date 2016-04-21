@@ -47,9 +47,11 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
 
     @FXML
     protected Button markValid;
+    private ResourceBundle resources;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.resources = resources;
         initDownloadButton();
         initTestButton();
         initMarkValid();
@@ -65,10 +67,9 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
         disabledDownloadProperty.addListener(observable -> {
             if (!disabledDownloadProperty.get()) {
                 download.tooltipProperty().set(
-                        new Tooltip("Download subtitles: "
+                        new Tooltip(resources.getString("DownloadSubtitles") + " "
                                 + SelectSubtitlesProperties.getInstance()
-                                .selectedSubtitlesProperty().get()
-                                .getFileName()));
+                                .selectedSubtitlesProperty().get().getFileName()));
             }
 
         });
@@ -83,8 +84,8 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
 
         disabledTestProperty.addListener(observable -> {
             if (!disabledTestProperty.get()) {
-                // TODO localization
-                test.tooltipProperty().set(new Tooltip("View movie: " + SelectMovieProperties.getInstance().getFilePath()));
+                test.tooltipProperty().set(new Tooltip(resources.getString("ViewMovie") + " "
+                        + SelectMovieProperties.getInstance().getFilePath()));
             }
 
         });

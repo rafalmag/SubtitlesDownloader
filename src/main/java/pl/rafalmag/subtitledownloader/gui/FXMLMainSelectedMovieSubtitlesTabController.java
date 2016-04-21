@@ -39,7 +39,7 @@ public class FXMLMainSelectedMovieSubtitlesTabController extends FXMLMainTab {
     public void initialize(URL location, ResourceBundle resources) {
         this.resources = resources;
         StringExpression selectedSubtitlesText = Bindings.concat(
-                resources.getString("SelectedSubtitle"), SelectSubtitlesProperties.getInstance()
+                resources.getString("SelectedSubtitle"), " ", SelectSubtitlesProperties.getInstance()
                         .selectedSubtitlesProperty());
         selectedSubtitles.textProperty().bind(selectedSubtitlesText);
 

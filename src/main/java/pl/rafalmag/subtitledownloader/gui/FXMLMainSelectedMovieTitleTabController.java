@@ -37,8 +37,7 @@ public class FXMLMainSelectedMovieTitleTabController extends FXMLMainTab {
     public void initialize(URL location, ResourceBundle resources) {
         this.resources = resources;
         StringExpression selectedTitleText = Bindings.concat(
-                resources.getString("SelectedTitle"),
-                SelectTitleProperties.getInstance().selectedMovieProperty());
+                resources.getString("SelectedTitle"), " ", SelectTitleProperties.getInstance().selectedMovieProperty());
         selectedTitle.textProperty().bind(selectedTitleText);
 
         setTable();
