@@ -5,27 +5,21 @@ import com.omertron.themoviedbapi.MovieDbException;
 import com.omertron.themoviedbapi.TheMovieDbApi;
 import com.omertron.themoviedbapi.model.movie.MovieInfo;
 
+import javax.inject.Singleton;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-public class TheMovieDbHelper {
+@Singleton
+public class TheMovieDbService {
 
     public static final boolean INCLUDE_ADULT = true;
-
-    private static class TheMovieDbHelperHolder {
-        private final static TheMovieDbHelper instance = new TheMovieDbHelper();
-    }
-
-    public static TheMovieDbHelper getInstance() {
-        return TheMovieDbHelperHolder.instance;
-    }
 
     public static final String API_KEY = "d59492cb5d91e31ca1832ce5c447a099";
 
     private final TheMovieDbApi theMovieDb;
 
-    private TheMovieDbHelper() {
+    public TheMovieDbService() {
         try {
             theMovieDb = new TheMovieDbApi(API_KEY);
         } catch (MovieDbException e) {
@@ -38,7 +32,7 @@ public class TheMovieDbHelper {
             List<MovieInfo> searchMovie = theMovieDb.searchMovie(title, 0,
                     Locale.getDefault().getLanguage(), INCLUDE_ADULT, 0, 0, null)
                     .getResults();
-            return searchMovie.stream().map(MovieDbLazyImdb::new).collect(Collectors.toList());
+            return searchMovie.stream().map(movieInfo -> new MovieDbLazyImdb(movieInfo, this)).collect(Collectors.toList());
         } catch (MovieDbException e) {
             throw new IllegalStateException("Could not get list of movies for title " + title +
                     ", because of " + e.getMessage(), e);

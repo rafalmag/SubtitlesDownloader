@@ -1,10 +1,15 @@
 package pl.rafalmag.subtitledownloader.themoviedb;
 
+import com.google.inject.Guice;
 import com.omertron.themoviedbapi.model.movie.MovieInfo;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.rafalmag.subtitledownloader.GuiceModule;
+import pl.rafalmag.subtitledownloader.opensubtitles.SessionException;
 
+import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.List;
@@ -14,10 +19,17 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 
-public class TheMovieDbHelperTest {
+public class TheMovieDbServiceTest {
 
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(TheMovieDbHelperTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TheMovieDbServiceTest.class);
+
+    @Inject
+    private TheMovieDbService theMovieDbService;
+
+    @Before
+    public void init() throws SessionException {
+        Guice.createInjector(new GuiceModule(null)).injectMembers(this);
+    }
 
     @Test
     public void should_hide_apiKey_from_logs() throws Exception {
@@ -28,13 +40,13 @@ public class TheMovieDbHelperTest {
             System.setOut(new PrintStream(baos));
 
             // when
-            LOGGER.warn("api hidden = {}", TheMovieDbHelper.API_KEY);
+            LOGGER.warn("api hidden = {}", TheMovieDbService.API_KEY);
 
             // then
             assertThat(baos.toString(),
                     containsString("api hidden = [API-KEY]"));
             assertThat(baos.toString(),
-                    not(containsString(TheMovieDbHelper.API_KEY)));
+                    not(containsString(TheMovieDbService.API_KEY)));
         } finally {
             System.setOut(out);
         }
@@ -47,7 +59,7 @@ public class TheMovieDbHelperTest {
         Locale.setDefault(Locale.ENGLISH);
 
         // when
-        List<MovieInfo> searchMovie = TheMovieDbHelper.getInstance().searchMovie(title);
+        List<MovieInfo> searchMovie = theMovieDbService.searchMovie(title);
         MovieInfo firstMovieDb = searchMovie.get(0);
         String imdbID = firstMovieDb.getImdbID();
 

@@ -11,7 +11,7 @@ import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
 import pl.rafalmag.subtitledownloader.opensubtitles.CheckMovie;
 import pl.rafalmag.subtitledownloader.opensubtitles.Session;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.MovieEntity;
-import pl.rafalmag.subtitledownloader.themoviedb.TheMovieDbHelper;
+import pl.rafalmag.subtitledownloader.themoviedb.TheMovieDbService;
 import pl.rafalmag.subtitledownloader.utils.NamedCallable;
 import pl.rafalmag.subtitledownloader.utils.ProgressCallback;
 import pl.rafalmag.subtitledownloader.utils.Utils;
@@ -40,6 +40,9 @@ public class TitleService {
     @Inject
     private Session session;
 
+    @Inject
+    private TheMovieDbService theMovieDbService;
+
     public SortedSet<Movie> getTitles(File movieFile, long timeoutMs, ProgressCallback progressCallback) throws InterruptedException {
         String title = TitleNameUtils.getTitleFrom(movieFile.getName());
         return startTasksAndGetResults(title, movieFile, timeoutMs, progressCallback);
@@ -62,7 +65,7 @@ public class TitleService {
     }
 
     protected List<Movie> getByTitle(String title) {
-        List<MovieInfo> searchMovie = TheMovieDbHelper.getInstance().searchMovie(title);
+        List<MovieInfo> searchMovie = theMovieDbService.searchMovie(title);
         List<Movie> list = Lists.transform(searchMovie, Movie::new);
         LOG.debug("TheMovieDb returned: {}", list);
         return list;

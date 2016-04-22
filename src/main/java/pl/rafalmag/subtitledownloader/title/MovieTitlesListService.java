@@ -20,9 +20,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Singleton
-public class MovieTitlesList {
+public class MovieTitlesListService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MovieTitlesList.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MovieTitlesListService.class);
 
     @Inject
     private TitleService titleService;

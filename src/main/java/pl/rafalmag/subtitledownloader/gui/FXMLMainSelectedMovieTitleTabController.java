@@ -14,7 +14,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import org.slf4j.Logger;
 import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
 import pl.rafalmag.subtitledownloader.title.Movie;
-import pl.rafalmag.subtitledownloader.title.MovieTitlesList;
+import pl.rafalmag.subtitledownloader.title.MovieTitlesListService;
 import pl.rafalmag.subtitledownloader.title.SelectTitleProperties;
 
 import javax.inject.Inject;
@@ -41,7 +41,10 @@ public class FXMLMainSelectedMovieTitleTabController implements Initializable {
     protected FXMLMainController fxmlMainController;
 
     @Inject
-    private MovieTitlesList movieTitlesList;
+    private MovieTitlesListService movieTitlesListService;
+
+    @Inject
+    private SelectTitleProperties selectTitleProperties;
 
     private ResourceBundle resources;
 
@@ -49,7 +52,7 @@ public class FXMLMainSelectedMovieTitleTabController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         this.resources = resources;
         StringExpression selectedTitleText = Bindings.concat(
-                resources.getString("SelectedTitle"), " ", SelectTitleProperties.getInstance().selectedMovieProperty());
+                resources.getString("SelectedTitle"), " ", selectTitleProperties.selectedMovieProperty());
         selectedTitle.textProperty().bind(selectedTitleText);
 
         setTable();
@@ -60,7 +63,7 @@ public class FXMLMainSelectedMovieTitleTabController implements Initializable {
     private void addUpdateTableListener() {
         StringProperty movieFileProperty = SelectMovieProperties.getInstance().movieFileProperty();
 
-        StringProperty lastUpdatedForFilePathProperty = movieTitlesList.lastUpdatedForFilePathProperty();
+        StringProperty lastUpdatedForFilePathProperty = movieTitlesListService.lastUpdatedForFilePathProperty();
 
         BooleanBinding movieFilePathChangedBinding = Bindings.notEqual(movieFileProperty, lastUpdatedForFilePathProperty);
         ReadOnlyBooleanProperty tabSelectedProperty = selectMovieTitleTab.selectedProperty();
@@ -73,9 +76,9 @@ public class FXMLMainSelectedMovieTitleTabController implements Initializable {
                 refreshTable();
 
                 // clear table
-                movieTitlesList.listProperty().clear();
+                movieTitlesListService.listProperty().clear();
 
-                SelectTitleProperties.getInstance().setSelectedMovie(Movie.DUMMY_MOVIE);
+                selectTitleProperties.setSelectedMovie(Movie.DUMMY_MOVIE);
             }
         };
 
@@ -85,7 +88,7 @@ public class FXMLMainSelectedMovieTitleTabController implements Initializable {
     }
 
     private void setTable() {
-        table.setItems(movieTitlesList.listProperty());
+        table.setItems(movieTitlesListService.listProperty());
         table.setPlaceholder(new Label(resources.getString("NoContentInTable")));
 
         TableColumn<Movie, String> title = new TableColumn<>(resources.getString("Title"));
@@ -121,7 +124,7 @@ public class FXMLMainSelectedMovieTitleTabController implements Initializable {
         table.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         // SelectTitleProperties.getInstance().selectedMovieProperty()
         // .bind(table.getSelectionModel().selectedItemProperty());
-        Movie selectedMovie = SelectTitleProperties.getInstance().getSelectedMovie();
+        Movie selectedMovie = selectTitleProperties.getSelectedMovie();
         if (selectedMovie != Movie.DUMMY_MOVIE) {
             table.getSelectionModel().select(selectedMovie);
         }
@@ -129,10 +132,10 @@ public class FXMLMainSelectedMovieTitleTabController implements Initializable {
                 .addListener((InvalidationListener) observable -> {
                     if (table.getSelectionModel().getSelectedItems().size() == 1) {
                         Movie movie = table.getSelectionModel().getSelectedItems().get(0);
-                        Movie oldSelectedMovie = SelectTitleProperties.getInstance().getSelectedMovie();
+                        Movie oldSelectedMovie = selectTitleProperties.getSelectedMovie();
                         LOG.debug("Selected movie: {}, old: {}", movie, oldSelectedMovie);
 
-                        SelectTitleProperties.getInstance().setSelectedMovie(movie);
+                        selectTitleProperties.setSelectedMovie(movie);
                         if (oldSelectedMovie == movie) {
                             // item was double clicked
                             fxmlMainController.nextTab();
@@ -148,7 +151,7 @@ public class FXMLMainSelectedMovieTitleTabController implements Initializable {
     protected void refreshTable() {
         LOG.trace("refresh");
         try {
-            movieTitlesList.updateList(fxmlMainController.progressBar, 10000);
+            movieTitlesListService.updateList(fxmlMainController.progressBar, 10000);
         } catch (InterruptedException e) {
             LOG.error("Could not update titles list", e);
         }

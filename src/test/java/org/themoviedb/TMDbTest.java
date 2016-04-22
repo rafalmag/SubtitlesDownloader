@@ -4,7 +4,7 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import org.junit.Test;
-import pl.rafalmag.subtitledownloader.themoviedb.TheMovieDbHelper;
+import pl.rafalmag.subtitledownloader.themoviedb.TheMovieDbService;
 
 import javax.ws.rs.core.MediaType;
 
@@ -13,7 +13,7 @@ import static org.junit.Assert.assertThat;
 
 public class TMDbTest {
 
-    private static String TM_DB_API_KEY = TheMovieDbHelper.API_KEY;
+    private static String TM_DB_API_KEY = TheMovieDbService.API_KEY;
 
     @Test
     public void should_get_starWars() throws Exception {

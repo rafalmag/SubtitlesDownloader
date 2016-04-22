@@ -45,6 +45,9 @@ public class FXMLMainSelectedMovieSubtitlesTabController implements Initializabl
     @Inject
     private SubtitlesList subtitlesList;
 
+    @Inject
+    private SelectTitleProperties selectTitleProperties;
+
     private ResourceBundle resources;
 
     @Override
@@ -61,7 +64,7 @@ public class FXMLMainSelectedMovieSubtitlesTabController implements Initializabl
     }
 
     private void addUpdateTableListener() {
-        ObjectProperty<Movie> selectedMovieProperty = SelectTitleProperties.getInstance().selectedMovieProperty();
+        ObjectProperty<Movie> selectedMovieProperty = selectTitleProperties.selectedMovieProperty();
 
         ObjectProperty<Movie> lastUpdatedForMovieProperty = subtitlesList.lastUpdatedForMovieProperty();
 

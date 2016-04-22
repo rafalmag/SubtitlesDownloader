@@ -3,7 +3,7 @@ package com.moviejukebox.themoviedb;
 import com.omertron.themoviedbapi.TheMovieDbApi;
 import com.omertron.themoviedbapi.model.movie.MovieInfo;
 import org.junit.Test;
-import pl.rafalmag.subtitledownloader.themoviedb.TheMovieDbHelper;
+import pl.rafalmag.subtitledownloader.themoviedb.TheMovieDbService;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import static org.junit.Assert.assertThat;
 
 public class TheMovieDbTest {
 
-    private static String TM_DB_API_KEY = TheMovieDbHelper.API_KEY;
+    private static String TM_DB_API_KEY = TheMovieDbService.API_KEY;
 
     @Test
     public void should_get_info_for_starWars_movie() throws Exception {
@@ -24,7 +24,7 @@ public class TheMovieDbTest {
         // when
         TheMovieDbApi theMovieDb = new TheMovieDbApi(TM_DB_API_KEY);
         List<MovieInfo> searchMovie = theMovieDb
-                .searchMovie(title, 0, language, TheMovieDbHelper.INCLUDE_ADULT, 0, 0, null).getResults();
+                .searchMovie(title, 0, language, TheMovieDbService.INCLUDE_ADULT, 0, 0, null).getResults();
 
         // then
         MovieInfo firstMovieDb = searchMovie.get(0);
@@ -61,7 +61,7 @@ public class TheMovieDbTest {
 
         // when
         TheMovieDbApi theMovieDb = new TheMovieDbApi(TM_DB_API_KEY);
-        List<MovieInfo> searchMovie = theMovieDb.searchMovie(title, 0, language, TheMovieDbHelper.INCLUDE_ADULT, 0, 0, null).getResults();
+        List<MovieInfo> searchMovie = theMovieDb.searchMovie(title, 0, language, TheMovieDbService.INCLUDE_ADULT, 0, 0, null).getResults();
         MovieInfo firstMovieDb = searchMovie.get(0);
 
         MovieInfo movieDbById = theMovieDb.getMovieInfo(id, language);

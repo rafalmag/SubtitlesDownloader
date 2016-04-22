@@ -12,12 +12,12 @@
 
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder
 import ch.qos.logback.core.ConsoleAppender
-import pl.rafalmag.subtitledownloader.themoviedb.TheMovieDbHelper
+import pl.rafalmag.subtitledownloader.themoviedb.TheMovieDbService
 import pl.rafalmag.subtitledownloader.themoviedb.TheMovieDbWarnFilter
 
 import static ch.qos.logback.classic.Level.*
 
-def API_KEY = TheMovieDbHelper.API_KEY
+def API_KEY = TheMovieDbService.API_KEY
 
 //println "Setting logback in groovy."
 

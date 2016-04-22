@@ -27,9 +27,11 @@ import java.util.List;
 
 public class MovieDbLazyImdb extends MovieInfo {
     private volatile MovieInfo movieDb;
+    private TheMovieDbService theMovieDbService;
 
-    public MovieDbLazyImdb(MovieInfo movieDb) {
+    public MovieDbLazyImdb(MovieInfo movieDb, TheMovieDbService theMovieDbService) {
         this.movieDb = movieDb;
+        this.theMovieDbService = theMovieDbService;
     }
 
     @Override
@@ -48,7 +50,7 @@ public class MovieDbLazyImdb extends MovieInfo {
      */
     private void reInit() {
         try {
-            movieDb = TheMovieDbHelper.getInstance().getFullMovieDb(this);
+            movieDb = theMovieDbService.getFullMovieDb(this);
         } catch (MovieDbException e) {
             throw new IllegalStateException("Could not init MovieDb, because of " + e.getMessage(), e);
         }

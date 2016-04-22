@@ -30,6 +30,9 @@ public class SubtitlesList {
     @Inject
     private SubtitlesUtils subtitlesUtils;
 
+    @Inject
+    private SelectTitleProperties selectTitleProperties;
+
     private final ObservableList<Subtitles> list = FXCollections.observableArrayList();
 
     private final ObjectProperty<Movie> lastUpdatedForMovie = new SimpleObjectProperty<>(Movie.DUMMY_MOVIE);
@@ -51,8 +54,7 @@ public class SubtitlesList {
     public void updateList(final ProgressBar progressBar, final long timeoutMs) throws InterruptedException {
         LOG.debug("SubtitlesList update timeout " + timeoutMs + "ms");
         progressBar.disableProperty().set(false);
-        final Movie selectedMovie = SelectTitleProperties.getInstance()
-                .getSelectedMovie();
+        final Movie selectedMovie = selectTitleProperties.getSelectedMovie();
         final File selectedFile = SelectMovieProperties.getInstance().getFile();
         TaskWithProgressCallback<Void> task = new TaskWithProgressCallback<Void>() {
 
