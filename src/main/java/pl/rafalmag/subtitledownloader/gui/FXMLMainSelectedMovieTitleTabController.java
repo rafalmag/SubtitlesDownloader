@@ -40,6 +40,9 @@ public class FXMLMainSelectedMovieTitleTabController implements Initializable {
     @Inject
     protected FXMLMainController fxmlMainController;
 
+    @Inject
+    private MovieTitlesList movieTitlesList;
+
     private ResourceBundle resources;
 
     @Override
@@ -57,7 +60,7 @@ public class FXMLMainSelectedMovieTitleTabController implements Initializable {
     private void addUpdateTableListener() {
         StringProperty movieFileProperty = SelectMovieProperties.getInstance().movieFileProperty();
 
-        StringProperty lastUpdatedForFilePathProperty = MovieTitlesList.lastUpdatedForFilePathProperty();
+        StringProperty lastUpdatedForFilePathProperty = movieTitlesList.lastUpdatedForFilePathProperty();
 
         BooleanBinding movieFilePathChangedBinding = Bindings.notEqual(movieFileProperty, lastUpdatedForFilePathProperty);
         ReadOnlyBooleanProperty tabSelectedProperty = selectMovieTitleTab.selectedProperty();
@@ -70,7 +73,7 @@ public class FXMLMainSelectedMovieTitleTabController implements Initializable {
                 refreshTable();
 
                 // clear table
-                MovieTitlesList.listProperty().clear();
+                movieTitlesList.listProperty().clear();
 
                 SelectTitleProperties.getInstance().setSelectedMovie(Movie.DUMMY_MOVIE);
             }
@@ -82,7 +85,7 @@ public class FXMLMainSelectedMovieTitleTabController implements Initializable {
     }
 
     private void setTable() {
-        table.setItems(MovieTitlesList.listProperty());
+        table.setItems(movieTitlesList.listProperty());
         table.setPlaceholder(new Label(resources.getString("NoContentInTable")));
 
         TableColumn<Movie, String> title = new TableColumn<>(resources.getString("Title"));
@@ -145,7 +148,7 @@ public class FXMLMainSelectedMovieTitleTabController implements Initializable {
     protected void refreshTable() {
         LOG.trace("refresh");
         try {
-            MovieTitlesList.updateList(fxmlMainController.progressBar, 10000);
+            movieTitlesList.updateList(fxmlMainController.progressBar, 10000);
         } catch (InterruptedException e) {
             LOG.error("Could not update titles list", e);
         }

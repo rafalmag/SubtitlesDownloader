@@ -1,27 +1,18 @@
 package pl.rafalmag.subtitledownloader.opensubtitles.entities;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import pl.rafalmag.subtitledownloader.title.TitleUtils;
 
 import java.util.Map;
 
 /**
- * http://trac.opensubtitles.org/projects/opensubtitles/wiki/XMLRPC#
- * SearchSubtitles
- *
- * @author rafalmag
+ * http://trac.opensubtitles.org/projects/opensubtitles/wiki/XMLRPC#SearchSubtitles
  */
 public class SearchSubtitlesResult {
-
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(SearchSubtitlesResult.class);
 
     private final Map<String, Object> map;
 
     public SearchSubtitlesResult(Map<String, Object> map) {
         this.map = map;
-        LOGGER.debug("parsed SearchSubtitlesResult=" + this);
     }
 
     public String getIdMovie() {

@@ -34,8 +34,7 @@ public class Movie implements Comparable<Movie> {
     }
 
     public Movie(MovieInfo input) {
-        this(input.getTitle(), getYear(input), TitleUtils
-                .getImdbFromString(input.getImdbID()));
+        this(input.getTitle(), getYear(input), TitleUtils.getImdbFromString(input.getImdbID()));
     }
 
     public Movie(String title, int year, int imdbId) {

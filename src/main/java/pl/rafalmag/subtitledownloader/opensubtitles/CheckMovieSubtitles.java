@@ -7,9 +7,11 @@ import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
 import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
 import pl.rafalmag.subtitledownloader.title.Movie;
+import pl.rafalmag.subtitledownloader.title.TitleUtils;
 import pl.rafalmag.subtitledownloader.utils.NamedCallable;
 import pl.rafalmag.subtitledownloader.utils.Utils;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
@@ -23,6 +25,9 @@ public class CheckMovieSubtitles extends CheckMovie {
 
     @InjectLogger
     private Logger LOG;
+
+    @Inject
+    private TitleUtils titleUtils;
 
     protected List<SearchSubtitlesResult> getSubtitlesByImdb(Movie movie)
             throws SubtitlesDownloaderException {

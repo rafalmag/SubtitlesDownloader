@@ -12,39 +12,39 @@ import org.slf4j.LoggerFactory;
 import pl.rafalmag.subtitledownloader.gui.SelectMovieProperties;
 import pl.rafalmag.subtitledownloader.utils.TaskWithProgressCallback;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.File;
 import java.util.SortedSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+@Singleton
 public class MovieTitlesList {
 
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(MovieTitlesList.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MovieTitlesList.class);
 
-    private final static StringProperty lastUpdatedForFilePath = new SimpleStringProperty(
-            "");
+    @Inject
+    private TitleService titleService;
 
-    private final static ObservableList<Movie> list = FXCollections
-            .observableArrayList();
+    private StringProperty lastUpdatedForFilePath = new SimpleStringProperty("");
 
-    private static final ExecutorService EXECUTOR = Executors
-            .newCachedThreadPool(new BasicThreadFactory.Builder()
+    private ObservableList<Movie> list = FXCollections.observableArrayList();
+
+    private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool(new BasicThreadFactory.Builder()
                     .daemon(true)
                     .namingPattern("MovieTitlesUpdate-%d")
                     .build());
 
-    public static ObservableList<Movie> listProperty() {
+    public ObservableList<Movie> listProperty() {
         return list;
     }
 
-    public static StringProperty lastUpdatedForFilePathProperty() {
+    public StringProperty lastUpdatedForFilePathProperty() {
         return lastUpdatedForFilePath;
     }
 
-    public static void updateList(final ProgressBar progressBar,
-                                  final long timeoutMs)
-            throws InterruptedException {
+    public void updateList(final ProgressBar progressBar, final long timeoutMs) throws InterruptedException {
 
         LOGGER.debug("updateList timeoutMs=" + timeoutMs);
         final File file = SelectMovieProperties.getInstance().getFile();
@@ -54,9 +54,7 @@ public class MovieTitlesList {
 
             @Override
             protected Void call() throws Exception {
-
-                TitleUtils titleUtils = new TitleUtils(file, timeoutMs, this);
-                final SortedSet<Movie> titles = titleUtils.getTitles();
+                final SortedSet<Movie> titles = titleService.getTitles(file, timeoutMs, this);
                 Platform.runLater(() -> {
                     list.setAll(titles);
                     lastUpdatedForFilePath.setValue(SelectMovieProperties
@@ -67,8 +65,7 @@ public class MovieTitlesList {
                 return null;
             }
         };
-        progressBar.progressProperty().bind(
-                task.progressProperty());
+        progressBar.progressProperty().bind(task.progressProperty());
         EXECUTOR.submit(task);
     }
 }
