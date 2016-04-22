@@ -11,8 +11,7 @@ import java.util.stream.Collectors;
 
 public class TheMovieDbHelper {
 
-    // TODO should be true, see reported issue : https://www.themoviedb.org/talk/57194db392514176a4000156
-    public static final boolean INCLUDE_ADULT = false;
+    public static final boolean INCLUDE_ADULT = true;
 
     private static class TheMovieDbHelperHolder {
         private final static TheMovieDbHelper instance = new TheMovieDbHelper();

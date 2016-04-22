@@ -32,9 +32,23 @@ public class MovieDbLazyImdb extends MovieInfo {
         this.movieDb = movieDb;
     }
 
+    @Override
+    public String getImdbID() {
+        String imdbID = movieDb.getImdbID();
+        if (imdbID == null) {
+            // MovieInfo retrieved from search lacks a lot of data
+            reInit();
+            return movieDb.getImdbID();
+        }
+        return imdbID;
+    }
+
+    /**
+     * This method will get all fields, as MovieInfo retrieved from search lacks a lot of data.
+     */
     private void reInit() {
         try {
-            movieDb = TheMovieDbHelper.getInstance().getFullMovieDb(getId());
+            movieDb = TheMovieDbHelper.getInstance().getFullMovieDb(this);
         } catch (MovieDbException e) {
             throw new IllegalStateException("Could not init MovieDb, because of " + e.getMessage(), e);
         }
@@ -98,16 +112,6 @@ public class MovieDbLazyImdb extends MovieInfo {
     @Override
     public String getHomepage() {
         return movieDb.getHomepage();
-    }
-
-    @Override
-    public String getImdbID() {
-        String imdbID = movieDb.getImdbID();
-        if (imdbID == null) {
-            reInit();
-            return movieDb.getImdbID();
-        }
-        return imdbID;
     }
 
     @Override

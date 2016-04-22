@@ -56,8 +56,7 @@ public class Subtitles implements Comparable<Subtitles> {
 
     @Override
     public String toString() {
-        return "Subtitles [getFileName()=" + getFileName()
-                + ", getDownloadsCount()=" + getDownloadsCount() + "]";
+        return "fileName=" + getFileName() + ", downloadsCount=" + getDownloadsCount();
     }
 
     public StringProperty downloadLinkProperty() {
