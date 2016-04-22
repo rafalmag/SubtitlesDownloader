@@ -33,7 +33,7 @@ public class TitleServiceTest {
 
     @Before
     public void init() throws SessionException {
-        Guice.createInjector(new GuiceModule(null)).injectMembers(this);
+        Guice.createInjector(new GuiceModule(() -> null)).injectMembers(this);
     }
 
     @Test
