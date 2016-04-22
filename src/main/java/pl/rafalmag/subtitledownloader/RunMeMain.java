@@ -4,6 +4,7 @@ import com.cathive.fx.guice.GuiceApplication;
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.google.inject.Provider;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
@@ -35,10 +36,6 @@ public class RunMeMain extends GuiceApplication {
     @Inject
     private GuiceFXMLLoader fxmlLoader;
 
-//    @Inject
-//    @Named("i18n-resources")
-//    private ResourceBundle resources;
-
     private Stage primaryStage;
 
     public static void main(String[] args) {
@@ -54,7 +51,12 @@ public class RunMeMain extends GuiceApplication {
 
     @Override
     public void init(List<Module> list) throws Exception {
-        list.add(new GuiceModule(primaryStage));
+        list.add(new GuiceModule(new Provider<Stage>() {
+            @Override
+            public Stage get() {
+                return primaryStage;
+            }
+        }));
     }
 
     public static RunMeMain getInstance() {

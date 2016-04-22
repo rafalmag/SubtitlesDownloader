@@ -54,9 +54,6 @@ public class FXMLMainController implements Initializable {
     protected Button nextButton;
     private ResourceBundle resources;
 
-    public FXMLMainController() {
-        System.out.println("build time");
-    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

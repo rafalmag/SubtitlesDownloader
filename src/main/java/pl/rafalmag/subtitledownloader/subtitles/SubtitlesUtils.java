@@ -14,6 +14,7 @@ import pl.rafalmag.subtitledownloader.utils.ProgressCallback;
 import pl.rafalmag.subtitledownloader.utils.Utils;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.Callable;
@@ -23,6 +24,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+@Singleton
 public class SubtitlesUtils {
 
     @InjectLogger

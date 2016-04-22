@@ -6,11 +6,13 @@ import com.google.inject.matcher.Matchers;
 import com.google.inject.name.Names;
 import javafx.stage.Stage;
 import pl.rafalmag.subtitledownloader.annotations.Slf4jTypeListener;
+import pl.rafalmag.subtitledownloader.opensubtitles.CheckMovie;
+import pl.rafalmag.subtitledownloader.opensubtitles.CheckMovieSubtitles;
 
 public class GuiceModule extends AbstractModule {
-    private Stage primaryStage;
+    private Provider<Stage> primaryStage;
 
-    public GuiceModule(Stage primaryStage) {
+    public GuiceModule(Provider<Stage> primaryStage) {
         this.primaryStage = primaryStage;
     }
 
@@ -19,12 +21,8 @@ public class GuiceModule extends AbstractModule {
 //                bind(ResourceBundle.class).annotatedWith(Names.named("i18n-resources"))
 //                        .toInstance(ResourceBundle.getBundle("opensubtitles", new UTF8Control()));
         bindListener(Matchers.any(), new Slf4jTypeListener());
-        bind(Stage.class).annotatedWith(Names.named("primaryStage")).toProvider(new Provider<Stage>() {
-            @Override
-            public Stage get() {
-                return primaryStage;
-            }
-        });
+        bind(Stage.class).annotatedWith(Names.named("primaryStage")).toProvider(primaryStage);
+        bind(CheckMovie.class).to(CheckMovieSubtitles.class);
     }
 }
 

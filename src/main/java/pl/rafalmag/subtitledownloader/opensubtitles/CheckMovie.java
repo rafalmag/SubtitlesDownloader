@@ -8,14 +8,16 @@ import pl.rafalmag.subtitledownloader.opensubtitles.entities.MovieEntity;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+@Singleton
 public class CheckMovie {
 
     @InjectLogger
-    private Logger LOG;
+    protected Logger LOG;
 
     @Inject
     protected Session session;
@@ -40,7 +42,6 @@ public class CheckMovie {
 
     protected List<SearchSubtitlesResult> getSubtitlesByMovieHashAndByteSize(File movieFile)
             throws SubtitlesDownloaderException {
-
         String movieHash = getHashCode(movieFile);
         long movieByteSize = getByteSize(movieFile);
         return session.searchSubtitlesBy(movieHash, movieByteSize);
