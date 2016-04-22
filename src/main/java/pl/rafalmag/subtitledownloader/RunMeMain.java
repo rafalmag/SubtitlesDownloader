@@ -1,7 +1,11 @@
 package pl.rafalmag.subtitledownloader;
 
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
+import com.cathive.fx.guice.GuiceApplication;
+import com.cathive.fx.guice.GuiceFXMLLoader;
+import com.google.inject.AbstractModule;
+import com.google.inject.Injector;
+import com.google.inject.Module;
+import com.google.inject.name.Names;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
@@ -14,18 +18,29 @@ import pl.rafalmag.subtitledownloader.gui.SelectMovieProperties;
 import pl.rafalmag.subtitledownloader.utils.UTF8Control;
 
 import javax.annotation.Nullable;
+import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-public class RunMeMain extends Application {
+public class RunMeMain extends GuiceApplication {
 
     private static final Logger LOGGER = LoggerFactory
             .getLogger(RunMeMain.class);
+
+    @Inject
+    private Injector injector;
+
+    @Inject
+    private GuiceFXMLLoader fxmlLoader;
+
+//    @Inject
+//    @Named("i18n-resources")
+//    private ResourceBundle resources;
+
     private Stage primaryStage;
 
     public static void main(String[] args) {
@@ -37,6 +52,18 @@ public class RunMeMain extends Application {
 
     public RunMeMain() {
         INSTANCE = this;
+    }
+
+    @Override
+    public void init(List<Module> list) throws Exception {
+        list.add(new AbstractModule() {
+            @Override
+            public void configure() {
+//                bind(ResourceBundle.class).annotatedWith(Names.named("i18n-resources"))
+//                        .toInstance(ResourceBundle.getBundle("opensubtitles", new UTF8Control()));
+                bind(Stage.class).annotatedWith(Names.named("primaryStage")).toProvider(() -> primaryStage);
+            }
+        });
     }
 
     public static RunMeMain getInstance() {
@@ -72,24 +99,20 @@ public class RunMeMain extends Application {
 
     private Parent getParent(Stage primaryStage) throws IOException {
         URL resource = getClass().getResource("/Main.fxml");
-        FXMLLoader fxmlLoader = new FXMLLoader(resource);
         InterfaceLanguage interfaceLanguage = SubtitlesDownloaderProperties.getInstance().getInterfaceLanguage();
         Locale locale = interfaceLanguage.getLocale();
         Locale.setDefault(locale);
-        fxmlLoader.setResources(ResourceBundle.getBundle("opensubtitles", new UTF8Control()));
-
-        Parent root;
-        try (InputStream is = resource.openStream()) {
-            root = fxmlLoader.load(is);
-        }
-        FXMLMainController controller = fxmlLoader.getController();
+        GuiceFXMLLoader.Result result = fxmlLoader.load(resource,
+                ResourceBundle.getBundle("opensubtitles", new UTF8Control()));
+        Parent root = result.getRoot();
+        FXMLMainController controller = result.getController();
         controller.selectFile(getFileFromCommandLine(), false);
-        controller.setWindow(primaryStage);
+//        controller.setWindow(primaryStage);
+//        injector.bind
         return root;
     }
 
     public void reloadView() throws IOException {
-        Parent parent = getParent(primaryStage);
         // replace the content
         AnchorPane content = (AnchorPane) primaryStage.getScene().getRoot();
         content.getChildren().clear();

@@ -2,18 +2,20 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<Tab fx:id="selectMovieFileTab" text="%SelectMovieFile" xmlns:fx="http://javafx.com/fxml"
-     fx:controller="pl.rafalmag.subtitledownloader.gui.FXMLMainSelectedMovieFileTabController">
-    <AnchorPane>
-        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="289.0" prefWidth="600.0"
-               text="%DropFileHere" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="0.0"
-               AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
-        <ToolBar prefWidth="2500.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                 AnchorPane.topAnchor="0.0">
-            <Button onAction="#browseFile" text="%Browse"/>
-        </ToolBar>
-        <Label fx:id="selectedFile" alignment="BOTTOM_LEFT" prefHeight="70.0" prefWidth="600.0"
-               text="%SelectedMovie" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-               AnchorPane.rightAnchor="0.0"/>
-    </AnchorPane>
-</Tab>
+<TabPane xmlns:fx="http://javafx.com/fxml"
+         fx:controller="pl.rafalmag.subtitledownloader.gui.FXMLMainSelectedMovieFileTabController">
+    <Tab fx:id="selectMovieFileTab" text="%SelectMovieFile">
+        <AnchorPane>
+            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="289.0" prefWidth="600.0"
+                   text="%DropFileHere" AnchorPane.bottomAnchor="70.0" AnchorPane.leftAnchor="0.0"
+                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+            <ToolBar prefWidth="2500.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                     AnchorPane.topAnchor="0.0">
+                <Button onAction="#browseFile" text="%Browse"/>
+            </ToolBar>
+            <Label fx:id="selectedFile" alignment="BOTTOM_LEFT" prefHeight="70.0" prefWidth="600.0"
+                   text="%SelectedMovie" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                   AnchorPane.rightAnchor="0.0"/>
+        </AnchorPane>
+    </Tab>
+</TabPane>

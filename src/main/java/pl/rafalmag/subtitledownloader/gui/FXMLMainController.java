@@ -1,6 +1,8 @@
 package pl.rafalmag.subtitledownloader.gui;
 
+import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.common.base.Throwables;
+import com.google.inject.name.Named;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,14 +18,13 @@ import javafx.scene.input.TransferMode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.stage.Window;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.rafalmag.subtitledownloader.utils.UTF8Control;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -31,7 +32,12 @@ public class FXMLMainController implements Initializable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FXMLMainController.class);
 
-    private Window window;
+    @Inject
+    private GuiceFXMLLoader fxmlLoader;
+
+    @Named("primaryStage")
+    @Inject
+    private Stage stage;
 
     @FXML
     protected TabPane tabPane;
@@ -54,36 +60,36 @@ public class FXMLMainController implements Initializable {
         initTab("/MainSelectMovieSubtitlesTab.fxml");
         initTab("/MainDownloadAndTestTab.fxml");
         progressBar.disableProperty().set(true);
-
+        tabPane.getSelectionModel().select(0);
         previousButton.disableProperty().bind(tabPane.getTabs().get(0).selectedProperty());
         nextButton.disableProperty().bind(tabPane.getTabs().get(tabPane.getTabs().size() - 1).selectedProperty());
     }
 
     private void initTab(String resourceStr) {
         URL resource = getClass().getResource(resourceStr);
-        try (InputStream openStream = resource.openStream()) {
-            FXMLLoader fxmlLoader = new FXMLLoader(resource, ResourceBundle.getBundle("opensubtitles", new UTF8Control()));
-            tabPane.getTabs().add(fxmlLoader.load(openStream));
-            ((FXMLMainTab) fxmlLoader.getController()).setMainController(this);
+        try {
+            TabPane tempTabPane = fxmlLoader.load(resource, resources).getRoot();
+            tabPane.getTabs().add(tempTabPane.getTabs().get(0));
+            tempTabPane.getTabs().remove(0);
         } catch (IOException e) {
             throw Throwables.propagate(e);
         }
     }
 
-    public Window getWindow() {
-        return window;
-    }
-
-    public void setWindow(Window window) {
-        this.window = window;
-    }
+//    public Window getWindow() {
+//        return stage;
+//    }
+//
+//    public void setWindow(Window window) {
+//        this.window = window;
+//    }
 
     @FXML
     protected void openAbout() throws IOException {
         LOGGER.trace("openAbout");
 
         final Stage aboutStage = new Stage(StageStyle.UTILITY);
-        aboutStage.initOwner(window);
+        aboutStage.initOwner(stage);
         aboutStage.initModality(Modality.WINDOW_MODAL);
 
         aboutStage.setTitle(resources.getString("AboutSubtitlesDownloader"));
@@ -97,7 +103,7 @@ public class FXMLMainController implements Initializable {
     @FXML
     protected void closeApp() {
         LOGGER.trace("closeApp");
-        window.hide();
+        stage.hide();
         LOGGER.trace("closeApp: hidden");
     }
 
@@ -174,7 +180,7 @@ public class FXMLMainController implements Initializable {
         LOGGER.trace("openLanguage");
 
         final Stage languageStage = new Stage(StageStyle.UTILITY);
-        languageStage.initOwner(window);
+        languageStage.initOwner(stage);
         languageStage.initModality(Modality.WINDOW_MODAL);
 
         languageStage.setTitle(resources.getString("Language"));
@@ -184,5 +190,7 @@ public class FXMLMainController implements Initializable {
         languageStage.setScene(new Scene(aboutView));
         languageStage.show();
         languageStage.sizeToScene();
+
+        actionEvent.consume();
     }
 }

@@ -27,7 +27,7 @@
             <Button fx:id="previousButton" onAction="#previousTab" text="%Previous"/>
 
             <Button fx:id="nextButton" onAction="#nextTab" text="%Next"/>
-            <Button text="%Finish" cancelButton="true"/>
+            <Button text="%Finish" onAction="#closeApp" cancelButton="true"/>
         </ToolBar>
     </VBox>
 </AnchorPane>
