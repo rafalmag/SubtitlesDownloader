@@ -8,20 +8,23 @@ import javafx.beans.binding.StringExpression;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
 import pl.rafalmag.subtitledownloader.title.Movie;
 import pl.rafalmag.subtitledownloader.title.MovieTitlesList;
 import pl.rafalmag.subtitledownloader.title.SelectTitleProperties;
 
+import javax.inject.Inject;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class FXMLMainSelectedMovieTitleTabController extends FXMLMainTab {
+public class FXMLMainSelectedMovieTitleTabController implements Initializable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FXMLMainSelectedMovieTitleTabController.class);
+    @InjectLogger
+    private Logger LOG;
 
     @FXML
     protected Tab selectMovieTitleTab;
@@ -31,6 +34,10 @@ public class FXMLMainSelectedMovieTitleTabController extends FXMLMainTab {
 
     @FXML
     protected TableView<Movie> table;
+
+    @Inject
+    protected FXMLMainController fxmlMainController;
+
     private ResourceBundle resources;
 
     @Override
@@ -56,7 +63,7 @@ public class FXMLMainSelectedMovieTitleTabController extends FXMLMainTab {
         final BooleanBinding shouldUpdateTitlesListBinding = tabSelectedProperty.and(movieFilePathChangedBinding);
 
         InvalidationListener shouldUpdateTitlesListListener = observable -> {
-            LOGGER.trace("observable: " + observable);
+            LOG.trace("observable: " + observable);
             if (shouldUpdateTitlesListBinding.get()) {
                 refreshTable();
 
@@ -92,7 +99,7 @@ public class FXMLMainSelectedMovieTitleTabController extends FXMLMainTab {
         //
         // @Override
         // public void handle(Event event) {
-        // LOGGER.info(cell.getText() + " # " + event.toString());
+        // LOG.info(cell.getText() + " # " + event.toString());
         //
         // }
         // });
@@ -118,7 +125,7 @@ public class FXMLMainSelectedMovieTitleTabController extends FXMLMainTab {
                     if (table.getSelectionModel().getSelectedItems().size() == 1) {
                         Movie movie = table.getSelectionModel().getSelectedItems().get(0);
                         Movie oldSelectedMovie = SelectTitleProperties.getInstance().getSelectedMovie();
-                        LOGGER.debug("Selected movie: {}, old: {}", movie, oldSelectedMovie);
+                        LOG.debug("Selected movie: {}, old: {}", movie, oldSelectedMovie);
 
                         SelectTitleProperties.getInstance().setSelectedMovie(movie);
                         if (oldSelectedMovie == movie) {
@@ -134,11 +141,11 @@ public class FXMLMainSelectedMovieTitleTabController extends FXMLMainTab {
 
     @FXML
     protected void refreshTable() {
-        LOGGER.trace("refresh");
+        LOG.trace("refresh");
         try {
             MovieTitlesList.updateList(fxmlMainController.progressBar, 10000);
         } catch (InterruptedException e) {
-            LOGGER.error("Could not update titles list", e);
+            LOG.error("Could not update titles list", e);
         }
     }
 }

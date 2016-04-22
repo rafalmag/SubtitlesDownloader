@@ -2,16 +2,18 @@ package pl.rafalmag.subtitledownloader.gui;
 
 import javafx.beans.binding.BooleanBinding;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
 import pl.rafalmag.subtitledownloader.subtitles.DownloaderTask;
 import pl.rafalmag.subtitledownloader.subtitles.SelectSubtitlesProperties;
 import pl.rafalmag.subtitledownloader.subtitles.Subtitles;
 
+import javax.inject.Inject;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -21,10 +23,9 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
-
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(FXMLMainDownloadAndTestTabTabController.class);
+public class FXMLMainDownloadAndTestTabTabController implements Initializable {
+    @InjectLogger
+    private Logger LOG;
 
     private static final ExecutorService EXECUTOR = Executors
             .newCachedThreadPool(new BasicThreadFactory.Builder()
@@ -46,6 +47,10 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
 
     @FXML
     protected Button markValid;
+
+    @Inject
+    protected FXMLMainController fxmlMainController;
+
     private ResourceBundle resources;
 
     @Override
@@ -95,7 +100,7 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
     @FXML
     protected void download() {
         fxmlMainController.progressBar.disableProperty().set(false);
-        LOGGER.trace("download");
+        LOG.trace("download");
         Subtitles subtitles = SelectSubtitlesProperties.getInstance().getSelectedSubtitles();
         File movieFile = SelectMovieProperties.getInstance().getFile();
         DownloaderTask downloader = new DownloaderTask(subtitles, movieFile,
@@ -107,19 +112,19 @@ public class FXMLMainDownloadAndTestTabTabController extends FXMLMainTab {
 
     @FXML
     protected void test() {
-        LOGGER.trace("test");
+        LOG.trace("test");
         File file = SelectMovieProperties.getInstance().getFile();
         try {
             URI uri = file.toURI();
             Desktop.getDesktop().browse(uri);
         } catch (IOException e) {
-            LOGGER.error("Could not open URL " + file + ", because of " + e.getMessage(), e);
+            LOG.error("Could not open URL " + file + ", because of " + e.getMessage(), e);
         }
     }
 
     @FXML
     protected void markValid() {
-        LOGGER.trace("markValid");
+        LOG.trace("markValid");
         // TODO
         // http://trac.opensubtitles.org/projects/opensubtitles/wiki/XMLRPC#TryUploadSubtitles
     }

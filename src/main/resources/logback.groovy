@@ -21,7 +21,6 @@ def API_KEY = TheMovieDbHelper.API_KEY
 
 //println "Setting logback in groovy."
 
-
 appender("SOCKET", de.huxhorn.lilith.logback.appender.ClassicMultiplexSocketAppender) {
     compressing = true
     reconnectionDelay = 10000
@@ -35,30 +34,30 @@ appender("STDOUT", ConsoleAppender) {
         pattern = "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{20} [%file:%line] - %replace(%msg){'${API_KEY}', '[API-KEY]'}%n"
     }
 }
+
 if (isDev() || isTestMode()) {
-    root(INFO, ["STDOUT", "SOCKET"])
-    logger("pl.rafalmag", DEBUG, ["STDOUT", "SOCKET"], additivity = false)
+    root(INFO, ["STDOUT"])
+    logger("pl.rafalmag", DEBUG, ["STDOUT"], additivity = false)
 } else {
     root(WARN, ["STDOUT"])
     logger("pl.rafalmag", INFO, ["STDOUT"], additivity = false)
 }
 
-//logger("pl.rafalmag.subtitledownloader", TRACE, ["STDOUT"], additivity = false)
 
 def isTestMode() {
     try {
         Class.forName("pl.rafalmag.subtitledownloader.opensubtitles.SessionTest");
         println 'test mode'
-        true
-    } catch (ClassNotFoundException e) {
-        false
+        return true
+    } catch (ClassNotFoundException ignored) {
+        return false
     }
 }
 
 def isDev() {
     if (InetAddress.getLocalHost().getHostName().toLowerCase().contains("rafal")) {
         println "dev mode"
-        true
+        return true
     }
-    false
+    return false
 }

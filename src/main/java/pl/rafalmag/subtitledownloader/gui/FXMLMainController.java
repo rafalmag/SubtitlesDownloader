@@ -5,7 +5,6 @@ import com.google.common.base.Throwables;
 import com.google.inject.name.Named;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -19,7 +18,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
 import pl.rafalmag.subtitledownloader.utils.UTF8Control;
 
 import javax.inject.Inject;
@@ -29,8 +28,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class FXMLMainController implements Initializable {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(FXMLMainController.class);
+    @InjectLogger
+    private Logger LOG;
 
     @Inject
     private GuiceFXMLLoader fxmlLoader;
@@ -86,7 +85,7 @@ public class FXMLMainController implements Initializable {
 
     @FXML
     protected void openAbout() throws IOException {
-        LOGGER.trace("openAbout");
+        LOG.trace("openAbout");
 
         final Stage aboutStage = new Stage(StageStyle.UTILITY);
         aboutStage.initOwner(stage);
@@ -95,16 +94,16 @@ public class FXMLMainController implements Initializable {
         aboutStage.setTitle(resources.getString("AboutSubtitlesDownloader"));
 
         URL resource = getClass().getResource("/About.fxml");
-        Parent aboutView = FXMLLoader.load(resource, ResourceBundle.getBundle("opensubtitles", new UTF8Control()));
+        Parent aboutView = fxmlLoader.load(resource, ResourceBundle.getBundle("opensubtitles", new UTF8Control())).getRoot();
         aboutStage.setScene(new Scene(aboutView));
         aboutStage.show();
     }
 
     @FXML
     protected void closeApp() {
-        LOGGER.trace("closeApp");
+        LOG.trace("closeApp");
         stage.hide();
-        LOGGER.trace("closeApp: hidden");
+        LOG.trace("closeApp: hidden");
     }
 
     @FXML
@@ -121,7 +120,7 @@ public class FXMLMainController implements Initializable {
 
     @FXML
     protected void setOnDragOver(DragEvent event) {
-        // LOGGER.trace("setOnDragOver {}", event);
+        // LOG.trace("setOnDragOver {}", event);
         Dragboard dragboard = event.getDragboard();
         if (isOneFileDragged(dragboard)) {
             event.acceptTransferModes(TransferMode.LINK);
@@ -131,7 +130,7 @@ public class FXMLMainController implements Initializable {
 
     @FXML
     protected void setOnDragEntered(DragEvent event) {
-        LOGGER.trace("setOnDragEntered {}", event);
+        LOG.trace("setOnDragEntered {}", event);
         Dragboard dragboard = event.getDragboard();
         if (isOneFileDragged(dragboard)) {
             event.acceptTransferModes(TransferMode.LINK);
@@ -141,17 +140,17 @@ public class FXMLMainController implements Initializable {
 
     @FXML
     protected void setOnDragExited(DragEvent event) {
-        LOGGER.trace("setOnDragExited {}", event);
+        LOG.trace("setOnDragExited {}", event);
         event.consume();
     }
 
     @FXML
     protected void setOnDragDropped(DragEvent event) {
-        LOGGER.trace("setOnDragDropped {}", event);
+        LOG.trace("setOnDragDropped {}", event);
         Dragboard dragboard = event.getDragboard();
         if (isOneFileDragged(dragboard)) {
             File droppedFile = dragboard.getFiles().get(0);
-            LOGGER.debug("setOnDragDropped file: {}", droppedFile);
+            LOG.debug("setOnDragDropped file: {}", droppedFile);
             selectFile(droppedFile, false);
         }
         event.consume();
@@ -177,7 +176,7 @@ public class FXMLMainController implements Initializable {
 
     @FXML
     public void openLanguage(ActionEvent actionEvent) throws IOException {
-        LOGGER.trace("openLanguage");
+        LOG.trace("openLanguage");
 
         final Stage languageStage = new Stage(StageStyle.UTILITY);
         languageStage.initOwner(stage);
@@ -186,7 +185,7 @@ public class FXMLMainController implements Initializable {
         languageStage.setTitle(resources.getString("Language"));
 
         URL resource = getClass().getResource("/Language.fxml");
-        Parent aboutView = FXMLLoader.load(resource, ResourceBundle.getBundle("opensubtitles", new UTF8Control()));
+        Parent aboutView = fxmlLoader.load(resource, ResourceBundle.getBundle("opensubtitles", new UTF8Control())).getRoot();
         languageStage.setScene(new Scene(aboutView));
         languageStage.show();
         languageStage.sizeToScene();

@@ -7,9 +7,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import pl.rafalmag.subtitledownloader.RunMeMain;
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderProperties;
+import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
 import pl.rafalmag.subtitledownloader.entities.InterfaceLanguage;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SubtitleLanguage;
 
@@ -19,8 +19,8 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class FXMLLanguageController implements Initializable {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(FXMLLanguageController.class);
+    @InjectLogger
+    private Logger LOG;
 
     @FXML
     private AnchorPane anchorPane;
@@ -52,7 +52,7 @@ public class FXMLLanguageController implements Initializable {
     public void okAction(ActionEvent actionEvent) {
         InterfaceLanguage selectedInterfaceLanguage = interfaceLanguageCombo.getSelectionModel().getSelectedItem();
         if (initialInterfaceLanguage != selectedInterfaceLanguage) {
-            LOGGER.debug("New UI language: " + selectedInterfaceLanguage.toString());
+            LOG.debug("New UI language: " + selectedInterfaceLanguage.toString());
             SubtitlesDownloaderProperties.getInstance().setInterfaceLanguage(selectedInterfaceLanguage);
             try {
                 RunMeMain.getInstance().reloadView();
@@ -60,7 +60,7 @@ public class FXMLLanguageController implements Initializable {
                 throw new IllegalStateException("Could not change language, as reloading of main window failed, because of " + e.getMessage(), e);
             }
         }
-//        LOGGER.warn(subtitlesLanguageCombo.getSelectionModel().getSelectedItem());
+//        LOG.warn(subtitlesLanguageCombo.getSelectionModel().getSelectedItem());
 
         ((Stage) anchorPane.getScene().getWindow()).close();
         actionEvent.consume();

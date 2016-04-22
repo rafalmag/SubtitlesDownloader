@@ -5,12 +5,13 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringExpression;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -18,10 +19,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class FXMLMainSelectedMovieFileTabController extends FXMLMainTab {
-
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(FXMLMainSelectedMovieFileTabController.class);
+public class FXMLMainSelectedMovieFileTabController implements Initializable {
+    @InjectLogger
+    private Logger LOG;
 
     @FXML
     protected Tab selectMovieFileTab;
@@ -32,6 +32,9 @@ public class FXMLMainSelectedMovieFileTabController extends FXMLMainTab {
     @Named("primaryStage")
     @Inject
     private Stage stage;
+
+    @Inject
+    protected FXMLMainController fxmlMainController;
 
     private ResourceBundle resources;
 
@@ -47,7 +50,7 @@ public class FXMLMainSelectedMovieFileTabController extends FXMLMainTab {
     protected void browseFile(ActionEvent event) throws IOException {
         FileChooser fileChooser = new FileChooser();
         File initialDir = SelectMovieProperties.getInstance().getInitialDir();
-        LOGGER.trace("browseFile initialDir {}", initialDir);
+        LOG.trace("browseFile initialDir {}", initialDir);
         fileChooser.setInitialDirectory(initialDir);
         fileChooser.setTitle(resources.getString("ChooseMovieFile"));
         File file = fileChooser.showOpenDialog(stage);

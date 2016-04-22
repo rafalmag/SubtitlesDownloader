@@ -8,22 +8,25 @@ import javafx.beans.binding.StringExpression;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
 import pl.rafalmag.subtitledownloader.subtitles.SelectSubtitlesProperties;
 import pl.rafalmag.subtitledownloader.subtitles.Subtitles;
 import pl.rafalmag.subtitledownloader.subtitles.SubtitlesList;
 import pl.rafalmag.subtitledownloader.title.Movie;
 import pl.rafalmag.subtitledownloader.title.SelectTitleProperties;
 
+import javax.inject.Inject;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class FXMLMainSelectedMovieSubtitlesTabController extends FXMLMainTab {
+public class FXMLMainSelectedMovieSubtitlesTabController implements Initializable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FXMLMainSelectedMovieSubtitlesTabController.class);
+    @InjectLogger
+    private Logger LOG;
 
     @FXML
     protected Tab selectMovieSubtitlesTab;
@@ -33,6 +36,10 @@ public class FXMLMainSelectedMovieSubtitlesTabController extends FXMLMainTab {
 
     @FXML
     protected TableView<Subtitles> table;
+
+    @Inject
+    protected FXMLMainController fxmlMainController;
+
     private ResourceBundle resources;
 
     @Override
@@ -60,7 +67,7 @@ public class FXMLMainSelectedMovieSubtitlesTabController extends FXMLMainTab {
         final BooleanBinding shouldUpdateTitlesListBinding = tabSelectedProperty.and(selectedMovieChangedBinding);
 
         InvalidationListener shouldUpdateSubtitlesListListener = observable -> {
-            LOGGER.trace("observable: " + observable);
+            LOG.trace("observable: " + observable);
             if (shouldUpdateTitlesListBinding.get()) {
                 try {
                     SubtitlesList.updateList(fxmlMainController.progressBar, 10000);
@@ -68,7 +75,7 @@ public class FXMLMainSelectedMovieSubtitlesTabController extends FXMLMainTab {
                     SubtitlesList.listProperty().clear();
                     SelectSubtitlesProperties.getInstance().setSelectedSubtitles(Subtitles.DUMMY_SUBTITLES);
                 } catch (InterruptedException e) {
-                    LOGGER.error("Could not update subtitles list", e);
+                    LOG.error("Could not update subtitles list", e);
                 }
             }
 
@@ -106,7 +113,7 @@ public class FXMLMainSelectedMovieSubtitlesTabController extends FXMLMainTab {
                     if (table.getSelectionModel().getSelectedItems().size() == 1) {
                         Subtitles subtitles = table.getSelectionModel().getSelectedItems().get(0);
                         Subtitles oldSubtitles = SelectSubtitlesProperties.getInstance().getSelectedSubtitles();
-                        LOGGER.debug("Selected subtitles: {} old: {}", subtitles, oldSubtitles);
+                        LOG.debug("Selected subtitles: {} old: {}", subtitles, oldSubtitles);
                         SelectSubtitlesProperties.getInstance().setSelectedSubtitles(subtitles);
                         if (oldSubtitles == subtitles) {
                             // item was double clicked

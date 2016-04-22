@@ -2,7 +2,7 @@ package pl.rafalmag.subtitledownloader.gui;
 
 import javafx.fxml.FXML;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
 
 import java.awt.*;
 import java.io.IOException;
@@ -11,19 +11,19 @@ import java.net.URISyntaxException;
 
 public class FXMLAboutController {
 
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(FXMLAboutController.class);
+    @InjectLogger
+    private Logger LOG;
 
     protected static final String url = "http://www.opensubtitles.org/";
 
     @FXML
     protected void openUrl() {
-        LOGGER.debug("openUrl");
+        LOG.debug("openUrl");
         try {
             final URI uri = new URI(url);
             Desktop.getDesktop().browse(uri);
         } catch (IOException | URISyntaxException e) {
-            LOGGER.error(
+            LOG.error(
                     "Could not open URL " + url + " because of "
                             + e.getMessage(), e);
         }
