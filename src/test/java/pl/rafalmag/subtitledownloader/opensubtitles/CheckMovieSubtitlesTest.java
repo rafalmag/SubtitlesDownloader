@@ -1,13 +1,16 @@
 package pl.rafalmag.subtitledownloader.opensubtitles;
 
+import com.google.inject.Guice;
 import org.assertj.core.api.Condition;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import pl.rafalmag.subtitledownloader.GuiceModule;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
 import pl.rafalmag.subtitledownloader.title.Movie;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.util.Collection;
 
@@ -15,11 +18,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class CheckMovieSubtitlesTest {
 
+    @Inject
     private Session session;
 
+    @Inject
+    private CheckMovieSubtitles checkMovieSubtitles;
+
     @Before
-    public void login() throws SessionException {
-        session = new Session();
+    public void initAndLogin() throws SessionException {
+        Guice.createInjector(new GuiceModule(null)).injectMembers(this);
         session.login();
     }
 
@@ -31,13 +38,10 @@ public class CheckMovieSubtitlesTest {
     @Test
     public void should_get_subtitles_for_movie_by_imdb() throws Exception {
         // given
-        CheckMovieSubtitles checkMovieSubtitles = new CheckMovieSubtitles(
-                session, new File(""), new Movie(
-                "The Girl With The Dragon Tattoo", 2011, 1568346));
 
         // when
         Collection<SearchSubtitlesResult> checkMovieHash2Entities = checkMovieSubtitles
-                .getSubtitlesByImdb();
+                .getSubtitlesByImdb(new Movie("The Girl With The Dragon Tattoo", 2011, 1568346));
 
         // then
         assertThat(checkMovieHash2Entities).isNotEmpty();
@@ -51,13 +55,10 @@ public class CheckMovieSubtitlesTest {
     @Test
     public void should_get_subtitles_for_movie_by_title() throws Exception {
         // given
-        CheckMovieSubtitles checkMovieSubtitles = new CheckMovieSubtitles(
-                session, new File(""), new Movie(
-                "The Girl With The Dragon Tattoo", 2011, 1568346));
 
         // when
         Collection<SearchSubtitlesResult> checkMovieHash2Entities = checkMovieSubtitles
-                .getSubtitlesByTitle();
+                .getSubtitlesByTitle(new Movie("The Girl With The Dragon Tattoo", 2011, 1568346));
 
         // then
         assertThat(checkMovieHash2Entities).isNotEmpty();
@@ -75,14 +76,11 @@ public class CheckMovieSubtitlesTest {
         // given
         File movieFile = new File(
                 "C:/torrents/!old/The Girl With A Dragon Tattoo 2011 DVDSCR XviD AC3-FTW/The Girl With A Dragon Tattoo 2011 DVDSCR XviD AC3-FTW.avi");
-        CheckMovieSubtitles checkMovieSubtitles = new CheckMovieSubtitles(
-                session, movieFile, new Movie(
-                "The Girl With The Dragon Tattoo", 2011, 1568346));
 
         long timeoutMs = 10000L;
         // when
         Collection<SearchSubtitlesResult> checkMovieHash2Entities = checkMovieSubtitles
-                .getSubtitles(timeoutMs);
+                .getSubtitles(new Movie("The Girl With The Dragon Tattoo", 2011, 1568346), movieFile, timeoutMs);
 
         // then
         assertThat(checkMovieHash2Entities).isNotEmpty();

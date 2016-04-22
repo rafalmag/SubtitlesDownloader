@@ -14,11 +14,13 @@ import org.slf4j.Logger;
 import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+@Singleton
 public class FXMLMainSelectedMovieFileTabController implements Initializable {
     @InjectLogger
     private Logger LOG;

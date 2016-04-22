@@ -17,6 +17,7 @@ import pl.rafalmag.subtitledownloader.utils.ProgressCallback;
 import pl.rafalmag.subtitledownloader.utils.Utils;
 
 import javax.annotation.Nullable;
+import javax.inject.Inject;
 import java.io.File;
 import java.util.Collection;
 import java.util.List;
@@ -31,10 +32,15 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 public class TitleUtils {
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(TitleUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TitleUtils.class);
 
     private static Pattern IMDB_PATTERN = Pattern.compile("\\D*(\\d+).*");
+
+    @Inject
+    private CheckMovie checkMovie;
+
+    @Inject
+    private Session session;
 
     public static int getImdbFromString(@Nullable String imdbStr) {
         if (Strings.isNullOrEmpty(imdbStr)) {
@@ -92,11 +98,9 @@ public class TitleUtils {
     }
 
     protected List<Movie> getByFileHash() throws SubtitlesDownloaderException {
-        Session session = new Session();
         session.login(); // mandatory
-        CheckMovie checkMovie = new CheckMovie(session, movieFile);
 
-        List<MovieEntity> checkMovieHash2Entities = checkMovie.getTitleInfo();
+        List<MovieEntity> checkMovieHash2Entities = checkMovie.getTitleInfo(movieFile);
 
         return Lists.transform(checkMovieHash2Entities, Movie::new);
     }

@@ -1,12 +1,15 @@
 package pl.rafalmag.subtitledownloader.opensubtitles;
 
+import com.google.inject.Guice;
 import org.assertj.core.api.Condition;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import pl.rafalmag.subtitledownloader.GuiceModule;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SubtitleLanguage;
 
+import javax.inject.Inject;
 import java.util.Collection;
 import java.util.List;
 
@@ -14,11 +17,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SessionTest {
 
+    @Inject
     private Session session;
 
     @Before
-    public void login() throws SessionException {
-        session = new Session();
+    public void initAndLogin() throws SessionException {
+        Guice.createInjector(new GuiceModule(null)).injectMembers(this);
         session.login();
     }
 

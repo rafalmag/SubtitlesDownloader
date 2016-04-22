@@ -1,13 +1,16 @@
 package pl.rafalmag.subtitledownloader.opensubtitles;
 
+import com.google.inject.Guice;
 import org.assertj.core.api.Condition;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import pl.rafalmag.subtitledownloader.GuiceModule;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.MovieEntity;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.net.URL;
 import java.util.Collection;
@@ -17,11 +20,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class CheckMovieTest {
 
+    @Inject
     private Session session;
 
+    @Inject
+    private CheckMovie checkMovie;
+
     @Before
-    public void login() throws SessionException {
-        session = new Session();
+    public void initAndLogin() throws SessionException {
+        Guice.createInjector(new GuiceModule(null)).injectMembers(this);
         session.login();
     }
 
@@ -36,10 +43,9 @@ public class CheckMovieTest {
         // given
         File movieFile = new File(
                 "H:/filmy/!old/A Lonely Place To Die  {2011} DVDRIP. Jaybob/A Lonely Place To Die  {2011} DVDRIP. Jaybob.avi");
-        CheckMovie checkMovie = new CheckMovie(session, movieFile);
 
         // when
-        List<MovieEntity> movieEntities = checkMovie.getTitleInfo();
+        List<MovieEntity> movieEntities = checkMovie.getTitleInfo(movieFile);
 
         // then
         assertThat(movieEntities).isNotEmpty();
@@ -56,11 +62,10 @@ public class CheckMovieTest {
         // given
         File movieFile = new File(
                 "C:/torrents/!old/The Girl With A Dragon Tattoo 2011 DVDSCR XviD AC3-FTW/The Girl With A Dragon Tattoo 2011 DVDSCR XviD AC3-FTW.avi");
-        CheckMovie checkMovie = new CheckMovie(session, movieFile);
 
         // when
         Collection<SearchSubtitlesResult> checkMovieHash2Entities = checkMovie
-                .getSubtitlesByMovieHashAndByteSize();
+                .getSubtitlesByMovieHashAndByteSize(movieFile);
 
         // then
         assertThat(checkMovieHash2Entities).isNotEmpty();
@@ -77,7 +82,7 @@ public class CheckMovieTest {
         URL resource = this.getClass().getResource("/breakdance.avi");
         File file = new File(resource.toURI());
         // when
-        String hashcode = new CheckMovie(session, file).getHashCode();
+        String hashcode = checkMovie.getHashCode(file);
         // then
         assertThat(hashcode).isEqualTo("8e245d9679d31e12");
     }
@@ -88,7 +93,7 @@ public class CheckMovieTest {
         URL resource = this.getClass().getResource("/breakdance.avi");
         File file = new File(resource.toURI());
         // when
-        long fileSize = new CheckMovie(session, file).getByteSize();
+        long fileSize = checkMovie.getByteSize(file);
         // then
         assertThat(fileSize).isEqualTo(12_909_756L);
     }

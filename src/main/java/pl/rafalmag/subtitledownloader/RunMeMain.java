@@ -2,19 +2,14 @@ package pl.rafalmag.subtitledownloader;
 
 import com.cathive.fx.guice.GuiceApplication;
 import com.cathive.fx.guice.GuiceFXMLLoader;
-import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 import com.google.inject.Module;
-import com.google.inject.Provider;
-import com.google.inject.matcher.Matchers;
-import com.google.inject.name.Names;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pl.rafalmag.subtitledownloader.annotations.Slf4jTypeListener;
 import pl.rafalmag.subtitledownloader.entities.InterfaceLanguage;
 import pl.rafalmag.subtitledownloader.gui.FXMLMainController;
 import pl.rafalmag.subtitledownloader.gui.SelectMovieProperties;
@@ -59,20 +54,7 @@ public class RunMeMain extends GuiceApplication {
 
     @Override
     public void init(List<Module> list) throws Exception {
-        list.add(new AbstractModule() {
-            @Override
-            public void configure() {
-//                bind(ResourceBundle.class).annotatedWith(Names.named("i18n-resources"))
-//                        .toInstance(ResourceBundle.getBundle("opensubtitles", new UTF8Control()));
-                bindListener(Matchers.any(), new Slf4jTypeListener());
-                bind(Stage.class).annotatedWith(Names.named("primaryStage")).toProvider(new Provider<Stage>() {
-                    @Override
-                    public Stage get() {
-                        return primaryStage;
-                    }
-                });
-            }
-        });
+        list.add(new GuiceModule(primaryStage));
     }
 
     public static RunMeMain getInstance() {

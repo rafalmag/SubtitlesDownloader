@@ -8,33 +8,37 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.ProgressBar;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
 import pl.rafalmag.subtitledownloader.gui.SelectMovieProperties;
 import pl.rafalmag.subtitledownloader.title.Movie;
 import pl.rafalmag.subtitledownloader.title.SelectTitleProperties;
 import pl.rafalmag.subtitledownloader.utils.TaskWithProgressCallback;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.File;
 import java.util.SortedSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+@Singleton
 public class SubtitlesList {
 
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(SubtitlesList.class);
+    @InjectLogger
+    private Logger LOG;
 
-    private static final ObservableList<Subtitles> list = FXCollections
-            .observableArrayList();
+    @Inject
+    private SubtitlesUtils subtitlesUtils;
 
-    private static final ObjectProperty<Movie> lastUpdatedForMovie = new SimpleObjectProperty<>(
-            Movie.DUMMY_MOVIE);
+    private final ObservableList<Subtitles> list = FXCollections.observableArrayList();
 
-    public static ObservableList<Subtitles> listProperty() {
+    private final ObjectProperty<Movie> lastUpdatedForMovie = new SimpleObjectProperty<>(Movie.DUMMY_MOVIE);
+
+    public ObservableList<Subtitles> listProperty() {
         return list;
     }
 
-    public static ObjectProperty<Movie> lastUpdatedForMovieProperty() {
+    public ObjectProperty<Movie> lastUpdatedForMovieProperty() {
         return lastUpdatedForMovie;
     }
 
@@ -44,9 +48,8 @@ public class SubtitlesList {
                     .namingPattern("SubtitlesUpdate-%d")
                     .build());
 
-    public static void updateList(final ProgressBar progressBar,
-                                  final long timeoutMs) throws InterruptedException {
-        LOGGER.debug("SubtitlesList update timeout " + timeoutMs + "ms");
+    public void updateList(final ProgressBar progressBar, final long timeoutMs) throws InterruptedException {
+        LOG.debug("SubtitlesList update timeout " + timeoutMs + "ms");
         progressBar.disableProperty().set(false);
         final Movie selectedMovie = SelectTitleProperties.getInstance()
                 .getSelectedMovie();
@@ -55,11 +58,9 @@ public class SubtitlesList {
 
             @Override
             protected Void call() throws Exception {
-                SubtitlesUtils subtitlesUtils = new SubtitlesUtils(
+                final SortedSet<Subtitles> subtitles = subtitlesUtils.getSubtitles(
                         selectedMovie,
                         selectedFile, timeoutMs, this);
-                final SortedSet<Subtitles> subtitles = subtitlesUtils
-                        .getSubtitles();
                 Platform.runLater(() -> {
                     list.setAll(subtitles);
                     lastUpdatedForMovie.setValue(selectedMovie);

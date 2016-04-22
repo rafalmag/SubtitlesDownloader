@@ -72,6 +72,18 @@
             <artifactId>fx-guice</artifactId>
             <version>8.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-testlib</artifactId>
+            <version>4.0</version>
+            <scope>test</scope>
+        </dependency>
+
 
         <dependency>
 			<groupId>org.slf4j</groupId>

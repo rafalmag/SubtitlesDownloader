@@ -18,9 +18,11 @@ import pl.rafalmag.subtitledownloader.title.MovieTitlesList;
 import pl.rafalmag.subtitledownloader.title.SelectTitleProperties;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+@Singleton
 public class FXMLMainSelectedMovieTitleTabController implements Initializable {
 
     @InjectLogger

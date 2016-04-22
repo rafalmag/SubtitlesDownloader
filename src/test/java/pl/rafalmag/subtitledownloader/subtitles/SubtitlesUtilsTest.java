@@ -25,9 +25,9 @@ public class SubtitlesUtilsTest {
                 "E:/filmy/!old/Dead.Snow.(Doed.Snoe).2009.1080p.BluRay.x264.anoXmous/Dead.Snow.(Doed.Snoe).2009.1080p.BluRay.x264.anoXmous_.mp4");
 
         // when
-        SubtitlesUtils subtitlesUtils = new SubtitlesUtils(movie, movieFile,
+        SubtitlesUtils subtitlesUtils = new SubtitlesUtils();
+        SortedSet<Subtitles> subtitles = subtitlesUtils.getSubtitles(movie, movieFile,
                 TIMEOUT_MS, new ProgressCallbackDummy());
-        SortedSet<Subtitles> subtitles = subtitlesUtils.getSubtitles();
 
         // then
         assertThat(subtitles.first().getFileName(), equalTo("Doed.Snoe.2009.NORWEGIAN.DVDRip.XviD-DnB.srt"));

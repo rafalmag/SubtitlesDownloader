@@ -4,11 +4,13 @@ import javafx.fxml.FXML;
 import org.slf4j.Logger;
 import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
 
+import javax.inject.Singleton;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+@Singleton
 public class FXMLAboutController {
 
     @InjectLogger

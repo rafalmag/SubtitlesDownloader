@@ -13,11 +13,13 @@ import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
 import pl.rafalmag.subtitledownloader.entities.InterfaceLanguage;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SubtitleLanguage;
 
+import javax.inject.Singleton;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+@Singleton
 public class FXMLLanguageController implements Initializable {
     @InjectLogger
     private Logger LOG;

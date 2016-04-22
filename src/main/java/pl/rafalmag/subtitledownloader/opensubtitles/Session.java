@@ -3,12 +3,13 @@ package pl.rafalmag.subtitledownloader.opensubtitles;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import com.google.inject.Singleton;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
+import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.MovieEntity;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SubtitleLanguage;
@@ -18,6 +19,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Singleton
 public class Session {
 
     private static final String ENG = "eng"; // TODO let users to choose
@@ -31,7 +33,8 @@ public class Session {
     private static final String USER_AGENT = "SubtitlesDownloader v1.3";
 //	@formatter:on
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Session.class);
+    @InjectLogger
+    private Logger LOG;
 
     private final XmlRpcClient client;
     private String token;
@@ -45,7 +48,6 @@ public class Session {
         }
         client = new XmlRpcClient();
         client.setConfig(config);
-
     }
 
     public void login() throws SessionException {
@@ -60,7 +62,7 @@ public class Session {
             @SuppressWarnings("unchecked")
             Map<String, Object> execute = (Map<String, Object>) client.execute(
                     "LogIn", params);
-            LOGGER.debug("login response: " + execute);
+            LOG.debug("login response: " + execute);
             String status = (String) execute.get("status");
             if (!status.contains("OK")) {
                 throw new SessionException(
@@ -79,17 +81,17 @@ public class Session {
             @SuppressWarnings("unchecked")
             Map<String, Object> execute = (Map<String, Object>) client.execute(
                     "LogOut", params);
-            LOGGER.debug("logout response: " + execute);
+            LOG.debug("logout response: " + execute);
             String status = (String) execute.get("status");
             if (!status.contains("OK")) {
-                LOGGER.error("could not logout because of wrong status "
+                LOG.error("could not logout because of wrong status "
                         + status);
                 return false;
             }
             token = null;
             return true;
         } catch (XmlRpcException e) {
-            LOGGER.error("could not logout because of " + e.getMessage(), e);
+            LOG.error("could not logout because of " + e.getMessage(), e);
             return false;
         }
     }
@@ -147,7 +149,7 @@ public class Session {
             @SuppressWarnings("unchecked")
             Map<String, Object> execute = (Map<String, Object>) client.execute(
                     "SearchSubtitles", params);
-            LOGGER.debug("SearchSubtitles response: " + execute);
+            LOG.debug("SearchSubtitles response: " + execute);
             String status = (String) execute.get("status");
             if (!status.contains("OK")) {
                 throw new SubtitlesDownloaderException(
@@ -187,7 +189,7 @@ public class Session {
             @SuppressWarnings("unchecked")
             Map<String, Object> response = (Map<String, Object>) client
                     .execute("CheckMovieHash2", params);
-            LOGGER.debug("CheckMovieHash2 response: " + response);
+            LOG.debug("CheckMovieHash2 response: " + response);
             String status = (String) response.get("status");
             if (!status.contains("OK")) {
                 throw new SubtitlesDownloaderException(

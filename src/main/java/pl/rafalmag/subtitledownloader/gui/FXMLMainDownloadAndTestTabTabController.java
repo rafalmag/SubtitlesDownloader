@@ -14,6 +14,7 @@ import pl.rafalmag.subtitledownloader.subtitles.SelectSubtitlesProperties;
 import pl.rafalmag.subtitledownloader.subtitles.Subtitles;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +24,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+@Singleton
 public class FXMLMainDownloadAndTestTabTabController implements Initializable {
     @InjectLogger
     private Logger LOG;

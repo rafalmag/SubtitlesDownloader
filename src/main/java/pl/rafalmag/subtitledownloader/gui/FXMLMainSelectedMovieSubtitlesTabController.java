@@ -20,9 +20,11 @@ import pl.rafalmag.subtitledownloader.title.Movie;
 import pl.rafalmag.subtitledownloader.title.SelectTitleProperties;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+@Singleton
 public class FXMLMainSelectedMovieSubtitlesTabController implements Initializable {
 
     @InjectLogger
@@ -39,6 +41,9 @@ public class FXMLMainSelectedMovieSubtitlesTabController implements Initializabl
 
     @Inject
     protected FXMLMainController fxmlMainController;
+
+    @Inject
+    private SubtitlesList subtitlesList;
 
     private ResourceBundle resources;
 
@@ -58,7 +63,7 @@ public class FXMLMainSelectedMovieSubtitlesTabController implements Initializabl
     private void addUpdateTableListener() {
         ObjectProperty<Movie> selectedMovieProperty = SelectTitleProperties.getInstance().selectedMovieProperty();
 
-        ObjectProperty<Movie> lastUpdatedForMovieProperty = SubtitlesList.lastUpdatedForMovieProperty();
+        ObjectProperty<Movie> lastUpdatedForMovieProperty = subtitlesList.lastUpdatedForMovieProperty();
 
         BooleanBinding selectedMovieChangedBinding =
                 Bindings.notEqual(selectedMovieProperty, lastUpdatedForMovieProperty);
@@ -70,9 +75,9 @@ public class FXMLMainSelectedMovieSubtitlesTabController implements Initializabl
             LOG.trace("observable: " + observable);
             if (shouldUpdateTitlesListBinding.get()) {
                 try {
-                    SubtitlesList.updateList(fxmlMainController.progressBar, 10000);
+                    subtitlesList.updateList(fxmlMainController.progressBar, 10000);
                     // clear table
-                    SubtitlesList.listProperty().clear();
+                    subtitlesList.listProperty().clear();
                     SelectSubtitlesProperties.getInstance().setSelectedSubtitles(Subtitles.DUMMY_SUBTITLES);
                 } catch (InterruptedException e) {
                     LOG.error("Could not update subtitles list", e);
@@ -87,7 +92,7 @@ public class FXMLMainSelectedMovieSubtitlesTabController implements Initializabl
     }
 
     private void setTable() {
-        table.setItems(SubtitlesList.listProperty());
+        table.setItems(subtitlesList.listProperty());
         table.setPlaceholder(new Label(resources.getString("NoContentInTable")));
 
         TableColumn<Subtitles, String> fileName = new TableColumn<>(resources.getString("FileName"));

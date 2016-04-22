@@ -1,7 +1,7 @@
 package pl.rafalmag.subtitledownloader;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
 import pl.rafalmag.subtitledownloader.entities.InterfaceLanguage;
 
 import javax.annotation.Nullable;
@@ -14,8 +14,8 @@ import java.util.Properties;
 
 public class SubtitlesDownloaderProperties {
 
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(SubtitlesDownloaderProperties.class);
+    @InjectLogger
+    private Logger LOG;
 
     private static final String PROPERTIES_FILE_NAME = "subtitleDownloader.properties";
 
@@ -41,7 +41,7 @@ public class SubtitlesDownloaderProperties {
         try {
             properties.load(new FileInputStream(PROPERTIES_FILE_NAME));
         } catch (IOException e) {
-            LOGGER.debug("Could not load properties, because of " + e.getMessage(), e);
+            LOG.debug("Could not load properties, because of " + e.getMessage(), e);
         }
     }
 
@@ -50,7 +50,7 @@ public class SubtitlesDownloaderProperties {
             properties.store(new FileOutputStream(PROPERTIES_FILE_NAME),
                     "Subtitle Downloader properties");
         } catch (IOException e) {
-            LOGGER.error("Could not store properties, because of " + e.getMessage(), e);
+            LOG.error("Could not store properties, because of " + e.getMessage(), e);
         }
     }
 

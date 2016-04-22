@@ -10,6 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -22,11 +23,13 @@ import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
 import pl.rafalmag.subtitledownloader.utils.UTF8Control;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+@Singleton
 public class FXMLMainController implements Initializable {
     @InjectLogger
     private Logger LOG;
@@ -51,6 +54,10 @@ public class FXMLMainController implements Initializable {
     protected Button nextButton;
     private ResourceBundle resources;
 
+    public FXMLMainController() {
+        System.out.println("build time");
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.resources = resources;
@@ -68,20 +75,13 @@ public class FXMLMainController implements Initializable {
         URL resource = getClass().getResource(resourceStr);
         try {
             TabPane tempTabPane = fxmlLoader.load(resource, resources).getRoot();
-            tabPane.getTabs().add(tempTabPane.getTabs().get(0));
-            tempTabPane.getTabs().remove(0);
+            Tab tab = tempTabPane.getTabs().get(0);
+            tempTabPane.getTabs().remove(tab);
+            tabPane.getTabs().add(tab);
         } catch (IOException e) {
             throw Throwables.propagate(e);
         }
     }
-
-//    public Window getWindow() {
-//        return stage;
-//    }
-//
-//    public void setWindow(Window window) {
-//        this.window = window;
-//    }
 
     @FXML
     protected void openAbout() throws IOException {

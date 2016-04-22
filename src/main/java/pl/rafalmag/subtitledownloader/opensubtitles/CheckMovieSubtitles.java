@@ -3,8 +3,8 @@ package pl.rafalmag.subtitledownloader.opensubtitles;
 import com.google.common.collect.ImmutableList;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
+import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
 import pl.rafalmag.subtitledownloader.title.Movie;
 import pl.rafalmag.subtitledownloader.utils.NamedCallable;
@@ -21,22 +21,15 @@ import java.util.stream.StreamSupport;
 
 public class CheckMovieSubtitles extends CheckMovie {
 
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(CheckMovieSubtitles.class);
+    @InjectLogger
+    private Logger LOG;
 
-    private final Movie movie;
-
-    public CheckMovieSubtitles(Session session, File movieFile, Movie movie) {
-        super(session, movieFile);
-        this.movie = movie;
-    }
-
-    protected List<SearchSubtitlesResult> getSubtitlesByImdb()
+    protected List<SearchSubtitlesResult> getSubtitlesByImdb(Movie movie)
             throws SubtitlesDownloaderException {
         return session.searchSubtitlesBy(movie.getImdbId());
     }
 
-    protected List<SearchSubtitlesResult> getSubtitlesByTitle()
+    protected List<SearchSubtitlesResult> getSubtitlesByTitle(Movie movie)
             throws SubtitlesDownloaderException {
         String title = movie.getTitle();
         return session.searchSubtitlesBy(title);
@@ -46,15 +39,15 @@ public class CheckMovieSubtitles extends CheckMovie {
             .newCachedThreadPool(new BasicThreadFactory.Builder().daemon(true)
                     .namingPattern("OpenSubtitle-%d").build());
 
-    public List<SearchSubtitlesResult> getSubtitles(long timeoutMs)
+    public List<SearchSubtitlesResult> getSubtitles(Movie movie, File movieFile, long timeoutMs)
             throws InterruptedException {
-        LOGGER.debug("search openSubtitles for {} with timeout {}ms", movie,
+        LOG.debug("search openSubtitles for {} with timeout {}ms", movie,
                 timeoutMs);
         Collection<? extends Callable<List<SearchSubtitlesResult>>> solvers = ImmutableList
                 .of(
-                        new NamedCallable<>("-ByTitle", this::getSubtitlesByTitle),
-                        new NamedCallable<>("-ByImdb", this::getSubtitlesByImdb),
-                        new NamedCallable<>("-ByMovieHashAndByteSize", this::getSubtitlesByMovieHashAndByteSize)
+                        new NamedCallable<>("-ByTitle", () -> getSubtitlesByTitle(movie)),
+                        new NamedCallable<>("-ByImdb", () -> getSubtitlesByImdb(movie)),
+                        new NamedCallable<>("-ByMovieHashAndByteSize", () -> getSubtitlesByMovieHashAndByteSize(movieFile))
                 );
         Collection<List<SearchSubtitlesResult>> solve = Utils.solve(EXECUTOR, solvers, timeoutMs);
 
