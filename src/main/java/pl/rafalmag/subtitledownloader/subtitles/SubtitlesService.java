@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Singleton
-public class SubtitlesUtils {
+public class SubtitlesService {
 
     @InjectLogger
     private Logger LOG;

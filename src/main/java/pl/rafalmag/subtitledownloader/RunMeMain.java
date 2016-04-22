@@ -36,6 +36,12 @@ public class RunMeMain extends GuiceApplication {
     @Inject
     private GuiceFXMLLoader fxmlLoader;
 
+    @Inject
+    private SubtitlesDownloaderProperties subtitlesDownloaderProperties;
+
+    @Inject
+    private SelectMovieProperties selectMovieProperties;
+
     private Stage primaryStage;
 
     public static void main(String[] args) {
@@ -92,7 +98,7 @@ public class RunMeMain extends GuiceApplication {
 
     private Parent getParent(Stage primaryStage) throws IOException {
         URL resource = getClass().getResource("/Main.fxml");
-        InterfaceLanguage interfaceLanguage = SubtitlesDownloaderProperties.getInstance().getInterfaceLanguage();
+        InterfaceLanguage interfaceLanguage = subtitlesDownloaderProperties.getInterfaceLanguage();
         Locale locale = interfaceLanguage.getLocale();
         Locale.setDefault(locale);
         GuiceFXMLLoader.Result result = fxmlLoader.load(resource,
@@ -100,8 +106,6 @@ public class RunMeMain extends GuiceApplication {
         Parent root = result.getRoot();
         FXMLMainController controller = result.getController();
         controller.selectFile(getFileFromCommandLine(), false);
-//        controller.setWindow(primaryStage);
-//        injector.bind
         return root;
     }
 
@@ -110,9 +114,9 @@ public class RunMeMain extends GuiceApplication {
         AnchorPane content = (AnchorPane) primaryStage.getScene().getRoot();
         content.getChildren().clear();
 
-        File fileBeforeReload = SelectMovieProperties.getInstance().getFile();
+        File fileBeforeReload = selectMovieProperties.getFile();
         Parent newParent = getParent(primaryStage);
-        SelectMovieProperties.getInstance().setFile(fileBeforeReload);
+        selectMovieProperties.setFile(fileBeforeReload);
         // replace the content
         content.getChildren().add(newParent);
     }

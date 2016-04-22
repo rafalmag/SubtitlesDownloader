@@ -1,10 +1,11 @@
 package pl.rafalmag.subtitledownloader;
 
 import org.slf4j.Logger;
-import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
+import org.slf4j.LoggerFactory;
 import pl.rafalmag.subtitledownloader.entities.InterfaceLanguage;
 
 import javax.annotation.Nullable;
+import javax.inject.Singleton;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -12,10 +13,11 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Properties;
 
+@Singleton
 public class SubtitlesDownloaderProperties {
 
-    @InjectLogger
-    private Logger LOG;
+    // cannot be injected as it is used in constructor
+    private static final Logger LOG = LoggerFactory.getLogger(SubtitlesDownloaderProperties.class);
 
     private static final String PROPERTIES_FILE_NAME = "subtitleDownloader.properties";
 
@@ -23,21 +25,9 @@ public class SubtitlesDownloaderProperties {
     private static final String UI_LANGUAGE_TAG = "uiLanguageTag";
     private static final String SUBTITLES_LANGUAGE = "subtitlesLanguage";
 
-    private static class SubtitlesDownloaderPropertiesHolder {
-        private static SubtitlesDownloaderProperties instance = new SubtitlesDownloaderProperties();
-    }
-
-    public static SubtitlesDownloaderProperties getInstance() {
-        return SubtitlesDownloaderPropertiesHolder.instance;
-    }
-
     private final Properties properties = new Properties();
 
-    private SubtitlesDownloaderProperties() {
-        load();
-    }
-
-    private void load() {
+    public SubtitlesDownloaderProperties() {
         try {
             properties.load(new FileInputStream(PROPERTIES_FILE_NAME));
         } catch (IOException e) {

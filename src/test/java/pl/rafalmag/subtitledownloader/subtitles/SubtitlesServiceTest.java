@@ -16,12 +16,12 @@ import java.util.SortedSet;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-public class SubtitlesUtilsTest {
+public class SubtitlesServiceTest {
 
     private static final int TIMEOUT_MS = 10_000;
 
     @Inject
-    private SubtitlesUtils subtitlesUtils;
+    private SubtitlesService subtitlesService;
 
     @Before
     public void init() throws SessionException {
@@ -38,7 +38,7 @@ public class SubtitlesUtilsTest {
                 "E:/filmy/!old/Dead.Snow.(Doed.Snoe).2009.1080p.BluRay.x264.anoXmous/Dead.Snow.(Doed.Snoe).2009.1080p.BluRay.x264.anoXmous_.mp4");
 
         // when
-        SortedSet<Subtitles> subtitles = subtitlesUtils.getSubtitles(movie, movieFile, TIMEOUT_MS,
+        SortedSet<Subtitles> subtitles = subtitlesService.getSubtitles(movie, movieFile, TIMEOUT_MS,
                 new ProgressCallbackDummy());
 
         // then

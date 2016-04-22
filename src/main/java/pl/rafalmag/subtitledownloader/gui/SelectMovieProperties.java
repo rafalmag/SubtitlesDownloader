@@ -5,25 +5,19 @@ import javafx.beans.property.StringProperty;
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderProperties;
 
 import javax.annotation.Nullable;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.File;
 
+@Singleton
 public class SelectMovieProperties {
 
     public static final String NO_MOVIE_SELECTED = "";
 
-    private static class SelectMoviePropertiesHolder {
-        static SelectMovieProperties instance = new SelectMovieProperties();
-    }
+    @Inject
+    private SubtitlesDownloaderProperties subtitlesDownloaderProperties;
 
-    public static SelectMovieProperties getInstance() {
-        return SelectMoviePropertiesHolder.instance;
-    }
-
-    private SelectMovieProperties() {
-    }
-
-    private final StringProperty filePath = new SimpleStringProperty(
-            NO_MOVIE_SELECTED);
+    private final StringProperty filePath = new SimpleStringProperty(NO_MOVIE_SELECTED);
 
     public String getFilePath() {
         return filePath.get();
@@ -47,7 +41,7 @@ public class SelectMovieProperties {
 
     @Nullable
     public File getInitialDir() {
-        File initialDir = SubtitlesDownloaderProperties.getInstance().getInitialDir();
+        File initialDir = subtitlesDownloaderProperties.getInitialDir();
         if (initialDir != null && !initialDir.isDirectory()) {
             return null;
         }
@@ -55,7 +49,8 @@ public class SelectMovieProperties {
     }
 
     public void setInitialDir(@Nullable File initialDir) {
-        SubtitlesDownloaderProperties.getInstance().setInitialDir(initialDir);
+        //TODO looks like redundant wrap
+        subtitlesDownloaderProperties.setInitialDir(initialDir);
     }
 
 }

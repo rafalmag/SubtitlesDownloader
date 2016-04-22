@@ -22,16 +22,14 @@ import java.util.stream.Collectors;
 @Singleton
 public class Session {
 
-    private static final String ENG = "eng"; // TODO let users to choose
-    // language
+    // TODO let users to choose language
+    private static final String ENG = "eng";
 
-//	@formatter:off
     /**
      * See restrictions here:
      * {@see http://trac.opensubtitles.org/projects/opensubtitles/wiki/DevReadFirst}
      */
     private static final String USER_AGENT = "SubtitlesDownloader v1.3";
-//	@formatter:on
 
     @InjectLogger
     private Logger LOG;
@@ -54,24 +52,19 @@ public class Session {
         login("", "", "en", USER_AGENT); // TODO provide user and pass
     }
 
-    public void login(String userName, String password, String language,
-                      String userAgent) throws SessionException {
-        Object[] params = new Object[]{userName, password, language,
-                userAgent};
+    public void login(String userName, String password, String language, String userAgent) throws SessionException {
+        Object[] params = new Object[]{userName, password, language, userAgent};
         try {
             @SuppressWarnings("unchecked")
-            Map<String, Object> execute = (Map<String, Object>) client.execute(
-                    "LogIn", params);
+            Map<String, Object> execute = (Map<String, Object>) client.execute("LogIn", params);
             LOG.debug("login response: " + execute);
             String status = (String) execute.get("status");
             if (!status.contains("OK")) {
-                throw new SessionException(
-                        "could not login because of wrong status " + status);
+                throw new SessionException("could not login because of wrong status " + status);
             }
             token = (String) execute.get("token");
         } catch (XmlRpcException e) {
-            throw new SessionException("could not login because of "
-                    + e.getMessage(), e);
+            throw new SessionException("could not login because of " + e.getMessage(), e);
         }
     }
 
@@ -79,13 +72,11 @@ public class Session {
         Object[] params = new Object[]{token};
         try {
             @SuppressWarnings("unchecked")
-            Map<String, Object> execute = (Map<String, Object>) client.execute(
-                    "LogOut", params);
+            Map<String, Object> execute = (Map<String, Object>) client.execute("LogOut", params);
             LOG.debug("logout response: " + execute);
             String status = (String) execute.get("status");
             if (!status.contains("OK")) {
-                LOG.error("could not logout because of wrong status "
-                        + status);
+                LOG.error("could not logout because of wrong status " + status);
                 return false;
             }
             token = null;
@@ -96,31 +87,24 @@ public class Session {
         }
     }
 
-    public List<SearchSubtitlesResult> searchSubtitlesBy(String movieHash,
-                                                         Long movieByteSize) throws SubtitlesDownloaderException {
+    public List<SearchSubtitlesResult> searchSubtitlesBy(String movieHash, Long movieByteSize)
+            throws SubtitlesDownloaderException {
         Object[] params = new Object[]{
                 token,
-                new Object[]{ImmutableMap.of("sublanguageid", ENG,
-                        "moviehash", movieHash, "moviebytesize",
+                new Object[]{ImmutableMap.of("sublanguageid", ENG, "moviehash", movieHash, "moviebytesize",
                         movieByteSize.toString())}};
         return searchSubtitles(params);
     }
 
     public List<SearchSubtitlesResult> searchSubtitlesBy(int imdbId)
             throws SubtitlesDownloaderException {
-        Object[] params = new Object[]{
-                token,
-                new Object[]{ImmutableMap.of("sublanguageid", ENG, "imdbid",
-                        imdbId)}};
+        Object[] params = new Object[]{token, new Object[]{ImmutableMap.of("sublanguageid", ENG, "imdbid", imdbId)}};
         return searchSubtitles(params);
     }
 
     public List<SearchSubtitlesResult> searchSubtitlesBy(String title)
             throws SubtitlesDownloaderException {
-        Object[] params = new Object[]{
-                token,
-                new Object[]{ImmutableMap.of("sublanguageid", ENG, "query",
-                        title)}};
+        Object[] params = new Object[]{token, new Object[]{ImmutableMap.of("sublanguageid", ENG, "query", title)}};
         return searchSubtitles(params);
     }
 
@@ -132,12 +116,11 @@ public class Session {
             return Arrays.stream(languages).map(o -> {
                 @SuppressWarnings("unchecked")
                 Map<String, String> languageEntry = (Map<String, String>) o;
-                return new SubtitleLanguage(languageEntry.get("SubLanguageID"), languageEntry.get("LanguageName"), languageEntry.get("ISO639"));
+                return new SubtitleLanguage(languageEntry.get("SubLanguageID"),
+                        languageEntry.get("LanguageName"), languageEntry.get("ISO639"));
             }).collect(Collectors.toList());
         } catch (XmlRpcException e) {
-            throw new SubtitlesDownloaderException(
-                    "could not invoke GetSubLanguages because of "
-                            + e.getMessage(), e);
+            throw new SubtitlesDownloaderException("could not invoke GetSubLanguages because of " + e.getMessage(), e);
         }
     }
 
@@ -152,9 +135,7 @@ public class Session {
             LOG.debug("SearchSubtitles response: " + execute);
             String status = (String) execute.get("status");
             if (!status.contains("OK")) {
-                throw new SubtitlesDownloaderException(
-                        "could not SearchSubtitles because of wrong status "
-                                + status);
+                throw new SubtitlesDownloaderException("could not SearchSubtitles because of wrong status " + status);
             }
 
             Object dataRaw = execute.get("data");
@@ -172,9 +153,7 @@ public class Session {
             }
             return result;
         } catch (XmlRpcException e) {
-            throw new SubtitlesDownloaderException(
-                    "could not invoke SearchSubtitles because of "
-                            + e.getMessage(), e);
+            throw new SubtitlesDownloaderException("could not invoke SearchSubtitles because of " + e.getMessage(), e);
         }
     }
 
@@ -192,15 +171,11 @@ public class Session {
             LOG.debug("CheckMovieHash2 response: " + response);
             String status = (String) response.get("status");
             if (!status.contains("OK")) {
-                throw new SubtitlesDownloaderException(
-                        "could not CheckMovieHash2 because of wrong status "
-                                + status);
+                throw new SubtitlesDownloaderException("could not CheckMovieHash2 because of wrong status " + status);
             }
             return parseData(response);
         } catch (XmlRpcException e) {
-            throw new SubtitlesDownloaderException(
-                    "could not invoke CheckMovieHash2 because of "
-                            + e.getMessage(), e);
+            throw new SubtitlesDownloaderException("could not invoke CheckMovieHash2 because of " + e.getMessage(), e);
         }
     }
 
@@ -227,11 +202,10 @@ public class Session {
     private List<MovieEntity> getRecords(Object[] records) {
         List<MovieEntity> result;
         result = Lists.newArrayListWithCapacity(records.length);
-        for (Object record : records) {
+        for (Object recordObject : records) {
             @SuppressWarnings("unchecked")
-            MovieEntity checkMovieHash2Entity = new MovieEntity(
-                    (Map<String, Object>) record);
-            result.add(checkMovieHash2Entity);
+            Map<String, Object> record = (Map<String, Object>) recordObject;
+            result.add(new MovieEntity(record));
         }
         return result;
     }

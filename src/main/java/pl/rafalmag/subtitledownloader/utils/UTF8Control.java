@@ -11,10 +11,8 @@ import java.util.ResourceBundle;
 
 public class UTF8Control extends ResourceBundle.Control {
 
-    public ResourceBundle newBundle
-        (String baseName, Locale locale, String format, ClassLoader loader, boolean reload)
-            throws IllegalAccessException, InstantiationException, IOException
-    {
+    public ResourceBundle newBundle(String baseName, Locale locale, String format, ClassLoader loader, boolean reload)
+            throws IllegalAccessException, InstantiationException, IOException {
         // The below is a copy of the default implementation.
         String bundleName = toBundleName(baseName, locale);
         String resourceName = toResourceName(bundleName, "properties");
@@ -33,7 +31,7 @@ public class UTF8Control extends ResourceBundle.Control {
         }
         ResourceBundle bundle = null;
         if (stream != null) {
-            try(InputStreamReader isr = new InputStreamReader(stream, "Cp1250")) {
+            try (InputStreamReader isr = new InputStreamReader(stream, "Cp1250")) {
                 bundle = new PropertyResourceBundle(isr);
             }
         }

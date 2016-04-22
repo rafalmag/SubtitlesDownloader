@@ -55,13 +55,13 @@ public class DownloaderTask extends Task<Void> {
             backupExistingSubtitles(destinationPath);
             updateProgress(STEP_AFTER_BACKUP, DONE);
             URL url = new URL(subtitles.getDownloadLink());
-            HttpURLConnection httpConn = (HttpURLConnection) url
-                    .openConnection();
+            HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
             long contentLength = httpConn.getContentLengthLong();
             try (InputStream is = getInputStream(httpConn, contentLength);
                  FileOutputStream fos = new FileOutputStream(destinationPath.toFile())) {
                 updateProgress(STEP_DOWNLOAD, DONE);
                 ByteStreams.copy(is, fos);
+                LOGGER.info("Subtitles " + destinationPath.getFileName() + " downloaded");
             } finally {
                 httpConn.disconnect();
             }

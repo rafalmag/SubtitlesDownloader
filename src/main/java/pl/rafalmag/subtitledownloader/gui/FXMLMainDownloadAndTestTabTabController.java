@@ -53,6 +53,12 @@ public class FXMLMainDownloadAndTestTabTabController implements Initializable {
     @Inject
     protected FXMLMainController fxmlMainController;
 
+    @Inject
+    private SelectMovieProperties selectMovieProperties;
+
+    @Inject
+    private SelectSubtitlesProperties selectSubtitlesProperties;
+
     private ResourceBundle resources;
 
     @Override
@@ -64,8 +70,7 @@ public class FXMLMainDownloadAndTestTabTabController implements Initializable {
     }
 
     private void initDownloadButton() {
-        final BooleanBinding disabledDownloadProperty = SelectSubtitlesProperties
-                .getInstance().selectedSubtitlesProperty()
+        final BooleanBinding disabledDownloadProperty = selectSubtitlesProperties.selectedSubtitlesProperty()
                 .isEqualTo(Subtitles.DUMMY_SUBTITLES);
         download.disableProperty().bind(disabledDownloadProperty);
         downloadAndtest.disableProperty().bind(disabledDownloadProperty);
@@ -74,22 +79,20 @@ public class FXMLMainDownloadAndTestTabTabController implements Initializable {
             if (!disabledDownloadProperty.get()) {
                 download.tooltipProperty().set(
                         new Tooltip(resources.getString("DownloadSubtitles") + " "
-                                + SelectSubtitlesProperties.getInstance()
-                                .selectedSubtitlesProperty().get().getFileName()));
+                                + selectSubtitlesProperties.selectedSubtitlesProperty().get().getFileName()));
             }
         });
     }
 
     private void initTestButton() {
-        final BooleanBinding disabledTestProperty = SelectMovieProperties
-                .getInstance().movieFileProperty()
+        final BooleanBinding disabledTestProperty = selectMovieProperties.movieFileProperty()
                 .isEqualTo(SelectMovieProperties.NO_MOVIE_SELECTED);
         test.disableProperty().bind(disabledTestProperty);
 
         disabledTestProperty.addListener(observable -> {
             if (!disabledTestProperty.get()) {
                 test.tooltipProperty().set(new Tooltip(resources.getString("ViewMovie") + " "
-                        + SelectMovieProperties.getInstance().getFilePath()));
+                        + selectMovieProperties.getFilePath()));
             }
         });
     }
@@ -103,8 +106,8 @@ public class FXMLMainDownloadAndTestTabTabController implements Initializable {
     protected void download() {
         fxmlMainController.progressBar.disableProperty().set(false);
         LOG.trace("download");
-        Subtitles subtitles = SelectSubtitlesProperties.getInstance().getSelectedSubtitles();
-        File movieFile = SelectMovieProperties.getInstance().getFile();
+        Subtitles subtitles = selectSubtitlesProperties.getSelectedSubtitles();
+        File movieFile = selectMovieProperties.getFile();
         DownloaderTask downloader = new DownloaderTask(subtitles, movieFile,
                 fxmlMainController.progressBar.disableProperty());
         fxmlMainController.progressBar.progressProperty().bind(downloader.progressProperty());
@@ -115,7 +118,7 @@ public class FXMLMainDownloadAndTestTabTabController implements Initializable {
     @FXML
     protected void test() {
         LOG.trace("test");
-        File file = SelectMovieProperties.getInstance().getFile();
+        File file = selectMovieProperties.getFile();
         try {
             URI uri = file.toURI();
             Desktop.getDesktop().browse(uri);

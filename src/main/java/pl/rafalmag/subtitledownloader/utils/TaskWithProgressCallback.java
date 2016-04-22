@@ -2,8 +2,7 @@ package pl.rafalmag.subtitledownloader.utils;
 
 import javafx.concurrent.Task;
 
-public class TaskWithProgressCallback<T> extends Task<T> implements
-        ProgressCallback {
+public abstract class TaskWithProgressCallback<T> extends Task<T> implements ProgressCallback {
 
     @Override
     public void updateProgress(long progress, long max) {
@@ -14,12 +13,6 @@ public class TaskWithProgressCallback<T> extends Task<T> implements
     public void updateProgress(double procDone) {
         long multiplier = 1000;
         updateProgress((long) (procDone * multiplier), 1000);
-    }
-
-    @Override
-    protected T call() throws Exception {
-        // TODO Auto-generated method stub
-        return null;
     }
 
 }

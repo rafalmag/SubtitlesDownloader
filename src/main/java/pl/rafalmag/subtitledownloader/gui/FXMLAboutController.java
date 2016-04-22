@@ -25,9 +25,7 @@ public class FXMLAboutController {
             final URI uri = new URI(url);
             Desktop.getDesktop().browse(uri);
         } catch (IOException | URISyntaxException e) {
-            LOG.error(
-                    "Could not open URL " + url + " because of "
-                            + e.getMessage(), e);
+            LOG.error("Could not open URL " + url + " because of " + e.getMessage(), e);
         }
     }
 

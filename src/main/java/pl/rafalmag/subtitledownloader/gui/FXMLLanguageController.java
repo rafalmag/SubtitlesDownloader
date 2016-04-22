@@ -13,6 +13,7 @@ import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
 import pl.rafalmag.subtitledownloader.entities.InterfaceLanguage;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SubtitleLanguage;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
 import java.net.URL;
@@ -33,6 +34,9 @@ public class FXMLLanguageController implements Initializable {
 
     @FXML
     protected ComboBox<SubtitleLanguage> subtitlesLanguageCombo;
+
+    @Inject
+    private SubtitlesDownloaderProperties subtitlesDownloaderProperties;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -55,7 +59,7 @@ public class FXMLLanguageController implements Initializable {
         InterfaceLanguage selectedInterfaceLanguage = interfaceLanguageCombo.getSelectionModel().getSelectedItem();
         if (initialInterfaceLanguage != selectedInterfaceLanguage) {
             LOG.debug("New UI language: " + selectedInterfaceLanguage.toString());
-            SubtitlesDownloaderProperties.getInstance().setInterfaceLanguage(selectedInterfaceLanguage);
+            subtitlesDownloaderProperties.setInterfaceLanguage(selectedInterfaceLanguage);
             try {
                 RunMeMain.getInstance().reloadView();
             } catch (IOException e) {

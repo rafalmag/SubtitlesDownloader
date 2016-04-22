@@ -22,8 +22,7 @@ public class CheckMovie {
     @Inject
     protected Session session;
 
-    public List<MovieEntity> getTitleInfo(File movieFile)
-            throws SubtitlesDownloaderException {
+    public List<MovieEntity> getTitleInfo(File movieFile) throws SubtitlesDownloaderException {
         String hashCode = getHashCode(movieFile);
         return session.checkMovieHash2(hashCode);
     }

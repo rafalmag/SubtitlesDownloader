@@ -41,6 +41,9 @@ public class FXMLMainController implements Initializable {
     @Inject
     private Stage stage;
 
+    @Inject
+    private SelectMovieProperties selectMovieProperties;
+
     @FXML
     protected TabPane tabPane;
 
@@ -159,9 +162,9 @@ public class FXMLMainController implements Initializable {
 
     public void selectFile(File file, boolean setInitialDir) {
         if (file != null) {
-            SelectMovieProperties.getInstance().setFile(file);
+            selectMovieProperties.setFile(file);
             if (setInitialDir) {
-                SelectMovieProperties.getInstance().setInitialDir(file.getParentFile());
+                selectMovieProperties.setInitialDir(file.getParentFile());
             }
             openTitleTab();
         }

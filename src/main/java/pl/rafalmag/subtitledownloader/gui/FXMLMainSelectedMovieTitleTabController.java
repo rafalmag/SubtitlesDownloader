@@ -46,6 +46,9 @@ public class FXMLMainSelectedMovieTitleTabController implements Initializable {
     @Inject
     private SelectTitleProperties selectTitleProperties;
 
+    @Inject
+    private SelectMovieProperties selectMovieProperties;
+
     private ResourceBundle resources;
 
     @Override
@@ -61,7 +64,7 @@ public class FXMLMainSelectedMovieTitleTabController implements Initializable {
     }
 
     private void addUpdateTableListener() {
-        StringProperty movieFileProperty = SelectMovieProperties.getInstance().movieFileProperty();
+        StringProperty movieFileProperty = selectMovieProperties.movieFileProperty();
 
         StringProperty lastUpdatedForFilePathProperty = movieTitlesListService.lastUpdatedForFilePathProperty();
 

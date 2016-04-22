@@ -27,6 +27,9 @@ public class MovieTitlesListService {
     @Inject
     private TitleService titleService;
 
+    @Inject
+    private SelectMovieProperties selectMovieProperties;
+
     private StringProperty lastUpdatedForFilePath = new SimpleStringProperty("");
 
     private ObservableList<Movie> list = FXCollections.observableArrayList();
@@ -47,7 +50,7 @@ public class MovieTitlesListService {
     public void updateList(final ProgressBar progressBar, final long timeoutMs) throws InterruptedException {
 
         LOGGER.debug("updateList timeoutMs=" + timeoutMs);
-        final File file = SelectMovieProperties.getInstance().getFile();
+        final File file = selectMovieProperties.getFile();
         progressBar.disableProperty().set(false);
 
         TaskWithProgressCallback<Void> task = new TaskWithProgressCallback<Void>() {
@@ -57,9 +60,7 @@ public class MovieTitlesListService {
                 final SortedSet<Movie> titles = titleService.getTitles(file, timeoutMs, this);
                 Platform.runLater(() -> {
                     list.setAll(titles);
-                    lastUpdatedForFilePath.setValue(SelectMovieProperties
-                            .getInstance()
-                            .getFilePath());
+                    lastUpdatedForFilePath.setValue(selectMovieProperties.getFilePath());
                     progressBar.disableProperty().set(true);
                 });
                 return null;

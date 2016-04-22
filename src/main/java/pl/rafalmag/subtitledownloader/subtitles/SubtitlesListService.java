@@ -22,16 +22,19 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Singleton
-public class SubtitlesList {
+public class SubtitlesListService {
 
     @InjectLogger
     private Logger LOG;
 
     @Inject
-    private SubtitlesUtils subtitlesUtils;
+    private SubtitlesService subtitlesService;
 
     @Inject
     private SelectTitleProperties selectTitleProperties;
+
+    @Inject
+    private SelectMovieProperties selectMovieProperties;
 
     private final ObservableList<Subtitles> list = FXCollections.observableArrayList();
 
@@ -52,15 +55,15 @@ public class SubtitlesList {
                     .build());
 
     public void updateList(final ProgressBar progressBar, final long timeoutMs) throws InterruptedException {
-        LOG.debug("SubtitlesList update timeout " + timeoutMs + "ms");
+        LOG.debug("SubtitlesListService update timeout " + timeoutMs + "ms");
         progressBar.disableProperty().set(false);
         final Movie selectedMovie = selectTitleProperties.getSelectedMovie();
-        final File selectedFile = SelectMovieProperties.getInstance().getFile();
+        final File selectedFile = selectMovieProperties.getFile();
         TaskWithProgressCallback<Void> task = new TaskWithProgressCallback<Void>() {
 
             @Override
             protected Void call() throws Exception {
-                final SortedSet<Subtitles> subtitles = subtitlesUtils.getSubtitles(
+                final SortedSet<Subtitles> subtitles = subtitlesService.getSubtitles(
                         selectedMovie,
                         selectedFile, timeoutMs, this);
                 Platform.runLater(() -> {

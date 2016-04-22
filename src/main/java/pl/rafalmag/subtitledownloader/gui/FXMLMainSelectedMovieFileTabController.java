@@ -38,20 +38,23 @@ public class FXMLMainSelectedMovieFileTabController implements Initializable {
     @Inject
     protected FXMLMainController fxmlMainController;
 
+    @Inject
+    private SelectMovieProperties selectMovieProperties;
+
     private ResourceBundle resources;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.resources = resources;
         StringExpression selectedMovieText = Bindings.concat(
-                resources.getString("SelectedMovie"), " ", SelectMovieProperties.getInstance().movieFileProperty());
+                resources.getString("SelectedMovie"), " ", selectMovieProperties.movieFileProperty());
         selectedFile.textProperty().bind(selectedMovieText);
     }
 
     @FXML
     protected void browseFile(ActionEvent event) throws IOException {
         FileChooser fileChooser = new FileChooser();
-        File initialDir = SelectMovieProperties.getInstance().getInitialDir();
+        File initialDir = selectMovieProperties.getInitialDir();
         LOG.trace("browseFile initialDir {}", initialDir);
         fileChooser.setInitialDirectory(initialDir);
         fileChooser.setTitle(resources.getString("ChooseMovieFile"));

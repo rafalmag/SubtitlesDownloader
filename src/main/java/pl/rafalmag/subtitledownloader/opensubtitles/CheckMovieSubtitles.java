@@ -26,13 +26,11 @@ public class CheckMovieSubtitles extends CheckMovie {
     @Inject
     private TitleUtils titleUtils;
 
-    protected List<SearchSubtitlesResult> getSubtitlesByImdb(Movie movie)
-            throws SubtitlesDownloaderException {
+    protected List<SearchSubtitlesResult> getSubtitlesByImdb(Movie movie) throws SubtitlesDownloaderException {
         return session.searchSubtitlesBy(movie.getImdbId());
     }
 
-    protected List<SearchSubtitlesResult> getSubtitlesByTitle(Movie movie)
-            throws SubtitlesDownloaderException {
+    protected List<SearchSubtitlesResult> getSubtitlesByTitle(Movie movie) throws SubtitlesDownloaderException {
         String title = movie.getTitle();
         return session.searchSubtitlesBy(title);
     }
@@ -43,8 +41,7 @@ public class CheckMovieSubtitles extends CheckMovie {
 
     public List<SearchSubtitlesResult> getSubtitles(Movie movie, File movieFile, long timeoutMs)
             throws InterruptedException {
-        LOG.debug("search openSubtitles for {} with timeout {}ms", movie,
-                timeoutMs);
+        LOG.debug("search openSubtitles for {} with timeout {}ms", movie, timeoutMs);
         Collection<? extends Callable<List<SearchSubtitlesResult>>> solvers = ImmutableList
                 .of(
                         new NamedCallable<>("-ByTitle", () -> getSubtitlesByTitle(movie)),
