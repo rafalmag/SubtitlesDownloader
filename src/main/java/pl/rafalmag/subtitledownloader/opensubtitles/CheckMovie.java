@@ -1,5 +1,7 @@
 package pl.rafalmag.subtitledownloader.opensubtitles;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import org.opensubtitles.OpenSubtitlesHasher;
 import org.slf4j.Logger;
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
@@ -10,8 +12,9 @@ import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResu
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 @Singleton
 public class CheckMovie {
@@ -22,6 +25,11 @@ public class CheckMovie {
     @Inject
     protected Session session;
 
+    private final Cache<File, String> fileHashes = CacheBuilder.newBuilder()
+            .maximumSize(1000)
+            .expireAfterWrite(10, TimeUnit.MINUTES)
+            .build();
+
     public List<MovieEntity> getTitleInfo(File movieFile) throws SubtitlesDownloaderException {
         String hashCode = getHashCode(movieFile);
         return session.checkMovieHash2(hashCode);
@@ -29,13 +37,12 @@ public class CheckMovie {
 
     public String getHashCode(File movieFile) throws SubtitlesDownloaderException {
         try {
-            //TODO cache it ?
-            String hashCode = OpenSubtitlesHasher.computeHash(movieFile);
+            String hashCode = fileHashes.get(movieFile, () -> OpenSubtitlesHasher.computeHash(movieFile));
             LOG.debug("hashCode=" + hashCode);
             return hashCode;
-        } catch (IOException e) {
-            throw new SubtitlesDownloaderException(
-                    "Could not get hashcode for " + movieFile + " because of " + e.getMessage(), e);
+        } catch (ExecutionException e) {
+            throw new SubtitlesDownloaderException("Could not get hashcode for " + movieFile
+                    + ", because of " + e.getCause().getMessage(), e.getCause());
         }
     }
 
