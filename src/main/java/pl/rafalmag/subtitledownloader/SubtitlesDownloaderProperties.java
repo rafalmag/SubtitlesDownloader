@@ -39,17 +39,19 @@ public class SubtitlesDownloaderProperties {
     private SubtitleLanguageSerializer subtitleLanguageSerializer;
 
     public SubtitlesDownloaderProperties() {
-        try {
-            properties.load(new FileInputStream(PROPERTIES_FILE_NAME));
-        } catch (IOException e) {
-            LOG.debug("Could not load properties, because of " + e.getMessage(), e);
+        File propertiesFile = new File(PROPERTIES_FILE_NAME);
+        if (propertiesFile.isFile()) {
+            try (FileInputStream stream = new FileInputStream(propertiesFile)) {
+                properties.load(stream);
+            } catch (IOException e) {
+                LOG.debug("Could not load properties, because of " + e.getMessage(), e);
+            }
         }
     }
 
     private void store() {
-        try {
-            properties.store(new FileOutputStream(PROPERTIES_FILE_NAME),
-                    "Subtitle Downloader properties");
+        try (FileOutputStream stream = new FileOutputStream(PROPERTIES_FILE_NAME)) {
+            properties.store(stream, "Subtitle Downloader properties");
         } catch (IOException e) {
             LOG.error("Could not store properties, because of " + e.getMessage(), e);
         }
