@@ -49,7 +49,7 @@ public class SelectMovieProperties {
     }
 
     public void setInitialDir(@Nullable File initialDir) {
-        //TODO looks like redundant wrap
+        // looks redundant, but as here is a getter, it is good to have setter as well
         subtitlesDownloaderProperties.setInitialDir(initialDir);
     }
 
