@@ -39,6 +39,9 @@ public class SearchSubtitlesResult {
         return (String) map.get("SubFileName");
     }
 
+    //TODO add more fields:
+    // https://trac.opensubtitles.org/projects/opensubtitles/wiki/XMLRPC#SearchSubtitles
+
     @Override
     public String toString() {
         return "SearchSubtitlesResult [getIdMovie()=" + getIdMovie()

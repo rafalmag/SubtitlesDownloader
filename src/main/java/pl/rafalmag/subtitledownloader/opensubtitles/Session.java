@@ -9,11 +9,13 @@ import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 import org.slf4j.Logger;
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
+import pl.rafalmag.subtitledownloader.SubtitlesDownloaderProperties;
 import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.MovieEntity;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SubtitleLanguage;
 
+import javax.inject.Inject;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
@@ -21,9 +23,6 @@ import java.util.stream.Collectors;
 
 @Singleton
 public class Session {
-
-    // TODO let users to choose language
-    private static final String ENG = "eng";
 
     /**
      * See restrictions here:
@@ -33,6 +32,9 @@ public class Session {
 
     @InjectLogger
     private Logger LOG;
+
+    @Inject
+    private SubtitlesDownloaderProperties subtitlesDownloaderProperties;
 
     private final XmlRpcClient client;
     private String token;
@@ -91,22 +93,29 @@ public class Session {
             throws SubtitlesDownloaderException {
         Object[] params = new Object[]{
                 token,
-                new Object[]{ImmutableMap.of("sublanguageid", ENG, "moviehash", movieHash, "moviebytesize",
+                new Object[]{ImmutableMap.of("sublanguageid", getLanguage(), "moviehash", movieHash, "moviebytesize",
                         movieByteSize.toString())}};
         return searchSubtitles(params);
     }
 
+    private String getLanguage() {
+        return subtitlesDownloaderProperties.getSubtitlesLanguage().getId();
+    }
+
     public List<SearchSubtitlesResult> searchSubtitlesBy(int imdbId)
             throws SubtitlesDownloaderException {
-        Object[] params = new Object[]{token, new Object[]{ImmutableMap.of("sublanguageid", ENG, "imdbid", imdbId)}};
+        Object[] params = new Object[]{token,
+                new Object[]{ImmutableMap.of("sublanguageid", getLanguage(), "imdbid", imdbId)}};
         return searchSubtitles(params);
     }
 
-    public List<SearchSubtitlesResult> searchSubtitlesBy(String title)
-            throws SubtitlesDownloaderException {
-        Object[] params = new Object[]{token, new Object[]{ImmutableMap.of("sublanguageid", ENG, "query", title)}};
+    public List<SearchSubtitlesResult> searchSubtitlesBy(String title) throws SubtitlesDownloaderException {
+        Object[] params = new Object[]{token,
+                new Object[]{ImmutableMap.of("sublanguageid", getLanguage(), "query", title)}};
         return searchSubtitles(params);
     }
+
+    // TODO search subtitles by "tag" - filename
 
     public List<SubtitleLanguage> getSubLanguages() throws SubtitlesDownloaderException {
         try {

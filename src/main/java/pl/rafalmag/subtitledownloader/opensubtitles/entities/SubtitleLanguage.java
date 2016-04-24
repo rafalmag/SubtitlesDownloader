@@ -1,14 +1,13 @@
 package pl.rafalmag.subtitledownloader.opensubtitles.entities;
 
-import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
-import pl.rafalmag.subtitledownloader.opensubtitles.Session;
-
-import java.util.List;
-
 public class SubtitleLanguage {
-    private final String id;
-    private final String languageName;
-    private final String isoCode;
+    private String id;
+    private String languageName;
+    private String isoCode;
+
+    public SubtitleLanguage() {
+
+    }
 
     public SubtitleLanguage(String id, String languageName, String isoCode) {
         this.id = id;
@@ -26,6 +25,18 @@ public class SubtitleLanguage {
 
     public String getIsoCode() {
         return isoCode;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setLanguageName(String languageName) {
+        this.languageName = languageName;
+    }
+
+    public void setIsoCode(String isoCode) {
+        this.isoCode = isoCode;
     }
 
     @Override
@@ -52,13 +63,5 @@ public class SubtitleLanguage {
     @Override
     public String toString() {
         return getLanguageName();
-    }
-
-    public static List<SubtitleLanguage> getAllLanguages() {
-        try {
-            return new Session().getSubLanguages();
-        } catch (SubtitlesDownloaderException e) {
-            throw new IllegalStateException("Could not get all subtitles languages, because of " + e.getMessage(), e);
-        }
     }
 }
