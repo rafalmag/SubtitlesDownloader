@@ -21,13 +21,6 @@ def API_KEY = TheMovieDbService.API_KEY
 
 //println "Setting logback in groovy."
 
-appender("SOCKET", de.huxhorn.lilith.logback.appender.ClassicMultiplexSocketAppender) {
-    compressing = true
-    reconnectionDelay = 10000
-    includeCallerData = true
-    remoteHosts = "localhost, 10.200.55.13"
-}
-
 appender("STDOUT", ConsoleAppender) {
     filter(TheMovieDbWarnFilter)
     encoder(PatternLayoutEncoder) {
