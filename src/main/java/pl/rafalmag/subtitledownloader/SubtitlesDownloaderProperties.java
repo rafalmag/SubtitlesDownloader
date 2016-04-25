@@ -3,6 +3,7 @@ package pl.rafalmag.subtitledownloader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.rafalmag.subtitledownloader.entities.InterfaceLanguage;
+import pl.rafalmag.subtitledownloader.entities.Theme;
 import pl.rafalmag.subtitledownloader.opensubtitles.SubtitleLanguageSerializer;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SubtitleLanguage;
 
@@ -28,8 +29,8 @@ public class SubtitlesDownloaderProperties {
     private static final String INITIAL_DIR = "initialDir";
     private static final String UI_LANGUAGE_TAG = "uiLanguageTag";
     private static final String SUBTITLES_LANGUAGE = "subtitlesLanguage";
+    private static final String THEME = "theme";
 
-    public static final String DEFAULT_UI_LANGUAGE_TAG = "en-US";
     public static final SubtitleLanguage DEFAULT_SUBTITLES_LANGUAGE = new SubtitleLanguage("eng", "English", "en");
     public static final SubtitleLanguage EXTRA_SUBTITLES_LANGUAGE = new SubtitleLanguage("pol", "Polish", "pl");
 
@@ -59,12 +60,7 @@ public class SubtitlesDownloaderProperties {
 
     @Nullable
     public File getInitialDir() {
-        String initialDir = properties.getProperty(INITIAL_DIR);
-        if (initialDir == null) {
-            return null;
-        } else {
-            return new File(initialDir);
-        }
+        return Optional.ofNullable(properties.getProperty(INITIAL_DIR)).map(File::new).orElse(null);
     }
 
     public void setInitialDir(@Nullable File initialDir) {
@@ -77,7 +73,9 @@ public class SubtitlesDownloaderProperties {
     }
 
     public InterfaceLanguage getInterfaceLanguage() {
-        return InterfaceLanguage.fromLanguageTag(properties.getProperty(UI_LANGUAGE_TAG, DEFAULT_UI_LANGUAGE_TAG));
+        return Optional.ofNullable(properties.getProperty(UI_LANGUAGE_TAG))
+                .map(InterfaceLanguage::fromLanguageTag)
+                .orElse(InterfaceLanguage.ENGLISH);
     }
 
     public void setInterfaceLanguage(InterfaceLanguage interfaceLanguage) {
@@ -94,6 +92,17 @@ public class SubtitlesDownloaderProperties {
 
     public void setSubtitlesLanguage(SubtitleLanguage subtitleLanguage) {
         properties.setProperty(SUBTITLES_LANGUAGE, subtitleLanguageSerializer.toString(subtitleLanguage));
+        store();
+    }
+
+    public Theme getTheme() {
+        return Optional.ofNullable(properties.getProperty(THEME))
+                .map(Theme::fromNameKey)
+                .orElse(Theme.DEFAULT);
+    }
+
+    public void setTheme(Theme theme) {
+        properties.setProperty(THEME, theme.getNameKey());
         store();
     }
 }

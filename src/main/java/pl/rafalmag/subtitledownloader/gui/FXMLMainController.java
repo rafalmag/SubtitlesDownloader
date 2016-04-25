@@ -8,10 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -19,20 +16,24 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.slf4j.Logger;
+import pl.rafalmag.subtitledownloader.RunMeMain;
+import pl.rafalmag.subtitledownloader.SubtitlesDownloaderProperties;
 import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
+import pl.rafalmag.subtitledownloader.entities.Theme;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.ResourceBundle;
 
 @Singleton
 public class FXMLMainController implements Initializable {
     @InjectLogger
     private Logger LOG;
-
     @Inject
     private GuiceFXMLLoader fxmlLoader;
 
@@ -42,6 +43,12 @@ public class FXMLMainController implements Initializable {
 
     @Inject
     private SelectMovieProperties selectMovieProperties;
+
+    @Inject
+    private SubtitlesDownloaderProperties subtitlesDownloaderProperties;
+
+    @Inject
+    private RunMeMain runMeMain;
 
     @FXML
     protected TabPane tabPane;
@@ -54,6 +61,10 @@ public class FXMLMainController implements Initializable {
 
     @FXML
     protected Button nextButton;
+
+    @FXML
+    public Menu themeMenu;
+
     private ResourceBundle resources;
 
 
@@ -68,6 +79,7 @@ public class FXMLMainController implements Initializable {
         tabPane.getSelectionModel().select(0);
         previousButton.disableProperty().bind(tabPane.getTabs().get(0).selectedProperty());
         nextButton.disableProperty().bind(tabPane.getTabs().get(tabPane.getTabs().size() - 1).selectedProperty());
+        initThemeMenu();
     }
 
     private void initTab(String resourceStr) {
@@ -80,6 +92,31 @@ public class FXMLMainController implements Initializable {
         } catch (IOException e) {
             throw Throwables.propagate(e);
         }
+    }
+
+    private void initThemeMenu() {
+        ToggleGroup toggleGroup = new ToggleGroup();
+
+        LinkedHashMap<Theme, RadioMenuItem> map = Arrays.stream(Theme.values()).collect(
+                LinkedHashMap::new,
+                (m, theme) -> m.put(theme, createThemeMenuItem(toggleGroup, theme)),
+                (m, u) -> {
+                });
+        themeMenu.getItems().addAll(map.values());
+
+        RadioMenuItem radioMenuItem = map.get(subtitlesDownloaderProperties.getTheme());
+        toggleGroup.selectToggle(radioMenuItem);
+    }
+
+    private RadioMenuItem createThemeMenuItem(ToggleGroup toggleGroup, Theme theme) {
+        RadioMenuItem radioMenuItem = new RadioMenuItem(resources.getString(theme.getNameKey()));
+        radioMenuItem.setToggleGroup(toggleGroup);
+        radioMenuItem.setOnAction(event -> {
+            runMeMain.setTheme(theme);
+            subtitlesDownloaderProperties.setTheme(theme);
+        });
+        radioMenuItem.setId(theme.getNameKey());
+        return radioMenuItem;
     }
 
     @FXML

@@ -4,6 +4,7 @@ import com.cathive.fx.guice.GuiceApplication;
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.sun.javafx.application.PlatformImpl;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.rafalmag.subtitledownloader.annotations.I18nResources;
 import pl.rafalmag.subtitledownloader.entities.InterfaceLanguage;
+import pl.rafalmag.subtitledownloader.entities.Theme;
 import pl.rafalmag.subtitledownloader.gui.FXMLMainController;
 import pl.rafalmag.subtitledownloader.gui.SelectMovieProperties;
 
@@ -83,6 +85,16 @@ public class RunMeMain extends GuiceApplication {
         Parent root = getParent();
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
+
+        setTheme(subtitlesDownloaderProperties.getTheme());
+    }
+
+    public void setTheme(Theme theme) {
+        if (theme == Theme.DEFAULT) {
+            PlatformImpl.setDefaultPlatformUserAgentStylesheet();
+        } else {
+            PlatformImpl.setPlatformUserAgentStylesheet(theme.getStyleSheetUrl());
+        }
     }
 
     private Parent getParent() throws IOException {
