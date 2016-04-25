@@ -20,7 +20,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.slf4j.Logger;
 import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
-import pl.rafalmag.subtitledownloader.utils.UTF8Control;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -94,7 +93,7 @@ public class FXMLMainController implements Initializable {
         aboutStage.setTitle(resources.getString("AboutSubtitlesDownloader"));
 
         URL resource = getClass().getResource("/About.fxml");
-        Parent aboutView = fxmlLoader.load(resource, ResourceBundle.getBundle("opensubtitles", new UTF8Control())).getRoot();
+        Parent aboutView = fxmlLoader.load(resource, resources).getRoot();
         aboutStage.setScene(new Scene(aboutView));
         aboutStage.show();
     }
@@ -185,7 +184,7 @@ public class FXMLMainController implements Initializable {
         languageStage.setTitle(resources.getString("Language"));
 
         URL resource = getClass().getResource("/Language.fxml");
-        Parent aboutView = fxmlLoader.load(resource, ResourceBundle.getBundle("opensubtitles", new UTF8Control())).getRoot();
+        Parent aboutView = fxmlLoader.load(resource, resources).getRoot();
         languageStage.setScene(new Scene(aboutView));
         languageStage.show();
         languageStage.sizeToScene();

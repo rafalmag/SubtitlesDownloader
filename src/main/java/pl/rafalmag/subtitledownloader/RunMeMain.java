@@ -10,17 +10,17 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.rafalmag.subtitledownloader.annotations.I18nResources;
 import pl.rafalmag.subtitledownloader.entities.InterfaceLanguage;
 import pl.rafalmag.subtitledownloader.gui.FXMLMainController;
 import pl.rafalmag.subtitledownloader.gui.SelectMovieProperties;
-import pl.rafalmag.subtitledownloader.utils.UTF8Control;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -41,6 +41,10 @@ public class RunMeMain extends GuiceApplication {
 
     @Inject
     private SelectMovieProperties selectMovieProperties;
+
+    @I18nResources
+    @Inject
+    private Provider<ResourceBundle> resources;
 
     private Stage primaryStage;
 
@@ -82,12 +86,10 @@ public class RunMeMain extends GuiceApplication {
     }
 
     private Parent getParent() throws IOException {
-        URL resource = getClass().getResource("/Main.fxml");
         InterfaceLanguage interfaceLanguage = subtitlesDownloaderProperties.getInterfaceLanguage();
         Locale locale = interfaceLanguage.getLocale();
         Locale.setDefault(locale);
-        GuiceFXMLLoader.Result result = fxmlLoader.load(resource,
-                ResourceBundle.getBundle("opensubtitles", new UTF8Control()));
+        GuiceFXMLLoader.Result result = fxmlLoader.load(getClass().getResource("/Main.fxml"), resources.get());
         Parent root = result.getRoot();
         FXMLMainController controller = result.getController();
         controller.selectFile(getFileFromCommandLine(), false);
