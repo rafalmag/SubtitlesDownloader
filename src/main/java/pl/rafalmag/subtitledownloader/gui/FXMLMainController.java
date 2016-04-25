@@ -143,7 +143,7 @@ public class FXMLMainController implements Initializable {
     }
 
     @FXML
-    protected void nextTab() {
+    public void nextTab() {
         int selectedIndex = tabPane.getSelectionModel().getSelectedIndex();
         tabPane.getSelectionModel().select(selectedIndex + 1);
     }

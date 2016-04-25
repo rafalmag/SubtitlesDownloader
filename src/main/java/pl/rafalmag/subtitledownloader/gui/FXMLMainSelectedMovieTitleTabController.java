@@ -99,25 +99,18 @@ public class FXMLMainSelectedMovieTitleTabController implements Initializable {
         title.setPrefWidth(500);
         TableColumn<Movie, Integer> year = new TableColumn<>(resources.getString("Year"));
         year.setCellValueFactory(new PropertyValueFactory<>("year"));
-        // year.setCellFactory(new Callback<TableColumn<Movie, Integer>,
-        // TableCell<Movie, Integer>>() {
-        //
-        // @Override
-        // public TableCell<Movie, Integer> call(
-        // TableColumn<Movie, Integer> param) {
-        // final TableCell<Movie, Integer> cell = new TableCell<>();
-        // cell.setOnMouseClicked(new EventHandler<Event>() {
-        //
-        // @Override
-        // public void handle(Event event) {
-        // LOG.info(cell.getText() + " # " + event.toString());
-        //
-        // }
-        // });
-        // return cell;
-        //
-        // }
-        // });
+        //double click on row navigates to next tab
+        table.setRowFactory(tv -> {
+            TableRow<Movie> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && !row.isEmpty()) {
+                    Movie rowData = row.getItem();
+                    LOG.trace("Double clicked {}", rowData);
+                    fxmlMainController.nextTab();
+                }
+            });
+            return row;
+        });
 
         table.getColumns().setAll(ImmutableList.of(title, year));
         setSelectionStuff();

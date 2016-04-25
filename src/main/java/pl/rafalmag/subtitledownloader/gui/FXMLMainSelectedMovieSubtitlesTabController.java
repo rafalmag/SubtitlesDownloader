@@ -135,6 +135,19 @@ public class FXMLMainSelectedMovieSubtitlesTabController implements Initializabl
                         // Subtitles.DUMMY_SUBTITLES);
                     }
                 });
+
+        //double click on row navigates to next tab
+        table.setRowFactory(tv -> {
+            TableRow<Subtitles> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && !row.isEmpty()) {
+                    Subtitles rowData = row.getItem();
+                    LOG.trace("Double clicked {}", rowData);
+                    fxmlMainController.nextTab();
+                }
+            });
+            return row;
+        });
     }
 
     @FXML
