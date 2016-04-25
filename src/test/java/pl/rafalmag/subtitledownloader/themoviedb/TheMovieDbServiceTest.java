@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pl.rafalmag.subtitledownloader.GuiceModule;
+import pl.rafalmag.subtitledownloader.TestGuiceModule;
 import pl.rafalmag.subtitledownloader.opensubtitles.SessionException;
 
 import javax.inject.Inject;
@@ -28,7 +28,7 @@ public class TheMovieDbServiceTest {
 
     @Before
     public void init() throws SessionException {
-        Guice.createInjector(new GuiceModule(() -> null)).injectMembers(this);
+        Guice.createInjector(new TestGuiceModule()).injectMembers(this);
     }
 
     @Test

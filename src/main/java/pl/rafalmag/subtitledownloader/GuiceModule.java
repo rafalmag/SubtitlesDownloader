@@ -18,8 +18,6 @@ public class GuiceModule extends AbstractModule {
 
     @Override
     public void configure() {
-//                bind(ResourceBundle.class).annotatedWith(Names.named("i18n-resources"))
-//                        .toInstance(ResourceBundle.getBundle("opensubtitles", new UTF8Control()));
         bindListener(Matchers.any(), new Slf4jTypeListener());
         bind(Stage.class).annotatedWith(Names.named("primaryStage")).toProvider(primaryStage);
         bind(CheckMovie.class).to(CheckMovieSubtitles.class);

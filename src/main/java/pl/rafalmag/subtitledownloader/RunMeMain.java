@@ -4,7 +4,6 @@ import com.cathive.fx.guice.GuiceApplication;
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.inject.Injector;
 import com.google.inject.Module;
-import com.google.inject.Provider;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
@@ -18,6 +17,7 @@ import pl.rafalmag.subtitledownloader.utils.UTF8Control;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -25,10 +25,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+@Singleton
 public class RunMeMain extends GuiceApplication {
 
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(RunMeMain.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RunMeMain.class);
 
     @Inject
     private Injector injector;
@@ -49,24 +49,9 @@ public class RunMeMain extends GuiceApplication {
         launch(args);
     }
 
-    private static RunMeMain INSTANCE;
-
-    public RunMeMain() {
-        INSTANCE = this;
-    }
-
     @Override
     public void init(List<Module> list) throws Exception {
-        list.add(new GuiceModule(new Provider<Stage>() {
-            @Override
-            public Stage get() {
-                return primaryStage;
-            }
-        }));
-    }
-
-    public static RunMeMain getInstance() {
-        return INSTANCE;
+        list.add(new GuiceModule(() -> primaryStage));
     }
 
     /*
@@ -91,12 +76,12 @@ public class RunMeMain extends GuiceApplication {
         this.primaryStage = primaryStage;
         primaryStage.setTitle("Subtitles Downloader");
 
-        Parent root = getParent(primaryStage);
+        Parent root = getParent();
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
 
-    private Parent getParent(Stage primaryStage) throws IOException {
+    private Parent getParent() throws IOException {
         URL resource = getClass().getResource("/Main.fxml");
         InterfaceLanguage interfaceLanguage = subtitlesDownloaderProperties.getInterfaceLanguage();
         Locale locale = interfaceLanguage.getLocale();
@@ -115,7 +100,7 @@ public class RunMeMain extends GuiceApplication {
         content.getChildren().clear();
 
         File fileBeforeReload = selectMovieProperties.getFile();
-        Parent newParent = getParent(primaryStage);
+        Parent newParent = getParent();
         selectMovieProperties.setFile(fileBeforeReload);
         // replace the content
         content.getChildren().add(newParent);

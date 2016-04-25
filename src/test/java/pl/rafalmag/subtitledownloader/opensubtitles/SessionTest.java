@@ -5,7 +5,7 @@ import org.assertj.core.api.Condition;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import pl.rafalmag.subtitledownloader.GuiceModule;
+import pl.rafalmag.subtitledownloader.TestGuiceModule;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SubtitleLanguage;
 
@@ -22,7 +22,7 @@ public class SessionTest {
 
     @Before
     public void initAndLogin() throws SessionException {
-        Guice.createInjector(new GuiceModule(() -> null)).injectMembers(this);
+        Guice.createInjector(new TestGuiceModule()).injectMembers(this);
         session.login();
     }
 

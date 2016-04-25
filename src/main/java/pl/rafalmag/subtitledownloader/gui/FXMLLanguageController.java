@@ -44,6 +44,10 @@ public class FXMLLanguageController implements Initializable {
 
     @Inject
     private Session session;
+
+    @Inject
+    private RunMeMain runMeMain;
+
     private SubtitleLanguage initialSubtitlesLanguage;
 
     @Override
@@ -87,7 +91,7 @@ public class FXMLLanguageController implements Initializable {
             LOG.debug("New UI language: " + selectedInterfaceLanguage.toString());
             subtitlesDownloaderProperties.setInterfaceLanguage(selectedInterfaceLanguage);
             try {
-                RunMeMain.getInstance().reloadView();
+                runMeMain.reloadView();
             } catch (IOException e) {
                 throw new IllegalStateException("Could not change language, as reloading of main window failed, because of " + e.getMessage(), e);
             }

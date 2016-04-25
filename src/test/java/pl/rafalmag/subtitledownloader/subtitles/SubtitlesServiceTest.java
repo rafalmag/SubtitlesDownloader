@@ -4,7 +4,7 @@ import com.google.inject.Guice;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import pl.rafalmag.subtitledownloader.GuiceModule;
+import pl.rafalmag.subtitledownloader.TestGuiceModule;
 import pl.rafalmag.subtitledownloader.opensubtitles.SessionException;
 import pl.rafalmag.subtitledownloader.title.Movie;
 import pl.rafalmag.subtitledownloader.utils.ProgressCallbackDummy;
@@ -25,7 +25,7 @@ public class SubtitlesServiceTest {
 
     @Before
     public void init() throws SessionException {
-        Guice.createInjector(new GuiceModule(null)).injectMembers(this);
+        Guice.createInjector(new TestGuiceModule()).injectMembers(this);
     }
 
     // this test requires a big file in specified path
