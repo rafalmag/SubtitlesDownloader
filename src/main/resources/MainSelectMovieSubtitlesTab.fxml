@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <TabPane xmlns:fx="http://javafx.com/fxml"
          fx:controller="pl.rafalmag.subtitledownloader.gui.FXMLMainSelectedMovieSubtitlesTabController">
     <Tab fx:id="selectMovieSubtitlesTab" text="%SelectSubtitles">
     <VBox>
         <TableView fx:id="table" VBox.vgrow="ALWAYS"/>
-        <Label fx:id="selectedSubtitles" alignment="BOTTOM_LEFT" prefWidth="2500.0" text="%SelectedSubtitle"
-               VBox.vgrow="SOMETIMES"/>
+        <HBox prefHeight="100.0" VBox.vgrow="SOMETIMES">
+            <Label fx:id="selectedSubtitles" prefWidth="2500.0" text="%SelectedTitle" HBox.hgrow="ALWAYS"/>
+            <Button alignment="CENTER_RIGHT" maxWidth="-Infinity" minWidth="-Infinity" text="%Refresh"
+                    HBox.hgrow="NEVER" onAction="#refreshTable"/>
+        </HBox>
     </VBox>
 </Tab>
 </TabPane>

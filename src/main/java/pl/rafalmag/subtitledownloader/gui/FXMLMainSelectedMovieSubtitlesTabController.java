@@ -136,4 +136,14 @@ public class FXMLMainSelectedMovieSubtitlesTabController implements Initializabl
                     }
                 });
     }
+
+    @FXML
+    protected void refreshTable() {
+        LOG.trace("refresh");
+        try {
+            subtitlesListService.updateList(fxmlMainController.progressBar, 10000);
+        } catch (InterruptedException e) {
+            LOG.error("Could not update subtitles list", e);
+        }
+    }
 }
