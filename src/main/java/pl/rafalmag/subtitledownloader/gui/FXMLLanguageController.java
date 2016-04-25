@@ -60,6 +60,7 @@ public class FXMLLanguageController implements Initializable {
         interfaceLanguageCombo.getItems().addAll(InterfaceLanguage.values());
         initialInterfaceLanguage = InterfaceLanguage.fromLocale(Locale.getDefault());
         interfaceLanguageCombo.getSelectionModel().select(initialInterfaceLanguage);
+        new SelectKeyComboBoxListener<>(interfaceLanguageCombo);
     }
 
     private void initSubtitlesLanguageCombo() {
@@ -74,6 +75,7 @@ public class FXMLLanguageController implements Initializable {
         subtitlesLanguageCombo.getItems().addAll(subLanguages);
         initialSubtitlesLanguage = subtitlesDownloaderProperties.getSubtitlesLanguage();
         subtitlesLanguageCombo.getSelectionModel().select(initialSubtitlesLanguage);
+        new SelectKeyComboBoxListener<>(subtitlesLanguageCombo);
     }
 
     @FXML
