@@ -7,7 +7,7 @@ import com.google.inject.Module;
 import com.sun.javafx.application.PlatformImpl;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,15 +109,18 @@ public class RunMeMain extends GuiceApplication {
     }
 
     public void reloadView() throws IOException {
-        // replace the content
-        AnchorPane content = (AnchorPane) primaryStage.getScene().getRoot();
+        Scene scene = primaryStage.getScene();
+
+        // clear old content
+        Pane content = (Pane) scene.getRoot();
         content.getChildren().clear();
 
         File fileBeforeReload = selectMovieProperties.getFile();
         Parent newParent = getParent();
         selectMovieProperties.setFile(fileBeforeReload);
+
         // replace the content
-        content.getChildren().add(newParent);
+        scene.setRoot(newParent);
     }
 
 }
