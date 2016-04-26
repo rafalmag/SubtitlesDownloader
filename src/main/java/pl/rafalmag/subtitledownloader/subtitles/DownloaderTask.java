@@ -67,7 +67,6 @@ public class DownloaderTask extends Task<Void> {
             } finally {
                 httpConn.disconnect();
             }
-            throw new IOException("test");
         } catch (IOException | CancellationException e) {
             String message = "Could not download subtitles " + subtitles + ", because of " + e.getMessage();
             LOGGER.error(message, e);
