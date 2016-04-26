@@ -4,6 +4,7 @@ import com.google.common.io.ByteStreams;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.concurrent.Task;
+import javafx.scene.control.Alert;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.*;
+import java.util.concurrent.CancellationException;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipException;
 
@@ -65,8 +67,16 @@ public class DownloaderTask extends Task<Void> {
             } finally {
                 httpConn.disconnect();
             }
-        } catch (IOException e) {
-            LOGGER.error("Could not download substitles " + subtitles, e);
+            throw new IOException("test");
+        } catch (IOException | CancellationException e) {
+            String message = "Could not download subtitles " + subtitles + ", because of " + e.getMessage();
+            LOGGER.error(message, e);
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setContentText(message);
+                alert.showAndWait();
+            });
         } finally {
             updateProgress(DONE, DONE);
             Platform.runLater(() -> disableProgressBarProperty.set(true));
@@ -84,8 +94,7 @@ public class DownloaderTask extends Task<Void> {
         }
     }
 
-    private void backupExistingSubtitles(Path destinationPath)
-            throws IOException {
+    private void backupExistingSubtitles(Path destinationPath) throws IOException {
         try {
             Files.move(destinationPath,
                     Paths.get(destinationPath.toString() + ".bak"),
@@ -108,6 +117,9 @@ public class DownloaderTask extends Task<Void> {
 
         @Override
         public int read(byte[] bts) throws IOException {
+            if (isCancelled()) {
+                throw new CancellationException("Due to timeout - download subtitles thread cancelled");
+            }
             int read = super.read(bts);
             double downloadProgress = ((double) getByteCount()) / (double) contentLength;
             updateProgress(STEP_DOWNLOAD + (long) (STEP_DOWNLOAD * downloadProgress), DONE);
