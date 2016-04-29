@@ -27,7 +27,6 @@ public class CheckMovieSubtitlesTest {
     @Before
     public void initAndLogin() throws SessionException {
         Guice.createInjector(new TestGuiceModule()).injectMembers(this);
-        session.login();
     }
 
     @After

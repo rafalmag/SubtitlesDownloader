@@ -1,10 +1,12 @@
 package pl.rafalmag.subtitledownloader;
 
+import com.google.common.base.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.rafalmag.subtitledownloader.entities.InterfaceLanguage;
 import pl.rafalmag.subtitledownloader.entities.Theme;
 import pl.rafalmag.subtitledownloader.opensubtitles.SubtitleLanguageSerializer;
+import pl.rafalmag.subtitledownloader.opensubtitles.entities.LoginAndPassword;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SubtitleLanguage;
 
 import javax.annotation.Nullable;
@@ -30,9 +32,15 @@ public class SubtitlesDownloaderProperties {
     private static final String UI_LANGUAGE_TAG = "uiLanguageTag";
     private static final String SUBTITLES_LANGUAGE = "subtitlesLanguage";
     private static final String THEME = "theme";
+    private static final String OS_LOGIN = "osLogin";
+    private static final String OS_PASSWORD_MD5 = "osPasswordMd5";
 
     public static final SubtitleLanguage DEFAULT_SUBTITLES_LANGUAGE = new SubtitleLanguage("eng", "English", "en");
     public static final SubtitleLanguage EXTRA_SUBTITLES_LANGUAGE = new SubtitleLanguage("pol", "Polish", "pl");
+    public static final String ANONYMOUS_LOGIN = "";
+    public static final String ANONYMOUS_PASSWORD = "";
+
+    public static final LoginAndPassword ANONYMOUS = new LoginAndPassword(ANONYMOUS_LOGIN, ANONYMOUS_PASSWORD);
 
     private final Properties properties = new Properties();
 
@@ -103,6 +111,31 @@ public class SubtitlesDownloaderProperties {
 
     public void setTheme(Theme theme) {
         properties.setProperty(THEME, theme.getNameKey());
+        store();
+    }
+
+    public LoginAndPassword getLoginAndPassword() {
+        Optional<String> loginProperty = Optional.ofNullable(properties.getProperty(OS_LOGIN));
+        Optional<String> passwordMd5Property = Optional.ofNullable(properties.getProperty(OS_PASSWORD_MD5));
+        if (loginProperty.isPresent() && passwordMd5Property.isPresent()) {
+            return new LoginAndPassword(loginProperty.get(), passwordMd5Property.get());
+        } else {
+            return ANONYMOUS;
+        }
+    }
+
+    public void setLoginAndPassword(LoginAndPassword loginAndPassword) {
+        String login;
+        String password;
+        if (Strings.isNullOrEmpty(loginAndPassword.getLogin()) || Strings.isNullOrEmpty(loginAndPassword.getPasswordMd5())) {
+            login = ANONYMOUS_LOGIN;
+            password = ANONYMOUS_PASSWORD;
+        } else {
+            login = loginAndPassword.getLogin();
+            password = loginAndPassword.getPasswordMd5();
+        }
+        properties.setProperty(OS_LOGIN, login);
+        properties.setProperty(OS_PASSWORD_MD5, password);
         store();
     }
 }

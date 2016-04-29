@@ -23,7 +23,6 @@ public class SessionTest {
     @Before
     public void initAndLogin() throws SessionException {
         Guice.createInjector(new TestGuiceModule()).injectMembers(this);
-        session.login();
     }
 
     @After
@@ -38,8 +37,7 @@ public class SessionTest {
         String movieHash = "673243a1f2823a82";
         Long movieByteSize = 1_181_200_270L;
         // when
-        Collection<SearchSubtitlesResult> checkMovieHash2Entities = session
-                .searchSubtitlesBy(movieHash, movieByteSize);
+        Collection<SearchSubtitlesResult> checkMovieHash2Entities = session.searchSubtitlesBy(movieHash, movieByteSize);
 
         // then
         assertThat(checkMovieHash2Entities).isNotEmpty();
@@ -55,8 +53,7 @@ public class SessionTest {
         // given
         int imdb = 1568346;
         // when
-        Collection<SearchSubtitlesResult> checkMovieHash2Entities = session
-                .searchSubtitlesBy(imdb);
+        Collection<SearchSubtitlesResult> checkMovieHash2Entities = session.searchSubtitlesBy(imdb);
 
         // then
         assertThat(checkMovieHash2Entities).isNotEmpty();
@@ -72,8 +69,7 @@ public class SessionTest {
         // given
         String title = "The Girl With The Dragon Tattoo";
         // when
-        Collection<SearchSubtitlesResult> checkMovieHash2Entities = session
-                .searchSubtitlesBy(title);
+        Collection<SearchSubtitlesResult> checkMovieHash2Entities = session.searchSubtitlesBy(title);
 
         // then
         assertThat(checkMovieHash2Entities).isNotEmpty();

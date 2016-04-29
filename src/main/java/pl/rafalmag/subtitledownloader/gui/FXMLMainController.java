@@ -122,14 +122,17 @@ public class FXMLMainController implements Initializable {
     @FXML
     protected void openAbout() throws IOException {
         LOG.trace("openAbout");
+        openModalWindow("AboutSubtitlesDownloader", "/About.fxml");
+    }
 
-        final Stage aboutStage = new Stage(StageStyle.UTILITY);
+    private void openModalWindow(String title, String fxmlUrl) throws IOException {
+        Stage aboutStage = new Stage(StageStyle.UTILITY);
         aboutStage.initOwner(stage);
         aboutStage.initModality(Modality.WINDOW_MODAL);
 
-        aboutStage.setTitle(resources.getString("AboutSubtitlesDownloader"));
+        aboutStage.setTitle(resources.getString(title));
 
-        URL resource = getClass().getResource("/About.fxml");
+        URL resource = getClass().getResource(fxmlUrl);
         Parent aboutView = fxmlLoader.load(resource, resources).getRoot();
         aboutStage.setScene(new Scene(aboutView));
         aboutStage.show();
@@ -213,19 +216,13 @@ public class FXMLMainController implements Initializable {
     @FXML
     public void openLanguage(ActionEvent actionEvent) throws IOException {
         LOG.trace("openLanguage");
+        openModalWindow("Language", "/Language.fxml");
+        actionEvent.consume();
+    }
 
-        final Stage languageStage = new Stage(StageStyle.UTILITY);
-        languageStage.initOwner(stage);
-        languageStage.initModality(Modality.WINDOW_MODAL);
-
-        languageStage.setTitle(resources.getString("Language"));
-
-        URL resource = getClass().getResource("/Language.fxml");
-        Parent aboutView = fxmlLoader.load(resource, resources).getRoot();
-        languageStage.setScene(new Scene(aboutView));
-        languageStage.show();
-        languageStage.sizeToScene();
-
+    public void openLoginAndPassword(ActionEvent actionEvent) throws IOException {
+        LOG.trace("openLoginAndPassword");
+        openModalWindow("OsLoginAndPassword", "/OsLogin.fxml");
         actionEvent.consume();
     }
 }

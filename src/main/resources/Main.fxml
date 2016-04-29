@@ -14,12 +14,9 @@
                 <MenuItem onAction="#closeApp" text="%Close"/>
             </Menu>
             <Menu text="%Options">
+                <MenuItem onAction="#openLoginAndPassword" text="%OsLoginAndPassword"/>
                 <MenuItem onAction="#openLanguage" text="%Language"/>
-                <Menu fx:id="themeMenu" text="%Theme">
-                    <!--<MenuItem text="%Default"/>-->
-                    <!--<MenuItem text="Modena"/>-->
-                    <!--<MenuItem text="Caspian"/>-->
-                </Menu>
+                <Menu fx:id="themeMenu" text="%Theme"/>
             </Menu>
             <Menu text="%Help">
                 <MenuItem onAction="#openAbout" text="%About"/>

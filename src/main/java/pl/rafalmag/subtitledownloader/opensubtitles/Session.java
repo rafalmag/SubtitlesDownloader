@@ -11,16 +11,26 @@ import org.slf4j.Logger;
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderProperties;
 import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
+import pl.rafalmag.subtitledownloader.opensubtitles.entities.LoginAndPassword;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.MovieEntity;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SubtitleLanguage;
 
+import javax.annotation.concurrent.GuardedBy;
+import javax.annotation.concurrent.ThreadSafe;
 import javax.inject.Inject;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
+/**
+ * Login and logout internally handled by class.
+ */
+@ThreadSafe
 @Singleton
 public class Session {
 
@@ -37,32 +47,69 @@ public class Session {
     private SubtitlesDownloaderProperties subtitlesDownloaderProperties;
 
     private final XmlRpcClient client;
-    private String token;
+
+    // write by login and logout
+    // however also used by bunch of other methods,
+    // race conditions between logout and those methods are not handled!
+    @GuardedBy("lock")
+    private volatile String token;
+
+    private final Lock lock = new ReentrantLock();
 
     public Session() {
         XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
         try {
-            config.setServerURL(new URL("http://api.opensubtitles.org/xml-rpc"));
+            config.setServerURL(new URL("https://api.opensubtitles.org:443/xml-rpc"));
         } catch (MalformedURLException e) {
-            Throwables.propagate(e);
+            throw Throwables.propagate(e);
         }
         client = new XmlRpcClient();
         client.setConfig(config);
     }
 
     public void login() throws SessionException {
-        login("", "", "en", USER_AGENT); // TODO provide user and pass
+        LoginAndPassword loginAndPassword = subtitlesDownloaderProperties.getLoginAndPassword();
+        login(loginAndPassword);
+    }
+
+    public void login(LoginAndPassword loginAndPassword) throws SessionException {
+        //TODO language hardcoded!
+        login(loginAndPassword.getLogin(), loginAndPassword.getPasswordMd5(), "en", USER_AGENT);
     }
 
     public void login(String userName, String password, String language, String userAgent) throws SessionException {
+        boolean lockSuccess;
+        try {
+            lockSuccess = lock.tryLock(10, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            throw new IllegalStateException("Thread interrupted while trying to get lock before login", e);
+        }
+        if (lockSuccess) {
+            try {
+                loginInternals(userName, password, language, userAgent);
+            } finally {
+                lock.unlock();
+            }
+        } else {
+            throw new SessionException("Login failed, because could not acquire lock within 10 sec");
+        }
+    }
+
+    private void loginInternals(String userName, String password, String language, String userAgent) throws SessionException {
+        if (token != null) {
+            logout();
+        }
         Object[] params = new Object[]{userName, password, language, userAgent};
         try {
             @SuppressWarnings("unchecked")
             Map<String, Object> execute = (Map<String, Object>) client.execute("LogIn", params);
-            LOG.debug("login response: " + execute);
+            LOG.debug("login as '{}' response: {}", userName, execute);
             String status = (String) execute.get("status");
+            if (status.contains("401 Unauthorized")) {
+                throw new SessionException("Bad login or password");
+            }
             if (!status.contains("OK")) {
-                throw new SessionException("could not login because of wrong status " + status);
+                throw new SessionException("could not login because of wrong status: " + status);
             }
             token = (String) execute.get("token");
         } catch (XmlRpcException e) {
@@ -71,11 +118,32 @@ public class Session {
     }
 
     public boolean logout() {
+        if (token == null) {
+            return true;
+        }
+        boolean lockSuccess;
+        try {
+            lockSuccess = lock.tryLock(10, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            throw new IllegalStateException("Thread interrupted while trying to get lock before logout", e);
+        }
+        if (lockSuccess) {
+            try {
+                return logoutInternals();
+            } finally {
+                lock.unlock();
+            }
+        } else {
+            throw new IllegalStateException("Logout failed, because could not acquire lock within 10 sec");
+        }
+    }
+
+    private boolean logoutInternals() {
         Object[] params = new Object[]{token};
         try {
             @SuppressWarnings("unchecked")
             Map<String, Object> execute = (Map<String, Object>) client.execute("LogOut", params);
-            LOG.debug("logout response: " + execute);
+            LOG.debug("logout response: {}", execute);
             String status = (String) execute.get("status");
             if (!status.contains("OK")) {
                 LOG.error("could not logout because of wrong status " + status);
@@ -91,11 +159,18 @@ public class Session {
 
     public List<SearchSubtitlesResult> searchSubtitlesBy(String movieHash, Long movieByteSize)
             throws SubtitlesDownloaderException {
+        checkLogin();
         Object[] params = new Object[]{
                 token,
                 new Object[]{ImmutableMap.of("sublanguageid", getLanguage(), "moviehash", movieHash, "moviebytesize",
                         movieByteSize.toString())}};
         return searchSubtitles(params);
+    }
+
+    private void checkLogin() throws SessionException {
+        if (token == null) {
+            login();
+        }
     }
 
     private String getLanguage() {
@@ -104,12 +179,14 @@ public class Session {
 
     public List<SearchSubtitlesResult> searchSubtitlesBy(int imdbId)
             throws SubtitlesDownloaderException {
+        checkLogin();
         Object[] params = new Object[]{token,
                 new Object[]{ImmutableMap.of("sublanguageid", getLanguage(), "imdbid", imdbId)}};
         return searchSubtitles(params);
     }
 
     public List<SearchSubtitlesResult> searchSubtitlesBy(String title) throws SubtitlesDownloaderException {
+        checkLogin();
         Object[] params = new Object[]{token,
                 new Object[]{ImmutableMap.of("sublanguageid", getLanguage(), "query", title)}};
         return searchSubtitles(params);
@@ -135,12 +212,10 @@ public class Session {
 
     // TODO searchSubtitlesByTag - filename
 
-    private List<SearchSubtitlesResult> searchSubtitles(Object[] params)
-            throws SubtitlesDownloaderException {
+    private List<SearchSubtitlesResult> searchSubtitles(Object[] params) throws SubtitlesDownloaderException {
         try {
             @SuppressWarnings("unchecked")
-            Map<String, Object> execute = (Map<String, Object>) client.execute(
-                    "SearchSubtitles", params);
+            Map<String, Object> execute = (Map<String, Object>) client.execute("SearchSubtitles", params);
             LOG.debug("SearchSubtitles response: " + execute);
             String status = (String) execute.get("status");
             if (!status.contains("OK")) {
@@ -172,11 +247,11 @@ public class Session {
 
     public List<MovieEntity> checkMovieHash2(String hashCode)
             throws SubtitlesDownloaderException {
+        checkLogin();
         Object[] params = new Object[]{token, new Object[]{hashCode}};
         try {
             @SuppressWarnings("unchecked")
-            Map<String, Object> response = (Map<String, Object>) client
-                    .execute("CheckMovieHash2", params);
+            Map<String, Object> response = (Map<String, Object>) client.execute("CheckMovieHash2", params);
             LOG.debug("CheckMovieHash2 response: " + response);
             String status = (String) response.get("status");
             if (!status.contains("OK")) {
@@ -202,15 +277,13 @@ public class Session {
                 result.addAll(getRecords((Object[]) records));
             }
         } else {
-            throw new IllegalStateException("Unsupported data object type "
-                    + data);
+            throw new IllegalStateException("Unsupported data object type " + data);
         }
         return result;
     }
 
     private List<MovieEntity> getRecords(Object[] records) {
-        List<MovieEntity> result;
-        result = Lists.newArrayListWithCapacity(records.length);
+        List<MovieEntity> result = Lists.newArrayListWithCapacity(records.length);
         for (Object recordObject : records) {
             @SuppressWarnings("unchecked")
             Map<String, Object> record = (Map<String, Object>) recordObject;

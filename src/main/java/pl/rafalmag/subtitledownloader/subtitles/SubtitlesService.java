@@ -43,13 +43,11 @@ public class SubtitlesService {
     public SortedSet<Subtitles> getSubtitles(Movie movie, File movieFile, long timeoutMs,
                                              ProgressCallback progressCallback)
             throws InterruptedException {
-        LOG.debug("search subtitles for {} with timeout {}ms", movie,
-                timeoutMs);
+        LOG.debug("search subtitles for {} with timeout {}ms", movie, timeoutMs);
         Callable<List<Subtitles>> callable = new NamedCallable<>(
                 "-FromOpenSub", () -> getSubtitlesFromOpenSubtitles(movie, movieFile, timeoutMs));
         Collection<List<Subtitles>> solve = Utils.solve(EXECUTOR,
-                ImmutableList
-                        .of(callable), timeoutMs, progressCallback);
+                ImmutableList.of(callable), timeoutMs, progressCallback);
 
         Supplier<TreeSet<Subtitles>> supplier = () -> new TreeSet<>(Collections.reverseOrder());
         return StreamSupport.stream(solve.spliterator(), false)
@@ -59,7 +57,6 @@ public class SubtitlesService {
 
     protected List<Subtitles> getSubtitlesFromOpenSubtitles(Movie movie, File movieFile, long timeoutMs)
             throws SubtitlesDownloaderException, InterruptedException {
-        session.login(); // mandatory
         List<SearchSubtitlesResult> subtitlesFromOpenSubtitles = checkMovieSubtitles
                 .getSubtitles(movie, movieFile, timeoutMs);
         return subtitlesFromOpenSubtitles.stream().map(Subtitles::new).collect(Collectors.toList());

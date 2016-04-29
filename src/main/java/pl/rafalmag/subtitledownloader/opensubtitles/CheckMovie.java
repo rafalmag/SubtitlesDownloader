@@ -38,7 +38,7 @@ public class CheckMovie {
     public String getHashCode(File movieFile) throws SubtitlesDownloaderException {
         try {
             String hashCode = fileHashes.get(movieFile, () -> OpenSubtitlesHasher.computeHash(movieFile));
-            LOG.debug("hashCode=" + hashCode);
+            LOG.debug("hashCode={}", hashCode);
             return hashCode;
         } catch (ExecutionException e) {
             throw new SubtitlesDownloaderException("Could not get hashcode for " + movieFile

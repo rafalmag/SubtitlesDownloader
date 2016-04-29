@@ -72,10 +72,7 @@ public class TitleService {
     }
 
     protected List<Movie> getByFileHash(File movieFile) throws SubtitlesDownloaderException {
-        session.login(); // mandatory
-
         List<MovieEntity> checkMovieHash2Entities = checkMovie.getTitleInfo(movieFile);
-
         return Lists.transform(checkMovieHash2Entities, Movie::new);
     }
 }
