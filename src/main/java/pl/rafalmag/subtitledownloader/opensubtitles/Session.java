@@ -181,7 +181,7 @@ public class Session {
             throws SubtitlesDownloaderException {
         checkLogin();
         Object[] params = new Object[]{token,
-                new Object[]{ImmutableMap.of("sublanguageid", getLanguage(), "imdbid", imdbId)}};
+                new Object[]{ImmutableMap.of("sublanguageid", getLanguage(), "imdbid", Integer.toString(imdbId))}};
         return searchSubtitles(params);
     }
 
@@ -193,6 +193,7 @@ public class Session {
     }
 
     // TODO search subtitles by "tag" - filename
+    // TODO search movie by "GuessMovieFromString"->"BestGuess" ?
 
     public List<SubtitleLanguage> getSubLanguages() throws SubtitlesDownloaderException {
         try {
@@ -245,8 +246,7 @@ public class Session {
     // this can be also easily implemented
     // http://trac.opensubtitles.org/projects/opensubtitles/wiki/XMLRPC#SearchMoviesOnIMDB
 
-    public List<MovieEntity> checkMovieHash2(String hashCode)
-            throws SubtitlesDownloaderException {
+    public List<MovieEntity> checkMovieHash2(String hashCode) throws SubtitlesDownloaderException {
         checkLogin();
         Object[] params = new Object[]{token, new Object[]{hashCode}};
         try {
