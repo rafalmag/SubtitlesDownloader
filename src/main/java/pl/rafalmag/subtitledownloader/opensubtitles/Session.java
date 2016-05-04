@@ -164,7 +164,7 @@ public class Session {
                 token,
                 new Object[]{ImmutableMap.of("sublanguageid", getLanguage(), "moviehash", movieHash, "moviebytesize",
                         movieByteSize.toString())}};
-        return searchSubtitles(params);
+        return searchSubtitles(params, "hash");
     }
 
     private void checkLogin() throws SessionException {
@@ -182,14 +182,14 @@ public class Session {
         checkLogin();
         Object[] params = new Object[]{token,
                 new Object[]{ImmutableMap.of("sublanguageid", getLanguage(), "imdbid", Integer.toString(imdbId))}};
-        return searchSubtitles(params);
+        return searchSubtitles(params, "imdb");
     }
 
     public List<SearchSubtitlesResult> searchSubtitlesBy(String title) throws SubtitlesDownloaderException {
         checkLogin();
         Object[] params = new Object[]{token,
                 new Object[]{ImmutableMap.of("sublanguageid", getLanguage(), "query", title)}};
-        return searchSubtitles(params);
+        return searchSubtitles(params, "title");
     }
 
     // TODO search subtitles by "tag" - filename
@@ -213,7 +213,7 @@ public class Session {
 
     // TODO searchSubtitlesByTag - filename
 
-    private List<SearchSubtitlesResult> searchSubtitles(Object[] params) throws SubtitlesDownloaderException {
+    private List<SearchSubtitlesResult> searchSubtitles(Object[] params, String source) throws SubtitlesDownloaderException {
         try {
             @SuppressWarnings("unchecked")
             Map<String, Object> execute = (Map<String, Object>) client.execute("SearchSubtitles", params);
@@ -234,7 +234,7 @@ public class Session {
             for (Object entry : data) {
                 @SuppressWarnings("unchecked")
                 Map<String, Object> entryMap = (Map<String, Object>) entry;
-                result.add(new SearchSubtitlesResult(entryMap));
+                result.add(new SearchSubtitlesResult(entryMap, source));
             }
             return result;
         } catch (XmlRpcException e) {

@@ -3,6 +3,7 @@ package pl.rafalmag.subtitledownloader.opensubtitles.entities;
 import pl.rafalmag.subtitledownloader.title.TitleUtils;
 
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * http://trac.opensubtitles.org/projects/opensubtitles/wiki/XMLRPC#SearchSubtitles
@@ -11,8 +12,11 @@ public class SearchSubtitlesResult {
 
     private final Map<String, Object> map;
 
-    public SearchSubtitlesResult(Map<String, Object> map) {
+    private final String source;
+
+    public SearchSubtitlesResult(Map<String, Object> map, String source) {
         this.map = map;
+        this.source = source;
     }
 
     public String getIdMovie() {
@@ -37,6 +41,10 @@ public class SearchSubtitlesResult {
 
     public String getSubFileName() {
         return (String) map.get("SubFileName");
+    }
+
+    public String getSource() {
+        return source;
     }
 
     //TODO add more fields:
@@ -80,5 +88,4 @@ public class SearchSubtitlesResult {
             return false;
         return true;
     }
-
 }

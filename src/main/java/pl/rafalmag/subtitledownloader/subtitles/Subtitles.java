@@ -8,7 +8,7 @@ import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResu
 
 public class Subtitles implements Comparable<Subtitles> {
 
-    public static final Subtitles DUMMY_SUBTITLES = new Subtitles("", 0) {
+    public static final Subtitles DUMMY_SUBTITLES = new Subtitles("", 0,"") {
         @Override
         public String toString() {
             return "";
@@ -18,14 +18,16 @@ public class Subtitles implements Comparable<Subtitles> {
     private final IntegerProperty downloadsCount = new SimpleIntegerProperty();
     private final StringProperty fileName = new SimpleStringProperty();
     private final StringProperty downloadLink = new SimpleStringProperty();
+    private final StringProperty source = new SimpleStringProperty();
 
     public Subtitles(SearchSubtitlesResult result) {
         setFileName(result.getSubFileName());
         setDownloadsCount(Integer.parseInt(result.getSubDownloadsCnt()));
         setDownloadLink(result.getSubDownloadLink());
+        setSource(result.getSource());
     }
 
-    public Subtitles(String fileName, int downloadsCount) {
+    public Subtitles(String fileName, int downloadsCount, String source) {
         setFileName(fileName);
         setDownloadsCount(downloadsCount);
     }
@@ -36,6 +38,10 @@ public class Subtitles implements Comparable<Subtitles> {
 
     public StringProperty fileNameProperty() {
         return fileName;
+    }
+
+    public StringProperty sourceProperty() {
+        return source;
     }
 
     public int getDownloadsCount() {
@@ -54,9 +60,17 @@ public class Subtitles implements Comparable<Subtitles> {
         this.fileName.set(fileName);
     }
 
+    public String getSource() {
+        return source.get();
+    }
+
+    public void setSource(String source) {
+        this.source.set(source);
+    }
+
     @Override
     public String toString() {
-        return "fileName=" + getFileName() + ", downloadsCount=" + getDownloadsCount();
+        return "fileName=" + getFileName() + ", source=" + getSource() + ", downloadsCount=" + getDownloadsCount();
     }
 
     public StringProperty downloadLinkProperty() {

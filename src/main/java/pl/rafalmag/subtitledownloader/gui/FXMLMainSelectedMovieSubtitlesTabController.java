@@ -103,10 +103,14 @@ public class FXMLMainSelectedMovieSubtitlesTabController implements Initializabl
         TableColumn<Subtitles, String> fileName = new TableColumn<>(resources.getString("FileName"));
         fileName.setCellValueFactory(new PropertyValueFactory<>("fileName"));
         fileName.setPrefWidth(500);
+
         TableColumn<Subtitles, Integer> downloadsCount = new TableColumn<>(resources.getString("Downloads"));
         downloadsCount.setCellValueFactory(new PropertyValueFactory<>("downloadsCount"));
 
-        table.getColumns().setAll(ImmutableList.of(fileName, downloadsCount));
+        TableColumn<Subtitles, String> source = new TableColumn<>(resources.getString("Source"));
+        source.setCellValueFactory(new PropertyValueFactory<>("source"));
+
+        table.getColumns().setAll(ImmutableList.of(fileName, downloadsCount, source));
         setSelectionStuff();
     }
 
