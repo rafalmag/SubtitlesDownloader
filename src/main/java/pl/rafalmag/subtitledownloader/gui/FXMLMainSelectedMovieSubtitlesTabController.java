@@ -22,6 +22,7 @@ import pl.rafalmag.subtitledownloader.title.SelectTitleProperties;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.net.URL;
+import java.util.Collections;
 import java.util.ResourceBundle;
 
 @Singleton
@@ -142,7 +143,22 @@ public class FXMLMainSelectedMovieSubtitlesTabController implements Initializabl
 
         //double click on row navigates to next tab
         table.setRowFactory(tv -> {
-            TableRow<Subtitles> row = new TableRow<>();
+            TableRow<Subtitles> row = new TableRow<Subtitles>() {
+                @Override
+                protected void updateItem(Subtitles subtitles, boolean empty) {
+                    super.updateItem(subtitles, empty);
+                    if(subtitles == null){
+                        return;
+                    }
+                    if (subtitles.getSource().equalsIgnoreCase("hash")) {
+                        if (!getStyleClass().contains("bold")) {
+                            getStyleClass().add("bold");
+                        }
+                    } else {
+                        getStyleClass().removeAll(Collections.singleton("bold"));
+                    }
+                }
+            };
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && !row.isEmpty()) {
                     Subtitles rowData = row.getItem();

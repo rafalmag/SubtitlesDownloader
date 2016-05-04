@@ -83,7 +83,9 @@ public class RunMeMain extends GuiceApplication {
         primaryStage.setTitle("Subtitles Downloader");
 
         Parent root = getParent();
-        primaryStage.setScene(new Scene(root));
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add("/styles.css");
+        primaryStage.setScene(scene);
         primaryStage.show();
 
         setTheme(subtitlesDownloaderProperties.getTheme());

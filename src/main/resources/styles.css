@@ -1,0 +1,10 @@
+.bold {
+     -fx-font-weight: bold;
+}
+
+/*
+-fx-background-insets: 0, 1, 2;
+-fx-background-color: orange;
+-fx-background: -fx-accent;
+-fx-text-fill: -fx-selection-bar-text;
+*/
