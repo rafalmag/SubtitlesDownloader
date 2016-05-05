@@ -5,8 +5,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,27 +28,26 @@ public class TitleNameUtils {
             .compile("^([a-zA-Z0-9 _\\.]*)([\\{\\[\\(])?((BRRIP)|(DVD)|(HD)).*");
 
     // order is important
-    private static final List<Pattern> patternList = ImmutableList.of(
-            TITLE_YEAR, TITLE_META, TITLE_WITH_DASH, TITLE);
+    private static final List<Pattern> patternList = ImmutableList.of(TITLE_YEAR, TITLE_META, TITLE_WITH_DASH, TITLE);
 
     public static String getTitleFrom(String fileName) {
         String fileBaseName = FilenameUtils.getBaseName(fileName);
-        String title = checkPatterns(fileBaseName);
-        if (title != null) {
-            return prepareResult(title);
+        Optional<String> title = checkPatterns(fileBaseName);
+        if (title.isPresent()) {
+            return prepareResult(title.get());
+        } else {
+            return prepareResult(fileBaseName);
         }
-        return prepareResult(fileBaseName);
     }
 
     private static String prepareResult(String title) {
         return title.replaceAll("[._]", " ").trim();
     }
 
-    @Nullable
-    private static String checkPatterns(String fileBaseName) {
+    private static Optional<String> checkPatterns(String fileBaseName) {
         for (Pattern pattern : patternList) {
-            String title = checkPattern(pattern, fileBaseName);
-            if (title != null) {
+            Optional<String> title = checkPattern(pattern, fileBaseName);
+            if (title.isPresent()) {
                 if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug("checkPatterns matched\n" + "fileBaseName:   "
                             + fileBaseName + "\nmatched by:     " + pattern
@@ -57,11 +56,10 @@ public class TitleNameUtils {
                 return title;
             }
         }
-        return null;
+        return Optional.empty();
     }
 
-    @Nullable
-    private static String checkPattern(Pattern pattern, String fileBaseName) {
+    private static Optional<String> checkPattern(Pattern pattern, String fileBaseName) {
         Matcher matcher = pattern.matcher(fileBaseName);
         if (matcher.find()) {
             String stringToBeReturned = matcher.group(1).trim();
@@ -69,11 +67,11 @@ public class TitleNameUtils {
                 LOGGER.error("checkPattern matched\n" + "fileBaseName:   "
                         + fileBaseName + "\nmatched by:     " + pattern
                         + "\nreturned empty string");
-                return null;
+                return Optional.empty();
             }
-            return stringToBeReturned;
+            return Optional.of(stringToBeReturned);
         }
-        return null;
+        return Optional.empty();
     }
 
 }
