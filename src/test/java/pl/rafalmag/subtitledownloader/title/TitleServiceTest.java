@@ -48,8 +48,7 @@ public class TitleServiceTest {
         Movie firstMovie = titles.get(0);
 
         // a -> the
-        assertThat(firstMovie.getTitle(),
-                equalToIgnoringCase("The Girl With the Dragon Tattoo"));
+        assertThat(firstMovie.getTitle(), equalToIgnoringCase("The Girl With the Dragon Tattoo"));
         assertThat(firstMovie.getYear(), equalTo(2011));
         assertThat(firstMovie.getImdbId(), equalTo(1568346));
     }
@@ -65,8 +64,7 @@ public class TitleServiceTest {
         assertThat(titles, hasSize(1));
         Movie firstMovie = titles.get(0);
 
-        assertThat(firstMovie.getTitle(),
-                equalToIgnoringCase("A Lonely Place To Die"));
+        assertThat(firstMovie.getTitle(), equalToIgnoringCase("A Lonely Place To Die"));
         assertThat(firstMovie.getYear(), equalTo(2011));
         assertThat(firstMovie.getImdbId(), equalTo(1422136));
     }
@@ -78,14 +76,14 @@ public class TitleServiceTest {
         // given
         File movieFile = new File(
                 "I:/filmy/!old/A Lonely Place To Die  {2011} DVDRIP. Jaybob/A Lonely Place To Die  {2011} DVDRIP. Jaybob.avi");
+        // when
         List<Movie> titles = titleService.getByFileHash(movieFile);
 
         // then
         assertThat(titles, hasSize(1));
         Movie firstMovie = titles.get(0);
 
-        assertThat(firstMovie.getTitle(),
-                equalToIgnoringCase("A Lonely Place To Die"));
+        assertThat(firstMovie.getTitle(), equalToIgnoringCase("A Lonely Place To Die"));
         assertThat(firstMovie.getYear(), equalTo(2011));
         assertThat(firstMovie.getImdbId(), equalTo(1422136));
     }
@@ -99,15 +97,31 @@ public class TitleServiceTest {
         // given
         File movieFile = new File(
                 "H:/filmy/!old/A Lonely Place To Die  {2011} DVDRIP. Jaybob/A Lonely Place To Die  {2011} DVDRIP. Jaybob.avi");
-
+        // when
         SortedSet<Movie> titles = titleService.getTitles(movieFile, TIMEOUT_MS, new ProgressCallbackDummy());
 
         // then
         assertThat(titles, hasSize(1));
         Movie firstMovie = titles.first();
 
-        assertThat(firstMovie.getTitle(),
-                equalToIgnoringCase("A Lonely Place To Die"));
+        assertThat(firstMovie.getTitle(), equalToIgnoringCase("A Lonely Place To Die"));
+        assertThat(firstMovie.getYear(), equalTo(2011));
+        assertThat(firstMovie.getImdbId(), equalTo(1422136));
+    }
+
+    @Test
+    public void should_get_title_for_movie_by_file_name() throws Exception {
+        // given
+        File movieFile = new File(
+                "X:/A Lonely Place To Die  {2011} DVDRIP. Jaybob/A Lonely Place To Die  {2011} DVDRIP. Jaybob.avi");
+        // when
+        List<Movie> titles = titleService.getByFileName(movieFile);
+
+        // then
+        assertThat(titles, hasSize(1));
+        Movie firstMovie = titles.get(0);
+
+        assertThat(firstMovie.getTitle(), equalToIgnoringCase("A Lonely Place To Die"));
         assertThat(firstMovie.getYear(), equalTo(2011));
         assertThat(firstMovie.getImdbId(), equalTo(1422136));
     }

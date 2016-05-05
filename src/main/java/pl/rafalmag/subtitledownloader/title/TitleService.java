@@ -18,10 +18,7 @@ import pl.rafalmag.subtitledownloader.utils.Utils;
 
 import javax.inject.Inject;
 import java.io.File;
-import java.util.Collection;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -43,7 +40,8 @@ public class TitleService {
     @Inject
     private TheMovieDbService theMovieDbService;
 
-    public SortedSet<Movie> getTitles(File movieFile, long timeoutMs, ProgressCallback progressCallback) throws InterruptedException {
+    public SortedSet<Movie> getTitles(File movieFile, long timeoutMs, ProgressCallback progressCallback)
+            throws InterruptedException {
         String title = TitleNameUtils.getTitleFrom(movieFile.getName());
         return startTasksAndGetResults(title, movieFile, timeoutMs, progressCallback);
     }
@@ -51,17 +49,25 @@ public class TitleService {
     private final static ExecutorService EXECUTOR = Executors
             .newCachedThreadPool(new BasicThreadFactory.Builder().daemon(true).namingPattern("Title-%d").build());
 
-    private SortedSet<Movie> startTasksAndGetResults(String title, File movieFile, long timeoutMs, ProgressCallback progressCallback)
+    private SortedSet<Movie> startTasksAndGetResults(String title, File movieFile, long timeoutMs,
+                                                     ProgressCallback progressCallback)
             throws InterruptedException {
         Collection<? extends Callable<List<Movie>>> solvers = ImmutableList.of(
                 new NamedCallable<>("-movByTitle", () -> getByTitle(title)),
-                new NamedCallable<>("-movByFileHash", () -> getByFileHash(movieFile))
+                new NamedCallable<>("-movByFileHash", () -> getByFileHash(movieFile)),
+                new NamedCallable<>("-movByFileName", () -> getByFileName(movieFile))
         );
         Collection<List<Movie>> solve = Utils.solve(EXECUTOR, solvers, timeoutMs, progressCallback);
 
         return StreamSupport.stream(solve.spliterator(), false)
                 .flatMap(i -> StreamSupport.stream(i.spliterator(), false))
                 .collect(Collectors.toCollection(TreeSet::new));
+    }
+
+    protected List<Movie> getByFileName(File movieFile) throws SubtitlesDownloaderException {
+        return session.guessMovieFromFileName(movieFile.getName())
+                .map(Collections::singletonList)
+                .orElse(Collections.emptyList());
     }
 
     protected List<Movie> getByTitle(String title) {

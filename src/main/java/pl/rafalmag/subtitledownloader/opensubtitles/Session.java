@@ -318,10 +318,24 @@ public class Session {
             Map<String, Object> bestGuess = (Map<String, Object>) dataForFileName.get("BestGuess");
             String title = (String) bestGuess.get("MovieName");
             int year = parseYear((String) bestGuess.get("MovieYear"));
-            int imdbId = TitleUtils.getImdbFromString((String) bestGuess.get("IDMovieIMDB"));
+            int imdbId = parseIMDB(bestGuess.get("IDMovieIMDB"));
             return Optional.of(new Movie(title, year, imdbId));
         } catch (XmlRpcException e) {
             throw new SubtitlesDownloaderException("could not invoke SearchSubtitles because of " + e.getMessage(), e);
+        }
+    }
+
+    private Integer parseIMDB(Object imdbId) {
+        if (imdbId == null) {
+            LOG.debug("imdbId is null");
+            return -1;
+        }
+        if (imdbId instanceof Integer) {
+            return (Integer) imdbId;
+        } else if (imdbId instanceof String) {
+            return TitleUtils.getImdbFromString((String) imdbId);
+        } else {
+            throw new IllegalArgumentException("Not supported type: " + imdbId.getClass() + " with value " + imdbId);
         }
     }
 

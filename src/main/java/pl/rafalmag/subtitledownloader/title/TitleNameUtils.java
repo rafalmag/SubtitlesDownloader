@@ -37,7 +37,6 @@ public class TitleNameUtils {
         if (title != null) {
             return prepareResult(title);
         }
-
         return prepareResult(fileBaseName);
     }
 
