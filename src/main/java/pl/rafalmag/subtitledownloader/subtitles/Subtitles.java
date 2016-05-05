@@ -30,6 +30,7 @@ public class Subtitles implements Comparable<Subtitles> {
     public Subtitles(String fileName, int downloadsCount, String source) {
         setFileName(fileName);
         setDownloadsCount(downloadsCount);
+        setSource(source);
     }
 
     public IntegerProperty downloadsCountProperty() {
