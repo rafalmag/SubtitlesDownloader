@@ -12,6 +12,7 @@ public class TitleUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TitleUtils.class);
 
+    // non digits optional, then group of digits
     private static final Pattern IMDB_PATTERN = Pattern.compile("\\D*(\\d+).*");
 
     public static int getImdbFromString(@Nullable String imdbStr) {

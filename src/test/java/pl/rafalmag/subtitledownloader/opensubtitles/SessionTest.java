@@ -8,10 +8,12 @@ import org.junit.Test;
 import pl.rafalmag.subtitledownloader.TestGuiceModule;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SubtitleLanguage;
+import pl.rafalmag.subtitledownloader.title.Movie;
 
 import javax.inject.Inject;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -89,5 +91,20 @@ public class SessionTest {
         SubtitleLanguage english = new SubtitleLanguage("eng", "English", "en");
         SubtitleLanguage polish = new SubtitleLanguage("pol", "Polish", "pl");
         assertThat(subtitleLanguages).contains(english, polish);
+    }
+
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
+    @Test
+    public void should_guess_movie_from_file_name() throws Exception {
+        // given
+        String fileName = "Aliens 1080p BluRay AC3 x264-ETRG.mkv";
+        // when
+        Optional<Movie> movieOptional = session.guessMovieFromFileName(fileName);
+        // then
+        assertThat(movieOptional).isPresent();
+        Movie movie = movieOptional.get();
+        assertThat(movie.getImdbId()).isEqualTo(90605);
+        assertThat(movie.getTitle()).isEqualToIgnoringCase("Aliens");
+        assertThat(movie.getYear()).isEqualTo(1986);
     }
 }

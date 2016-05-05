@@ -15,6 +15,8 @@ import pl.rafalmag.subtitledownloader.opensubtitles.entities.LoginAndPassword;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.MovieEntity;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SubtitleLanguage;
+import pl.rafalmag.subtitledownloader.title.Movie;
+import pl.rafalmag.subtitledownloader.title.TitleUtils;
 
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
@@ -229,8 +231,7 @@ public class Session {
                 return Collections.emptyList();
             }
             Object[] data = (Object[]) dataRaw;
-            List<SearchSubtitlesResult> result = Lists
-                    .newArrayListWithCapacity(data.length);
+            List<SearchSubtitlesResult> result = Lists.newArrayListWithCapacity(data.length);
             for (Object entry : data) {
                 @SuppressWarnings("unchecked")
                 Map<String, Object> entryMap = (Map<String, Object>) entry;
@@ -292,4 +293,44 @@ public class Session {
         return result;
     }
 
+    public Optional<Movie> guessMovieFromFileName(String fileName) throws SubtitlesDownloaderException {
+        checkLogin();
+        Object[] params = new Object[]{token, new Object[]{fileName}};
+        try {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> execute = (Map<String, Object>) client.execute("GuessMovieFromString", params);
+            LOG.debug("GuessMovieFromString response: " + execute);
+            String status = (String) execute.get("status");
+            if (!status.contains("OK")) {
+                throw new SubtitlesDownloaderException("could not GuessMovieFromString because of wrong status " + status);
+            }
+
+            Object dataRaw = execute.get("data");
+            // can be false if nothing found...
+            if (dataRaw.equals(false)) {
+                return Optional.empty();
+            }
+            @SuppressWarnings("unchecked")
+            Map<String, Object> data = (Map<String, Object>) dataRaw;
+            @SuppressWarnings("unchecked")
+            Map<String, Object> dataForFileName = (Map<String, Object>) data.get(fileName);
+            @SuppressWarnings("unchecked")
+            Map<String, Object> bestGuess = (Map<String, Object>) dataForFileName.get("BestGuess");
+            String title = (String) bestGuess.get("MovieName");
+            int year = parseYear((String) bestGuess.get("MovieYear"));
+            int imdbId = TitleUtils.getImdbFromString((String) bestGuess.get("IDMovieIMDB"));
+            return Optional.of(new Movie(title, year, imdbId));
+        } catch (XmlRpcException e) {
+            throw new SubtitlesDownloaderException("could not invoke SearchSubtitles because of " + e.getMessage(), e);
+        }
+    }
+
+    private int parseYear(String yearString) {
+        try {
+            return Integer.parseInt(yearString);
+        } catch (NumberFormatException e) {
+            LOG.warn("Could not parse year from " + yearString + ", because of " + e.getMessage(), e);
+            return -1;
+        }
+    }
 }

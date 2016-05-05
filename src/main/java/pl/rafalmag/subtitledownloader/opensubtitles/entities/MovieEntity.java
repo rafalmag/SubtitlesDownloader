@@ -8,8 +8,7 @@ import java.util.Map;
 
 public class MovieEntity {
 
-    private static final Logger LOGGER = LoggerFactory
-            .getLogger(MovieEntity.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MovieEntity.class);
 
     String movieHash;
     int imdbId;
@@ -38,13 +37,11 @@ public class MovieEntity {
                 return Integer.parseInt(string);
             }
         } else {
-            throw new IllegalStateException("Unsupported object type: "
-                    + intObject);
+            throw new IllegalStateException("Unsupported object type: " + intObject);
         }
     }
 
-    public MovieEntity(String movieHash, int imdbId, String title, int year,
-                       int seenCount) {
+    public MovieEntity(String movieHash, int imdbId, String title, int year, int seenCount) {
         this.movieHash = movieHash;
         this.imdbId = imdbId;
         this.title = title;
@@ -104,8 +101,7 @@ public class MovieEntity {
         final int prime = 31;
         int result = 1;
         result = prime * result + imdbId;
-        result = prime * result
-                + ((movieHash == null) ? 0 : movieHash.hashCode());
+        result = prime * result + ((movieHash == null) ? 0 : movieHash.hashCode());
         result = prime * result + ((title == null) ? 0 : title.hashCode());
         result = prime * result + seenCount;
         result = prime * result + year;
