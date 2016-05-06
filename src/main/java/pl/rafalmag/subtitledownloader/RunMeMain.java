@@ -7,6 +7,7 @@ import com.google.inject.Module;
 import com.sun.javafx.application.PlatformImpl;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
@@ -81,6 +82,10 @@ public class RunMeMain extends GuiceApplication {
         LOGGER.trace("App started: start");
         this.primaryStage = primaryStage;
         primaryStage.setTitle("Subtitles Downloader");
+        primaryStage.getIcons().addAll(new Image("/icon64.png"),
+                new Image("/icon32.png"),
+                new Image("/icon24.png"),
+                new Image("/icon16.png"));
 
         Parent root = getParent();
         Scene scene = new Scene(root);
