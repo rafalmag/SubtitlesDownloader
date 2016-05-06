@@ -1,25 +1,16 @@
-//
-// Built on Sun May 13 22:51:53 CEST 2012 by logback-translator
-// For more information on configuration files in Groovy
-// please see http://logback.qos.ch/manual/groovy.html
-
-// For assistance related to this tool or configuration files
-// in general, please contact the logback user mailing list at
-//    http://qos.ch/mailman/listinfo/logback-user
-
-// For professional support please see
-//   http://www.qos.ch/shop/products/professionalSupport
-
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder
 import ch.qos.logback.core.ConsoleAppender
+import org.slf4j.bridge.SLF4JBridgeHandler
 import pl.rafalmag.subtitledownloader.themoviedb.TheMovieDbService
 import pl.rafalmag.subtitledownloader.themoviedb.TheMovieDbWarnFilter
+
+import java.util.logging.LogManager
 
 import static ch.qos.logback.classic.Level.*
 
 def API_KEY = TheMovieDbService.API_KEY
 
-//println "Setting logback in groovy."
+// WARN: for changes to take effect - rebuild IDEA project
 
 appender("STDOUT", ConsoleAppender) {
     filter(TheMovieDbWarnFilter)
@@ -35,7 +26,11 @@ if (isDev() || isTestMode()) {
     root(WARN, ["STDOUT"])
     logger("pl.rafalmag", INFO, ["STDOUT"], additivity = false)
 }
-
+// jul -> slf4j
+LogManager.getLogManager().reset();
+SLF4JBridgeHandler.install();
+// suppress javafx info about "index exceeds maxCellCount. Check size calculations for class"
+logger("javafx.scene.control", WARN)
 
 def isTestMode() {
     try {
@@ -48,7 +43,9 @@ def isTestMode() {
 }
 
 def isDev() {
-    if (InetAddress.getLocalHost().getHostName().toLowerCase().contains("rafal")) {
+    def hostName = InetAddress.getLocalHost().getHostName().toLowerCase()
+    def devMachines = ["rafal", "dell"]
+    if (devMachines.find { it -> hostName.contains(it) }) {
         println "dev mode"
         return true
     }
