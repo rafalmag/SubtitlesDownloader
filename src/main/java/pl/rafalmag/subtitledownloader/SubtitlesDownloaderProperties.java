@@ -66,9 +66,10 @@ public class SubtitlesDownloaderProperties {
         }
     }
 
-    @Nullable
-    public File getInitialDir() {
-        return Optional.ofNullable(properties.getProperty(INITIAL_DIR)).map(File::new).orElse(null);
+    public Optional<File> getInitialDir() {
+        return Optional.ofNullable(properties.getProperty(INITIAL_DIR))
+                .map(File::new)
+                .filter(File::isDirectory);
     }
 
     public void setInitialDir(@Nullable File initialDir) {
