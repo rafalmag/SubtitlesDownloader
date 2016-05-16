@@ -160,6 +160,7 @@
 
 	<build>
 		<plugins>
+            <!-- to compile with java 8 -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -169,7 +170,43 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
-			<plugin>
+            <!-- to make an exe file with reference to jar file -->
+            <plugin>
+                <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                <artifactId>launch4j-maven-plugin</artifactId>
+                <configuration>
+                    <dontWrapJar>true</dontWrapJar>
+                    <headerType>gui</headerType>
+                    <jar>subtitlesdownloader-${project.version}.jar</jar>
+                    <outfile>target/SubtitlesDownloader.exe</outfile>
+                    <errTitle>SubtitlesDownloader</errTitle>
+                    <chdir>.</chdir>
+                    <priority>normal</priority>
+                    <downloadUrl>http://java.com/download</downloadUrl>
+                    <supportUrl>https://bitbucket.org/rafalmag/subtitlesdownloader/</supportUrl>
+                    <stayAlive>false</stayAlive>
+                    <restartOnCrash>false</restartOnCrash>
+                    <icon>src/main/resources/icon2.ico</icon>
+                    <jre>
+                        <bundledJre64Bit>false</bundledJre64Bit>
+                        <bundledJreAsFallback>false</bundledJreAsFallback>
+                        <minVersion>1.8.0</minVersion>
+                        <jdkPreference>preferJre</jdkPreference>
+                        <runtimeBits>64/32</runtimeBits>
+                    </jre>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>l4j-clui</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>launch4j</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- to make fat jar -->
+            <plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
 					<archive>
