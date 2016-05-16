@@ -5,7 +5,7 @@
 #define MyAppVersion "1.4.0"
 #define MyAppPublisher "Rafal Magda"
 #define MyAppURL "https://bitbucket.org/rafalmag/subtitlesdownloader/"
-#define MyAppExeName "subtitlesDownloader.bat"
+#define MyAppExeName "SubtitlesDownloader.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -38,6 +38,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "..\subtitlesDownloader.bat"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\target\SubtitlesDownloader.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\target\subtitlesdownloader-1.3.6-SNAPSHOT.jar"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\src\main\resources\icon16.png"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\src\main\resources\icon2.ico"; DestDir: "{app}"; Flags: ignoreversion
@@ -47,7 +48,7 @@ Source: "..\src\main\resources\icon64.png"; DestDir: "{app}"; Flags: ignoreversi
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
-Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\icon2.ico"; IconIndex: 0
+Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"; IconFilename: "{app}\icon2.ico"; IconIndex: 0
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
 Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\icon2.ico"; IconIndex: 0; Tasks: desktopicon
 
@@ -57,6 +58,38 @@ Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChang
 [CustomMessages]
 english.JreMissing=Oracle Java v1.8 or newer not found in the system. Java 1.8 or later is required to run this application (can be installed after this installation too). Do you want to continue?
 polish.JreMissing=Oracle Java v1.8 lub nowsza nie została znaleziona. Java 1.8 lub nowsza jest wymagana przez tą aplikację (może być zainstalowana zaraz po). Czy chcesz kontynować?
+english.shellMenu=Find subtitles with SubtitlesDownloader
+polish.shellMenu=Znajdź napisy z SubtitlesDownloader
+
+[Registry]
+Root: "HKCR"; Subkey: "SystemFileAssociations\.asf\shell\subtitlesdownloader"; ValueType: string; ValueData: "{cm:shellMenu}"; Flags: createvalueifdoesntexist deletekey deletevalue
+Root: "HKCR"; Subkey: "SystemFileAssociations\.asf\shell\subtitlesdownloader\command"; ValueType: string; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Flags: createvalueifdoesntexist deletekey deletevalue
+Root: "HKCR"; Subkey: "SystemFileAssociations\.avi\shell\subtitlesdownloader"; ValueType: string; ValueData: "{cm:shellMenu}"; Flags: createvalueifdoesntexist deletekey deletevalue
+Root: "HKCR"; Subkey: "SystemFileAssociations\.avi\shell\subtitlesdownloader\command"; ValueType: string; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Flags: createvalueifdoesntexist deletekey deletevalue
+Root: "HKCR"; Subkey: "SystemFileAssociations\.divx\shell\subtitlesdownloader"; ValueType: string; ValueData: "{cm:shellMenu}"; Flags: createvalueifdoesntexist deletekey deletevalue
+Root: "HKCR"; Subkey: "SystemFileAssociations\.divx\shell\subtitlesdownloader\command"; ValueType: string; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Flags: createvalueifdoesntexist deletekey deletevalue
+Root: "HKCR"; Subkey: "SystemFileAssociations\.mkv\shell\subtitlesdownloader"; ValueType: string; ValueData: "{cm:shellMenu}"; Flags: createvalueifdoesntexist deletekey deletevalue
+Root: "HKCR"; Subkey: "SystemFileAssociations\.mkv\shell\subtitlesdownloader\command"; ValueType: string; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Flags: createvalueifdoesntexist deletekey deletevalue
+Root: "HKCR"; Subkey: "SystemFileAssociations\.mov\shell\subtitlesdownloader"; ValueType: string; ValueData: "{cm:shellMenu}"; Flags: createvalueifdoesntexist deletekey deletevalue
+Root: "HKCR"; Subkey: "SystemFileAssociations\.mov\shell\subtitlesdownloader\command"; ValueType: string; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Flags: createvalueifdoesntexist deletekey deletevalue
+Root: "HKCR"; Subkey: "SystemFileAssociations\.mp4\shell\subtitlesdownloader"; ValueType: string; ValueData: "{cm:shellMenu}"; Flags: createvalueifdoesntexist deletekey deletevalue
+Root: "HKCR"; Subkey: "SystemFileAssociations\.mp4\shell\subtitlesdownloader\command"; ValueType: string; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Flags: createvalueifdoesntexist deletekey deletevalue
+Root: "HKCR"; Subkey: "SystemFileAssociations\.mpeg\shell\subtitlesdownloader"; ValueType: string; ValueData: "{cm:shellMenu}"; Flags: createvalueifdoesntexist deletekey deletevalue
+Root: "HKCR"; Subkey: "SystemFileAssociations\.mpeg\shell\subtitlesdownloader\command"; ValueType: string; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Flags: createvalueifdoesntexist deletekey deletevalue
+Root: "HKCR"; Subkey: "SystemFileAssociations\.mpg\shell\subtitlesdownloader"; ValueType: string; ValueData: "{cm:shellMenu}"; Flags: createvalueifdoesntexist deletekey deletevalue
+Root: "HKCR"; Subkey: "SystemFileAssociations\.mpg\shell\subtitlesdownloader\command"; ValueType: string; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Flags: createvalueifdoesntexist deletekey deletevalue
+Root: "HKCR"; Subkey: "SystemFileAssociations\.ogg\shell\subtitlesdownloader"; ValueType: string; ValueData: "{cm:shellMenu}"; Flags: createvalueifdoesntexist deletekey deletevalue
+Root: "HKCR"; Subkey: "SystemFileAssociations\.ogg\shell\subtitlesdownloader\command"; ValueType: string; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Flags: createvalueifdoesntexist deletekey deletevalue
+Root: "HKCR"; Subkey: "SystemFileAssociations\.ogm\shell\subtitlesdownloader"; ValueType: string; ValueData: "{cm:shellMenu}"; Flags: createvalueifdoesntexist deletekey deletevalue
+Root: "HKCR"; Subkey: "SystemFileAssociations\.ogm\shell\subtitlesdownloader\command"; ValueType: string; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Flags: createvalueifdoesntexist deletekey deletevalue
+Root: "HKCR"; Subkey: "SystemFileAssociations\.ogv\shell\subtitlesdownloader"; ValueType: string; ValueData: "{cm:shellMenu}"; Flags: createvalueifdoesntexist deletekey deletevalue
+Root: "HKCR"; Subkey: "SystemFileAssociations\.ogv\shell\subtitlesdownloader\command"; ValueType: string; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Flags: createvalueifdoesntexist deletekey deletevalue
+Root: "HKCR"; Subkey: "SystemFileAssociations\.rm\shell\subtitlesdownloader"; ValueType: string; ValueData: "{cm:shellMenu}"; Flags: createvalueifdoesntexist deletekey deletevalue
+Root: "HKCR"; Subkey: "SystemFileAssociations\.rm\shell\subtitlesdownloader\command"; ValueType: string; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Flags: createvalueifdoesntexist deletekey deletevalue
+Root: "HKCR"; Subkey: "SystemFileAssociations\.rmvb\shell\subtitlesdownloader"; ValueType: string; ValueData: "{cm:shellMenu}"; Flags: createvalueifdoesntexist deletekey deletevalue
+Root: "HKCR"; Subkey: "SystemFileAssociations\.rmvb\shell\subtitlesdownloader\command"; ValueType: string; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Flags: createvalueifdoesntexist deletekey deletevalue
+Root: "HKCR"; Subkey: "SystemFileAssociations\.wmv\shell\subtitlesdownloader"; ValueType: string; ValueData: "{cm:shellMenu}"; Flags: createvalueifdoesntexist deletekey deletevalue
+Root: "HKCR"; Subkey: "SystemFileAssociations\.wmv\shell\subtitlesdownloader\command"; ValueType: string; ValueData: """{app}\{#MyAppExeName}"" ""%1"""; Flags: createvalueifdoesntexist deletekey deletevalue
 
 [Code]
 function InitializeSetup(): Boolean;
