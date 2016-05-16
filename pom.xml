@@ -3,7 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>pl.rafalmag</groupId>
 	<artifactId>subtitlesdownloader</artifactId>
-	<version>1.3.6-SNAPSHOT</version>
+    <!-- should be in sync with ./innoSetup/innoSetupScript.iss MyAppVersion value -->
+    <version>1.4.0-SNAPSHOT</version>
 	<name>Subtitles Downloader</name>
 
 	<dependencies>

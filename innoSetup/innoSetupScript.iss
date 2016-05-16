@@ -2,6 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "SubtitlesDownloader"
+; should be in sync with maven pom file!
 #define MyAppVersion "1.4.0"
 #define MyAppPublisher "Rafal Magda"
 #define MyAppURL "https://bitbucket.org/rafalmag/subtitlesdownloader/"
@@ -37,9 +38,8 @@ Name: "polish"; MessagesFile: "compiler:Languages\Polish.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "..\subtitlesDownloader.bat"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\target\SubtitlesDownloader.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\target\subtitlesdownloader-1.3.6-SNAPSHOT.jar"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\target\subtitlesdownloader-{#MyAppVersion}-SNAPSHOT.jar"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\src\main\resources\icon16.png"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\src\main\resources\icon2.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\src\main\resources\icon24.png"; DestDir: "{app}"; Flags: ignoreversion
