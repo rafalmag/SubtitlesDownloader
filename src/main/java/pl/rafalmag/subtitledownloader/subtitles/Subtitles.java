@@ -8,7 +8,7 @@ import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResu
 
 public class Subtitles implements Comparable<Subtitles> {
 
-    public static final Subtitles DUMMY_SUBTITLES = new Subtitles("", 0,"") {
+    public static final Subtitles DUMMY_SUBTITLES = new Subtitles("", 0, "") {
         @Override
         public String toString() {
             return "";
@@ -23,8 +23,12 @@ public class Subtitles implements Comparable<Subtitles> {
     public Subtitles(SearchSubtitlesResult result) {
         setFileName(result.getSubFileName());
         setDownloadsCount(Integer.parseInt(result.getSubDownloadsCnt()));
-        setDownloadLink(result.getSubDownloadLink());
+        setDownloadLink(transformToHttps(result.getSubDownloadLink()));
         setSource(result.getSource());
+    }
+
+    private static String transformToHttps(String subDownloadLink) {
+        return subDownloadLink.replaceFirst("http://dl\\.", "https://api.");
     }
 
     public Subtitles(String fileName, int downloadsCount, String source) {

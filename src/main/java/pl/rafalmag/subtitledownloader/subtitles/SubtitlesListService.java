@@ -74,8 +74,7 @@ public class SubtitlesListService {
                 return null;
             }
         };
-        progressBar.progressProperty().bind(
-                task.progressProperty());
+        progressBar.progressProperty().bind(task.progressProperty());
         EXECUTOR.submit(task);
     }
 
