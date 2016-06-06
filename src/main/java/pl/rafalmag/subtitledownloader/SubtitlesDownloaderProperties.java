@@ -1,6 +1,7 @@
 package pl.rafalmag.subtitledownloader;
 
 import com.google.common.base.Strings;
+import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.rafalmag.subtitledownloader.entities.InterfaceLanguage;
@@ -48,7 +49,7 @@ public class SubtitlesDownloaderProperties {
     private SubtitleLanguageSerializer subtitleLanguageSerializer;
 
     public SubtitlesDownloaderProperties() {
-        File propertiesFile = new File(PROPERTIES_FILE_NAME);
+        File propertiesFile = getPropertiesFile();
         if (propertiesFile.isFile()) {
             try (FileInputStream stream = new FileInputStream(propertiesFile)) {
                 properties.load(stream);
@@ -59,11 +60,24 @@ public class SubtitlesDownloaderProperties {
     }
 
     private void store() {
-        try (FileOutputStream stream = new FileOutputStream(PROPERTIES_FILE_NAME)) {
+        File propertiesFile = getPropertiesFile();
+        try (FileOutputStream stream = new FileOutputStream(propertiesFile)) {
             properties.store(stream, "Subtitle Downloader properties");
         } catch (IOException e) {
             LOG.error("Could not store properties, because of " + e.getMessage(), e);
         }
+    }
+
+    private File getPropertiesFile() {
+        if (SystemUtils.IS_OS_WINDOWS) {
+            File appDataDirectory = new File(System.getenv("APPDATA"));
+            if (appDataDirectory.isDirectory()) {
+                return new File(appDataDirectory, PROPERTIES_FILE_NAME);
+            } else {
+                LOG.warn("%APPDATA% is not a directory");
+            }
+        }
+        return new File(PROPERTIES_FILE_NAME);
     }
 
     public Optional<File> getInitialDir() {
