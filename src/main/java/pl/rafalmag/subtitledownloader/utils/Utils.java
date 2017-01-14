@@ -1,8 +1,11 @@
 package pl.rafalmag.subtitledownloader.utils;
 
 import com.google.common.collect.Lists;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pl.rafalmag.subtitledownloader.opensubtitles.SessionException;
 
 import java.util.Collection;
 import java.util.List;
@@ -49,6 +52,15 @@ public class Utils {
                 }
             } catch (ExecutionException e) {
                 Throwable cause = e.getCause();
+                if (cause instanceof SessionException) {
+                    Platform.runLater(() -> {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error");
+                        alert.setHeaderText(null);
+                        alert.setContentText(cause.getMessage());
+                        alert.showAndWait();
+                    });
+                }
                 LOGGER.error("Exception in task: " + cause.getMessage(), cause);
             }
             if (timeout.isReached()) {
