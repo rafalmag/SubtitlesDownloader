@@ -3,15 +3,19 @@ package pl.rafalmag.subtitledownloader.gui;
 import javafx.beans.binding.BooleanBinding;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
+import pl.rafalmag.subtitledownloader.SubtitlesDownloaderProperties;
 import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
 import pl.rafalmag.subtitledownloader.subtitles.DownloaderTask;
 import pl.rafalmag.subtitledownloader.subtitles.SelectSubtitlesProperties;
 import pl.rafalmag.subtitledownloader.subtitles.Subtitles;
+import pl.rafalmag.subtitledownloader.title.Movie;
+import pl.rafalmag.subtitledownloader.title.SelectTitleProperties;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -59,6 +63,13 @@ public class FXMLMainDownloadAndTestTabTabController implements Initializable {
     @Inject
     private SelectSubtitlesProperties selectSubtitlesProperties;
 
+    @Inject
+    private SelectTitleProperties selectTitleProperties;
+
+    // FIXME temp hack
+    @Inject
+    private SubtitlesDownloaderProperties subtitlesDownloaderProperties;
+
     private ResourceBundle resources;
 
     @Override
@@ -70,8 +81,9 @@ public class FXMLMainDownloadAndTestTabTabController implements Initializable {
     }
 
     private void initDownloadButton() {
-        final BooleanBinding disabledDownloadProperty = selectSubtitlesProperties.selectedSubtitlesProperty()
-                .isEqualTo(Subtitles.DUMMY_SUBTITLES);
+        final BooleanBinding disabledDownloadProperty =
+                selectSubtitlesProperties.selectedSubtitlesProperty().isEqualTo(Subtitles.DUMMY_SUBTITLES)
+                        .or(selectTitleProperties.selectedMovieProperty().isEqualTo(Movie.DUMMY_MOVIE));
         download.disableProperty().bind(disabledDownloadProperty);
         downloadAndtest.disableProperty().bind(disabledDownloadProperty);
 
@@ -99,7 +111,8 @@ public class FXMLMainDownloadAndTestTabTabController implements Initializable {
 
     private void initMarkValid() {
         // TODO mark valid
-        markValid.disableProperty().set(true);
+        markValid.disableProperty().setValue(true);
+//        markValid.disableProperty().bind(download.disableProperty());
     }
 
     @FXML
@@ -130,6 +143,13 @@ public class FXMLMainDownloadAndTestTabTabController implements Initializable {
     @FXML
     protected void markValid() {
         LOG.trace("markValid");
+        if (subtitlesDownloaderProperties.getLoginAndPassword().equals(SubtitlesDownloaderProperties.ANONYMOUS)) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning");
+            alert.setHeaderText(null);
+            alert.setContentText("Please login before using this button");
+            alert.showAndWait();
+        }
         // TODO
         // http://trac.opensubtitles.org/projects/opensubtitles/wiki/XMLRPC#TryUploadSubtitles
     }
