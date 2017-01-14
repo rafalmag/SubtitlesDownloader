@@ -14,7 +14,6 @@ import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
 import pl.rafalmag.subtitledownloader.subtitles.DownloaderTask;
 import pl.rafalmag.subtitledownloader.subtitles.SelectSubtitlesProperties;
 import pl.rafalmag.subtitledownloader.subtitles.Subtitles;
-import pl.rafalmag.subtitledownloader.title.Movie;
 import pl.rafalmag.subtitledownloader.title.SelectTitleProperties;
 
 import javax.inject.Inject;
@@ -81,9 +80,8 @@ public class FXMLMainDownloadAndTestTabTabController implements Initializable {
     }
 
     private void initDownloadButton() {
-        final BooleanBinding disabledDownloadProperty =
-                selectSubtitlesProperties.selectedSubtitlesProperty().isEqualTo(Subtitles.DUMMY_SUBTITLES)
-                        .or(selectTitleProperties.selectedMovieProperty().isEqualTo(Movie.DUMMY_MOVIE));
+        final BooleanBinding disabledDownloadProperty = selectSubtitlesProperties.selectedSubtitlesProperty()
+                .isEqualTo(Subtitles.DUMMY_SUBTITLES);
         download.disableProperty().bind(disabledDownloadProperty);
         downloadAndtest.disableProperty().bind(disabledDownloadProperty);
 

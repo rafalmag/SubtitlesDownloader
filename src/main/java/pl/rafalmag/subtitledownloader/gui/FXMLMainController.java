@@ -20,8 +20,6 @@ import pl.rafalmag.subtitledownloader.RunMeMain;
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderProperties;
 import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
 import pl.rafalmag.subtitledownloader.entities.Theme;
-import pl.rafalmag.subtitledownloader.subtitles.SelectSubtitlesProperties;
-import pl.rafalmag.subtitledownloader.subtitles.Subtitles;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -45,9 +43,6 @@ public class FXMLMainController implements Initializable {
 
     @Inject
     private SelectMovieProperties selectMovieProperties;
-
-    @Inject
-    private SelectSubtitlesProperties selectSubtitlesProperties;
 
     @Inject
     private SubtitlesDownloaderProperties subtitlesDownloaderProperties;
@@ -206,9 +201,6 @@ public class FXMLMainController implements Initializable {
 
     public void selectFile(File file, boolean setInitialDir) {
         if (file != null) {
-            if (!selectMovieProperties.getFile().equals(file)) {
-                selectSubtitlesProperties.setSelectedSubtitles(Subtitles.DUMMY_SUBTITLES);
-            }
             selectMovieProperties.setFile(file);
             if (setInitialDir) {
                 selectMovieProperties.setInitialDir(file.getParentFile());
