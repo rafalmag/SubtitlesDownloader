@@ -4,8 +4,9 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.ByteStreams;
-import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.Hyperlink;
 import org.apache.commons.codec.binary.Base64OutputStream;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -14,6 +15,7 @@ import org.slf4j.Logger;
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderProperties;
 import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
+import pl.rafalmag.subtitledownloader.gui.JavaFxUtils;
 import pl.rafalmag.subtitledownloader.opensubtitles.CheckMovie;
 import pl.rafalmag.subtitledownloader.opensubtitles.CheckMovieSubtitles;
 import pl.rafalmag.subtitledownloader.opensubtitles.Session;
@@ -27,9 +29,16 @@ import pl.rafalmag.subtitledownloader.utils.Utils;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.awt.*;
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -79,7 +88,7 @@ public class SubtitlesService {
         return subtitlesFromOpenSubtitles.stream().map(Subtitles::new).collect(Collectors.toList());
     }
 
-    public Optional<String> uploadSubtitles(UploadSubtitlesTask task, File subtitles) throws SubtitlesDownloaderException {
+    public Optional<Alert> uploadSubtitles(UploadSubtitlesTask task, File subtitles) throws SubtitlesDownloaderException, ExecutionException, InterruptedException {
         String movieFileName = task.getMovieFile().getName();
         String subtitleMd5Hash = md5(subtitles);
         String movieHash = checkMovie.getHashCode(task.getMovieFile());
@@ -95,6 +104,12 @@ public class SubtitlesService {
         task.afterTryUploadSubtitles();
         if (alreadyInDb) {
             LOG.info("Subtitles {} already in OpenSubtitles db", subtitles);
+            return Optional.of(JavaFxUtils.invokeInJavaFxThread(() -> {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Subtitles already present in OpenSubtitles database");
+                alert.setContentText("Subtitles already present in OpenSubtitles database");
+                return alert;
+            }));
         } else {
             String subtitleContent = gzip(subtitles);
             Optional<String> subtitleLanguageId = getSubtitleLanguageId(subtitles, subtitleMd5Hash, subtitleContent);
@@ -103,7 +118,7 @@ public class SubtitlesService {
             if (subtitleLanguageId.isPresent()) {
                 String idMovieImdb = Integer.toString(task.getMovie().getImdbId());
                 String movieReleaseName = FilenameUtils.getBaseName(movieFileName);
-                return session.uploadSubtitles(
+                Optional<String> url = session.uploadSubtitles(
                         idMovieImdb,
                         movieReleaseName,
                         subtitleLanguageId.get(),
@@ -113,11 +128,37 @@ public class SubtitlesService {
                         movieSizeByte,
                         movieFileName,
                         subtitleContent);
+                if (url.isPresent()) {
+                    return Optional.of(JavaFxUtils.invokeInJavaFxThread(() -> {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("New subtitles uploaded");
+                        alert.setContentText("New subtitles uploaded");
+                        Hyperlink hyperlink = new Hyperlink(url.get());
+                        hyperlink.setOnAction(event -> {
+                            try {
+                                URI uri = new URI(hyperlink.getText());
+                                Desktop.getDesktop().browse(uri);
+                            } catch (IOException | URISyntaxException e) {
+                                LOG.error("Could not open url, because of " + e.getMessage(), e);
+                            }
+                        });
+                        alert.getDialogPane().setExpanded(true);
+                        alert.getDialogPane().setExpandableContent(hyperlink);
+                        return alert;
+                    }));
+                } else {
+                    return Optional.of(JavaFxUtils.invokeInJavaFxThread(() -> {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Subtitles already present in OpenSubtitles database");
+                        alert.setContentText("Subtitles already present in OpenSubtitles database");
+                        return alert;
+                    }));
+                }
             } else {
                 LOG.info("Selecting language for subtitles {} aborted", subtitles);
+                return Optional.empty();
             }
         }
-        return Optional.empty();
     }
 
     private Optional<String> getSubtitleLanguageId(File subtitles, String subtitleMd5Hash, String subtitleContent) throws SubtitlesDownloaderException {
@@ -129,7 +170,7 @@ public class SubtitlesService {
             return Optional.of(subtitleLanguageIdSetInUI);
         } else {
             LOG.debug("subtitleLanguageIdSetInUI {} and subtitlesDetectedLanguage {} does not match", subtitlesDetectedLanguage, subtitleLanguageIdSetInUI);
-            final FutureTask<Optional<SubtitleLanguage>> query = new FutureTask<>(() -> {
+            Optional<SubtitleLanguage> subtitleLanguage = JavaFxUtils.invokeInJavaFxThread(() -> {
                 List<SubtitleLanguage> subLanguages = session.getSubLanguages();
                 SubtitleLanguage defaultValue = subLanguages
                         .stream()
@@ -142,14 +183,8 @@ public class SubtitlesService {
                 dialog.setContentText("Language:");
                 return dialog.showAndWait();
             });
-            Platform.runLater(query);
-            try {
-                Optional<SubtitleLanguage> subtitleLanguage = query.get();
-                LOG.debug("Chosen subtitles language {}", subtitleLanguage);
-                return subtitleLanguage.map(SubtitleLanguage::getId);
-            } catch (InterruptedException | ExecutionException e) {
-                throw new IllegalStateException("Could not get subtitle language from choice dialog, because of " + e.getMessage(), e);
-            }
+            LOG.debug("Chosen subtitles language {}", subtitleLanguage);
+            return subtitleLanguage.map(SubtitleLanguage::getId);
         }
     }
 

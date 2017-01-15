@@ -7,21 +7,15 @@ import javafx.beans.property.BooleanProperty;
 import javafx.concurrent.Task;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceDialog;
-import javafx.scene.control.Hyperlink;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
+import pl.rafalmag.subtitledownloader.gui.JavaFxUtils;
 import pl.rafalmag.subtitledownloader.title.Movie;
 
-import java.awt.*;
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
 import java.util.stream.Collectors;
 
 public class UploadSubtitlesTask extends Task<Void> {
@@ -63,31 +57,22 @@ public class UploadSubtitlesTask extends Task<Void> {
     @Override
     protected Void call() {
         updateProgress(0, DONE);
-        Optional<File> subtitles = getSubtitlesFile();
-        updateProgress(STEP_SUBTITLES_SELECTED, DONE);
         try {
+            Optional<File> subtitles = getSubtitlesFile();
+            updateProgress(STEP_SUBTITLES_SELECTED, DONE);
             if (subtitles.isPresent()) {
-                Optional<String> urlToNewSubtitles = subtitlesService.uploadSubtitles(this, subtitles.get());
-                urlToNewSubtitles.ifPresent(url -> Platform.runLater(() -> {
-                    Alert alert2 = new Alert(Alert.AlertType.INFORMATION);
-                    alert2.setTitle("New subtitles uploaded");
-                    alert2.setContentText("New subtitles uploaded");
-                    Hyperlink hyperlink = new Hyperlink(url);
-                    hyperlink.setOnAction(event -> {
-                        try {
-                            URI uri = new URI(hyperlink.getText());
-                            Desktop.getDesktop().browse(uri);
-                        } catch (IOException | URISyntaxException e) {
-                            LOGGER.error("Could not open url, because of " + e.getMessage(), e);
-                        }
-                    });
-                    alert2.getDialogPane().setExpanded(true);
-                    alert2.getDialogPane().setExpandableContent(hyperlink);
-                    alert2.showAndWait();
-                }));
+                Optional<Alert> alertOptional = subtitlesService.uploadSubtitles(this, subtitles.get());
+                alertOptional.ifPresent(alert -> Platform.runLater(alert::showAndWait));
+            } else {
+                Platform.runLater(() -> {
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("No local subtitles found for selected movie file");
+                    alert.setContentText("No local subtitles found for selected movie file");
+                    alert.showAndWait();
+                });
             }
-        } catch (SubtitlesDownloaderException e) {
-            String message = "Could not upload subtitles " + subtitles + ", because of " + e.getMessage();
+        } catch (Exception e) {
+            String message = "Could not upload subtitles for movie " + movieFile.getName() + ", because of " + e.getMessage();
             LOGGER.error(message, e);
             Platform.runLater(() -> {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -102,7 +87,7 @@ public class UploadSubtitlesTask extends Task<Void> {
         return null;
     }
 
-    private Optional<File> getSubtitlesFile() {
+    private Optional<File> getSubtitlesFile() throws SubtitlesDownloaderException {
         String movieBaseName = FilenameUtils.getBaseName(movieFile.getAbsolutePath());
         File folder = movieFile.getParentFile();
         File[] subtitles = folder.listFiles(file -> {
@@ -120,7 +105,7 @@ public class UploadSubtitlesTask extends Task<Void> {
             throw new IllegalStateException(folder + " must be a directory");
         }
         if (subtitles.length == 0) {
-            LOGGER.debug("No local subtitles found for " + movieFile);
+            LOGGER.debug("No local subtitles found for " + movieFile.getName());
             return Optional.empty();
         } else if (subtitles.length == 1) {
             LOGGER.debug("Found single subtitle {}", subtitles[0]);
@@ -131,24 +116,19 @@ public class UploadSubtitlesTask extends Task<Void> {
         }
     }
 
-    private Optional<File> choseSubtitlesFile(File[] subtitles) {
+    private Optional<File> choseSubtitlesFile(File[] subtitles) throws SubtitlesDownloaderException {
         Map<String, File> map = Arrays.stream(subtitles).collect(Collectors.toMap(File::getName, f -> f));
         String defaultValue = map.keySet().stream().min(Comparator.comparing(String::length)).get();
-        final FutureTask<Optional<String>> query = new FutureTask<>(() -> {
+        Optional<String> subtitlesFile = JavaFxUtils.invokeInJavaFxThread(() -> {
             ChoiceDialog<String> dialog = new ChoiceDialog<>(defaultValue, map.keySet());
             dialog.setTitle("Choose subtitles file");
             dialog.setHeaderText("Choose subtitles for " + movie.getTitle() + " (" + movieFile.getName() + ")");
             dialog.setContentText("Available subtitles:");
             return dialog.showAndWait();
         });
-        Platform.runLater(query);
-        try {
-            Optional<File> file = query.get().map(map::get);
-            LOGGER.debug("Chosen subtitles file {}", file);
-            return file;
-        } catch (InterruptedException | ExecutionException e) {
-            throw new IllegalStateException("Could not get subtitle from choice dialog, because of " + e.getMessage(), e);
-        }
+        Optional<File> file = subtitlesFile.map(map::get);
+        LOGGER.debug("Chosen subtitles file {}", file);
+        return file;
     }
 
     public void afterMovieHash() {

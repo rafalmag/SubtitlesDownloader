@@ -392,7 +392,7 @@ public class Session {
             logInsertToOpenSubtitlesDb(response, alreadyInDb);
             return alreadyInDb;
         } catch (XmlRpcException e) {
-            throw new SubtitlesDownloaderException("could not invoke CheckMovieHash2 because of " + e.getMessage(), e);
+            throw new SubtitlesDownloaderException("could not invoke TryUploadSubtitles because of " + e.getMessage(), e);
         }
     }
 
@@ -464,22 +464,6 @@ public class Session {
                                 .build())
                         .build()
         };
-//        Object[] params = new Object[]{token,
-//                new Object[]{
-//                        ImmutableMap.of("baseinfo", ImmutableMap.builder()
-//                                .put("idmovieimdb", idMovieImdb)
-//                                .put("moviereleasename", movieReleaseName)
-//                                .put("sublanguageid", subtitleLanguageId)
-//                                .build()),
-//                        ImmutableMap.of("cd1", ImmutableMap.builder()
-//                                .put("subhash", subtitleMd5Hash)
-//                                .put("subfilename", subtitleFileName)
-//                                .put("moviehash", movieHash)
-//                                .put("moviebytesize", movieSizeByte.toString())
-//                                .put("moviefilename", movieFileName)
-//                                .put("subcontent", subtitleContent)
-//                                .build())
-//                }};
         try {
             @SuppressWarnings("unchecked")
             Map<String, Object> response = (Map<String, Object>) client.execute("UploadSubtitles", params);
