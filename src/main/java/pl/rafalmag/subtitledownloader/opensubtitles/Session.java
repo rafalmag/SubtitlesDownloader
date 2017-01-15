@@ -347,4 +347,126 @@ public class Session {
             return -1;
         }
     }
+
+    /**
+     * Based on http://trac.opensubtitles.org/projects/opensubtitles/wiki/XMLRPC#TryUploadSubtitles
+     *
+     * @param subtitleMd5Hash
+     * @param subtitleFileName
+     * @param movieHash
+     * @param movieSizeByte
+     * @param movieFileName
+     * @return true if subtitles already in db
+     * @throws SubtitlesDownloaderException
+     */
+    public boolean tryUploadSubtitles(String subtitleMd5Hash,
+                                      String subtitleFileName,
+                                      String movieHash,
+                                      Long movieSizeByte,
+                                      String movieFileName) throws SubtitlesDownloaderException {
+        checkLogin();
+        Object[] params = new Object[]{token,
+                new Object[]{ImmutableMap.of("cd1", ImmutableMap.builder()
+                        .put("subhash", subtitleMd5Hash)
+                        .put("subfilename", subtitleFileName)
+                        .put("moviehash", movieHash)
+                        .put("moviebytesize", movieSizeByte.toString())
+                        .put("moviefilename", movieFileName)
+                        .build())}};
+
+        try {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> response = (Map<String, Object>) client.execute("TryUploadSubtitles", params);
+            LOG.debug("TryUploadSubtitles response: " + response);
+            String status = (String) response.get("status");
+            if (!status.contains("OK")) {
+                throw new SubtitlesDownloaderException("could not TryUploadSubtitles because of wrong status " + status);
+            }
+            boolean alreadyInDb = "1".equals(((String) response.get("alreadyindb")).trim());
+            logInsertToOpenSubtitlesDb(response, alreadyInDb);
+            return alreadyInDb;
+        } catch (XmlRpcException e) {
+            throw new SubtitlesDownloaderException("could not invoke CheckMovieHash2 because of " + e.getMessage(), e);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void logInsertToOpenSubtitlesDb(Map<String, Object> response, boolean alreadyInDb) {
+        try {
+            if (alreadyInDb) {
+                if ("0".equals(((Map<String, Object>) response.get("data")).get("MoviefilenameWasAlreadyInDb"))) {
+                    LOG.info("New moviefilename was inserted to OpenSubtitles database!");
+                }
+                if ("0".equals(((Map<String, Object>) response.get("data")).get("HashWasAlreadyInDb"))) {
+                    LOG.info("New MovieHash was inserted to OpenSubtitles database!");
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Something went wrong when tried to parse tryUploadSubtitles response, because of " + e.getMessage(), e);
+        }
+    }
+
+    // http://trac.opensubtitles.org/projects/opensubtitles/wiki/XMLRPC#UploadSubtitles
+    public void uploadSubtitles(String idMovieImdb,
+                                String movieReleaseName,
+                                String subtitleLanguageId,
+                                String subtitleMd5Hash,
+                                String subtitleFileName,
+                                String movieHash,
+                                Long movieSizeByte,
+                                String movieFileName,
+                                String subtitleContent) throws SubtitlesDownloaderException {
+        checkLogin();
+        // ( $token,
+        // array(
+        // 'baseinfo' => array (
+        //      'idmovieimdb' => $idmovieimdb,
+        //      'moviereleasename' => $scene_releasename,
+        //      'movieaka' => $aka_in_subtitle_language,
+        //      'sublanguageid' => $sublanguageid,
+        //      'subauthorcomment' => $author_comment,
+        //      'hearingimpaired' => $hearing_impaired,
+        //      'highdefinition' => $high_definition,
+        //      'automatictranslation' => $automatic_translation,
+        //      'subtranslator' => $who_translated_subtitles,
+        //      'foreignpartsonly' => $foreign_parts_only),
+        // 'cd1' => array(
+        //      'subhash' => $md5subhash,
+        //      'subfilename' => $subfilename,
+        //      'moviehash' => $moviehash,
+        //      'moviebytesize' => $moviebytesize,
+        //      'movietimems' => $movietimems,
+        //      'moviefps' => $moviefps,
+        //      'movieframes' => $movieframes,
+        //      'moviefilename' => $moviefilename,
+        //      'subcontent' => $subtitlecontent ),
+        // 'cd2' => array (...) ) )
+        Object[] params = new Object[]{token,
+                new Object[]{
+                        ImmutableMap.of("baseinfo", ImmutableMap.builder()
+                                .put("idmovieimdb", idMovieImdb)
+                                .put("moviereleasename", movieReleaseName)
+                                .put("sublanguageid", subtitleLanguageId)
+                                .build()),
+                        ImmutableMap.of("cd1", ImmutableMap.builder()
+                                .put("subhash", subtitleMd5Hash)
+                                .put("subfilename", subtitleFileName)
+                                .put("moviehash", movieHash)
+                                .put("moviebytesize", movieSizeByte.toString())
+                                .put("moviefilename", movieFileName)
+                                .put("subcontent", subtitleContent)
+                                .build())
+                }};
+        try {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> response = (Map<String, Object>) client.execute("UploadSubtitles", params);
+            LOG.debug("UploadSubtitles response: " + response);
+            String status = (String) response.get("status");
+            if (!status.contains("OK")) {
+                throw new SubtitlesDownloaderException("could not UploadSubtitles because of wrong status " + status);
+            }
+        } catch (XmlRpcException e) {
+            throw new SubtitlesDownloaderException("could not invoke UploadSubtitles because of " + e.getMessage(), e);
+        }
+    }
 }
