@@ -14,6 +14,8 @@ import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
 import pl.rafalmag.subtitledownloader.subtitles.DownloaderTask;
 import pl.rafalmag.subtitledownloader.subtitles.SelectSubtitlesProperties;
 import pl.rafalmag.subtitledownloader.subtitles.Subtitles;
+import pl.rafalmag.subtitledownloader.subtitles.UploadSubtitlesTask;
+import pl.rafalmag.subtitledownloader.title.Movie;
 import pl.rafalmag.subtitledownloader.title.SelectTitleProperties;
 
 import javax.inject.Inject;
@@ -109,8 +111,8 @@ public class FXMLMainDownloadAndTestTabTabController implements Initializable {
 
     private void initMarkValid() {
         // TODO mark valid
-        markValid.disableProperty().setValue(true);
-//        markValid.disableProperty().bind(download.disableProperty());
+//        markValid.disableProperty().setValue(true);
+        markValid.disableProperty().bind(selectTitleProperties.selectedMovieProperty().isEqualTo(Movie.DUMMY_MOVIE));
     }
 
     @FXML
@@ -148,8 +150,12 @@ public class FXMLMainDownloadAndTestTabTabController implements Initializable {
             alert.setContentText("Please login before using this button");
             alert.showAndWait();
         }
-        // TODO
-        // http://trac.opensubtitles.org/projects/opensubtitles/wiki/XMLRPC#TryUploadSubtitles
+        File movieFile = selectMovieProperties.getFile();
+        UploadSubtitlesTask uploadSubtitles = new UploadSubtitlesTask(selectTitleProperties.getSelectedMovie(), movieFile,
+                fxmlMainController.progressBar.disableProperty());
+        fxmlMainController.progressBar.progressProperty().bind(uploadSubtitles.progressProperty());
+
+        EXECUTOR.submit(uploadSubtitles);
     }
 
     @FXML
