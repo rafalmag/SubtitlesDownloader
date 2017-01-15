@@ -179,7 +179,7 @@ public class SubtitlesService {
                         .orElse(subtitlesLanguageSetInUI);
                 ChoiceDialog<SubtitleLanguage> dialog = new ChoiceDialog<>(defaultValue, subLanguages);
                 dialog.setTitle("Choose subtitles language");
-                dialog.setHeaderText("Choose subtitles language for " + subtitles);
+                dialog.setHeaderText("Choose subtitles language for " + subtitles.getName());
                 dialog.setContentText("Language:");
                 return dialog.showAndWait();
             });
