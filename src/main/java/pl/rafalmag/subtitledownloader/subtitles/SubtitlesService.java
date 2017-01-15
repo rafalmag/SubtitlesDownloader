@@ -4,6 +4,8 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 import com.google.common.io.ByteStreams;
+import javafx.application.Platform;
+import javafx.scene.control.ChoiceDialog;
 import org.apache.commons.codec.binary.Base64OutputStream;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -16,18 +18,18 @@ import pl.rafalmag.subtitledownloader.opensubtitles.CheckMovie;
 import pl.rafalmag.subtitledownloader.opensubtitles.CheckMovieSubtitles;
 import pl.rafalmag.subtitledownloader.opensubtitles.Session;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
+import pl.rafalmag.subtitledownloader.opensubtitles.entities.SubtitleLanguage;
 import pl.rafalmag.subtitledownloader.title.Movie;
 import pl.rafalmag.subtitledownloader.utils.NamedCallable;
 import pl.rafalmag.subtitledownloader.utils.ProgressCallback;
 import pl.rafalmag.subtitledownloader.utils.Utils;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -89,22 +91,61 @@ public class SubtitlesService {
                 movieHash,
                 movieSizeByte,
                 movieFileName);
-        if (!alreadyInDb) {
-            // TODO DetectLanguage to verify if their lang matches subtitles language from application
-            String idMovieImdb = Integer.toString(movie.getImdbId());
-            String movieReleaseName = FilenameUtils.getBaseName(movieFileName);
-            String subtitleLanguageId = subtitlesDownloaderProperties.getSubtitlesLanguage().getId();
+        if (alreadyInDb) {
+            LOG.info("Subtitles {} already in OpenSubtitles db", subtitles);
+        } else {
             String subtitleContent = gzip(subtitles);
-            session.uploadSubtitles(
-                    idMovieImdb,
-                    movieReleaseName,
-                    subtitleLanguageId,
-                    subtitleMd5Hash,
-                    subtitleFileName,
-                    movieHash,
-                    movieSizeByte,
-                    movieFileName,
-                    subtitleContent);
+            Optional<String> subtitleLanguageId = getSubtitleLanguageId(subtitles, subtitleMd5Hash, subtitleContent);
+            LOG.debug("SubtitleLanguageId = {} for subtitles {}", subtitleLanguageId, subtitles);
+            if (subtitleLanguageId.isPresent()) {
+                String idMovieImdb = Integer.toString(movie.getImdbId());
+                String movieReleaseName = FilenameUtils.getBaseName(movieFileName);
+                session.uploadSubtitles(
+                        idMovieImdb,
+                        movieReleaseName,
+                        subtitleLanguageId.get(),
+                        subtitleMd5Hash,
+                        subtitleFileName,
+                        movieHash,
+                        movieSizeByte,
+                        movieFileName,
+                        subtitleContent);
+            } else {
+                LOG.info("Selecting language for subtitles {} aborted", subtitles);
+            }
+        }
+    }
+
+    private Optional<String> getSubtitleLanguageId(File subtitles, String subtitleMd5Hash, String subtitleContent) throws SubtitlesDownloaderException {
+        @Nullable
+        String subtitlesDetectedLanguage = session.detectLanguage(subtitleContent, subtitleMd5Hash);
+        SubtitleLanguage subtitlesLanguageSetInUI = subtitlesDownloaderProperties.getSubtitlesLanguage();
+        String subtitleLanguageIdSetInUI = subtitlesLanguageSetInUI.getId();
+        if (subtitleLanguageIdSetInUI.equals(subtitlesDetectedLanguage)) {
+            return Optional.of(subtitleLanguageIdSetInUI);
+        } else {
+            LOG.debug("subtitleLanguageIdSetInUI {} and subtitlesDetectedLanguage {} does not match", subtitlesDetectedLanguage, subtitleLanguageIdSetInUI);
+            final FutureTask<Optional<SubtitleLanguage>> query = new FutureTask<>(() -> {
+                List<SubtitleLanguage> subLanguages = session.getSubLanguages();
+                SubtitleLanguage defaultValue = subLanguages
+                        .stream()
+                        .filter(l -> l.getId().equals(subtitlesDetectedLanguage))
+                        .findFirst()
+                        .orElse(subtitlesLanguageSetInUI);
+                ChoiceDialog<SubtitleLanguage> dialog = new ChoiceDialog<>(defaultValue, subLanguages);
+                dialog.setTitle("Choose subtitles language");
+                dialog.setHeaderText("Choose subtitles language for " + subtitles);
+                dialog.setContentText("Language:");
+                return dialog.showAndWait();
+            });
+            Platform.runLater(query);
+            try {
+                Optional<SubtitleLanguage> subtitleLanguage = query.get();
+                LOG.debug("Chosen subtitles language {}", subtitleLanguage);
+                return subtitleLanguage.map(SubtitleLanguage::getId);
+            } catch (InterruptedException | ExecutionException e) {
+                throw new IllegalStateException("Could not get subtitle language from choice dialog, because of " + e.getMessage(), e);
+            }
         }
     }
 

@@ -4,6 +4,7 @@ import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
@@ -18,6 +19,7 @@ import pl.rafalmag.subtitledownloader.opensubtitles.entities.SubtitleLanguage;
 import pl.rafalmag.subtitledownloader.title.Movie;
 import pl.rafalmag.subtitledownloader.title.TitleUtils;
 
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
 import javax.inject.Inject;
@@ -222,6 +224,7 @@ public class Session {
             LOG.debug("SearchSubtitles response: " + execute);
             String status = (String) execute.get("status");
             if (!status.contains("OK")) {
+                checkUnauthorized(status);
                 throw new SubtitlesDownloaderException("could not SearchSubtitles because of wrong status " + status);
             }
 
@@ -256,6 +259,7 @@ public class Session {
             LOG.debug("CheckMovieHash2 response: " + response);
             String status = (String) response.get("status");
             if (!status.contains("OK")) {
+                checkUnauthorized(status);
                 throw new SubtitlesDownloaderException("could not CheckMovieHash2 because of wrong status " + status);
             }
             return parseData(response);
@@ -302,6 +306,7 @@ public class Session {
             LOG.debug("GuessMovieFromString response: " + execute);
             String status = (String) execute.get("status");
             if (!status.contains("OK")) {
+                checkUnauthorized(status);
                 throw new SubtitlesDownloaderException("could not GuessMovieFromString because of wrong status " + status);
             }
 
@@ -366,13 +371,13 @@ public class Session {
                                       String movieFileName) throws SubtitlesDownloaderException {
         checkLogin();
         Object[] params = new Object[]{token,
-                new Object[]{ImmutableMap.of("cd1", ImmutableMap.builder()
+                ImmutableMap.of("cd1", ImmutableMap.builder()
                         .put("subhash", subtitleMd5Hash)
                         .put("subfilename", subtitleFileName)
                         .put("moviehash", movieHash)
                         .put("moviebytesize", movieSizeByte.toString())
                         .put("moviefilename", movieFileName)
-                        .build())}};
+                        .build())};
 
         try {
             @SuppressWarnings("unchecked")
@@ -380,9 +385,10 @@ public class Session {
             LOG.debug("TryUploadSubtitles response: " + response);
             String status = (String) response.get("status");
             if (!status.contains("OK")) {
+                checkUnauthorized(status);
                 throw new SubtitlesDownloaderException("could not TryUploadSubtitles because of wrong status " + status);
             }
-            boolean alreadyInDb = "1".equals(((String) response.get("alreadyindb")).trim());
+            boolean alreadyInDb = BooleanUtils.toBoolean((int) response.get("alreadyindb"));
             logInsertToOpenSubtitlesDb(response, alreadyInDb);
             return alreadyInDb;
         } catch (XmlRpcException e) {
@@ -394,10 +400,10 @@ public class Session {
     private void logInsertToOpenSubtitlesDb(Map<String, Object> response, boolean alreadyInDb) {
         try {
             if (alreadyInDb) {
-                if ("0".equals(((Map<String, Object>) response.get("data")).get("MoviefilenameWasAlreadyInDb"))) {
+                if (0 == (int) ((Map<String, Object>) response.get("data")).get("MoviefilenameWasAlreadyInDb")) {
                     LOG.info("New moviefilename was inserted to OpenSubtitles database!");
                 }
-                if ("0".equals(((Map<String, Object>) response.get("data")).get("HashWasAlreadyInDb"))) {
+                if (0 == (int) ((Map<String, Object>) response.get("data")).get("HashWasAlreadyInDb")) {
                     LOG.info("New MovieHash was inserted to OpenSubtitles database!");
                 }
             }
@@ -407,15 +413,15 @@ public class Session {
     }
 
     // http://trac.opensubtitles.org/projects/opensubtitles/wiki/XMLRPC#UploadSubtitles
-    public void uploadSubtitles(String idMovieImdb,
-                                String movieReleaseName,
-                                String subtitleLanguageId,
-                                String subtitleMd5Hash,
-                                String subtitleFileName,
-                                String movieHash,
-                                Long movieSizeByte,
-                                String movieFileName,
-                                String subtitleContent) throws SubtitlesDownloaderException {
+    public Optional<String> uploadSubtitles(String idMovieImdb,
+                                            String movieReleaseName,
+                                            String subtitleLanguageId,
+                                            String subtitleMd5Hash,
+                                            String subtitleFileName,
+                                            String movieHash,
+                                            Long movieSizeByte,
+                                            String movieFileName,
+                                            String subtitleContent) throws SubtitlesDownloaderException {
         checkLogin();
         // ( $token,
         // array(
@@ -442,13 +448,13 @@ public class Session {
         //      'subcontent' => $subtitlecontent ),
         // 'cd2' => array (...) ) )
         Object[] params = new Object[]{token,
-                new Object[]{
-                        ImmutableMap.of("baseinfo", ImmutableMap.builder()
+                ImmutableMap.builder()
+                        .put("baseinfo", ImmutableMap.builder()
                                 .put("idmovieimdb", idMovieImdb)
                                 .put("moviereleasename", movieReleaseName)
                                 .put("sublanguageid", subtitleLanguageId)
-                                .build()),
-                        ImmutableMap.of("cd1", ImmutableMap.builder()
+                                .build())
+                        .put("cd1", ImmutableMap.builder()
                                 .put("subhash", subtitleMd5Hash)
                                 .put("subfilename", subtitleFileName)
                                 .put("moviehash", movieHash)
@@ -456,17 +462,82 @@ public class Session {
                                 .put("moviefilename", movieFileName)
                                 .put("subcontent", subtitleContent)
                                 .build())
-                }};
+                        .build()
+        };
+//        Object[] params = new Object[]{token,
+//                new Object[]{
+//                        ImmutableMap.of("baseinfo", ImmutableMap.builder()
+//                                .put("idmovieimdb", idMovieImdb)
+//                                .put("moviereleasename", movieReleaseName)
+//                                .put("sublanguageid", subtitleLanguageId)
+//                                .build()),
+//                        ImmutableMap.of("cd1", ImmutableMap.builder()
+//                                .put("subhash", subtitleMd5Hash)
+//                                .put("subfilename", subtitleFileName)
+//                                .put("moviehash", movieHash)
+//                                .put("moviebytesize", movieSizeByte.toString())
+//                                .put("moviefilename", movieFileName)
+//                                .put("subcontent", subtitleContent)
+//                                .build())
+//                }};
         try {
             @SuppressWarnings("unchecked")
             Map<String, Object> response = (Map<String, Object>) client.execute("UploadSubtitles", params);
             LOG.debug("UploadSubtitles response: " + response);
             String status = (String) response.get("status");
             if (!status.contains("OK")) {
+                checkUnauthorized(status);
                 throw new SubtitlesDownloaderException("could not UploadSubtitles because of wrong status " + status);
+            }
+            if (0 == (int) response.get("alreadyindb")) {
+                return Optional.of((String) response.get("data"));
+            } else {
+                return Optional.empty();
             }
         } catch (XmlRpcException e) {
             throw new SubtitlesDownloaderException("could not invoke UploadSubtitles because of " + e.getMessage(), e);
+        }
+    }
+
+    private void checkUnauthorized(String status) throws SubtitlesDownloaderException {
+        if (status.equals("401 Unauthorized")) {
+            noOperation();
+            throw new UnauthorizedSessionException(status);
+        }
+    }
+
+    @Nullable
+    public String detectLanguage(String subtitles, String md5) throws SubtitlesDownloaderException {
+        checkLogin();
+        Object[] params = new Object[]{token, new Object[]{subtitles}};
+        try {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> response = (Map<String, Object>) client.execute("DetectLanguage", params);
+            LOG.debug("DetectLanguage response: " + response);
+            String status = (String) response.get("status");
+            if (!status.contains("OK")) {
+                checkUnauthorized(status);
+                throw new SubtitlesDownloaderException("could not DetectLanguage because of wrong status " + status);
+            }
+            @SuppressWarnings("unchecked")
+            Map<String, String> data = (Map<String, String>) response.get("data");
+            return data.get(md5);
+        } catch (XmlRpcException e) {
+            throw new SubtitlesDownloaderException("could not invoke DetectLanguage because of " + e.getMessage(), e);
+        }
+    }
+
+    public void noOperation() throws SubtitlesDownloaderException {
+        Object[] params = {token};
+        try {
+            Map<String, Object> response = (Map<String, Object>) client.execute("NoOperation", params);
+            String status = (String) response.get("status");
+            if (!status.contains("OK")) {
+                LOG.debug("Session invalid, have to login again");
+                login();
+            }
+        } catch (XmlRpcException e) {
+            throw new SubtitlesDownloaderException("could not invoke NoOperation because of " + e.getMessage(), e);
         }
     }
 }

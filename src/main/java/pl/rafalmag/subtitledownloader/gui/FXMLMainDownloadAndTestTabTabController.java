@@ -9,12 +9,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderProperties;
-import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
-import pl.rafalmag.subtitledownloader.subtitles.DownloaderTask;
-import pl.rafalmag.subtitledownloader.subtitles.SelectSubtitlesProperties;
-import pl.rafalmag.subtitledownloader.subtitles.Subtitles;
-import pl.rafalmag.subtitledownloader.subtitles.UploadSubtitlesTask;
+import pl.rafalmag.subtitledownloader.subtitles.*;
 import pl.rafalmag.subtitledownloader.title.Movie;
 import pl.rafalmag.subtitledownloader.title.SelectTitleProperties;
 
@@ -31,13 +28,14 @@ import java.util.concurrent.Executors;
 
 @Singleton
 public class FXMLMainDownloadAndTestTabTabController implements Initializable {
-    @InjectLogger
-    private Logger LOG;
+
+    private static final Logger LOG = LoggerFactory.getLogger(FXMLMainDownloadAndTestTabTabController.class);
 
     private static final ExecutorService EXECUTOR = Executors
             .newCachedThreadPool(new BasicThreadFactory.Builder()
                     .daemon(true)
-                    .namingPattern("DownloadTask#%d")
+                    .namingPattern("DownloadAndTestTab#%d")
+                    .uncaughtExceptionHandler((t, e) -> LOG.error("Unhandled exception: " + e.getMessage(), e))
                     .build());
 
     @FXML
@@ -66,6 +64,9 @@ public class FXMLMainDownloadAndTestTabTabController implements Initializable {
 
     @Inject
     private SelectTitleProperties selectTitleProperties;
+
+    @Inject
+    private SubtitlesService subtitlesService;
 
     // FIXME temp hack
     @Inject
@@ -151,7 +152,7 @@ public class FXMLMainDownloadAndTestTabTabController implements Initializable {
             alert.showAndWait();
         }
         File movieFile = selectMovieProperties.getFile();
-        UploadSubtitlesTask uploadSubtitles = new UploadSubtitlesTask(selectTitleProperties.getSelectedMovie(), movieFile,
+        UploadSubtitlesTask uploadSubtitles = new UploadSubtitlesTask(subtitlesService, selectTitleProperties.getSelectedMovie(), movieFile,
                 fxmlMainController.progressBar.disableProperty());
         fxmlMainController.progressBar.progressProperty().bind(uploadSubtitles.progressProperty());
 

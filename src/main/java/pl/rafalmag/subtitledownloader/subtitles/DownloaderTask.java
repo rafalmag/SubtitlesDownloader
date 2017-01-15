@@ -8,7 +8,6 @@ import javafx.scene.control.Alert;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -48,7 +47,7 @@ public class DownloaderTask extends Task<Void> {
     }
 
     @Override
-    protected Void call() throws SubtitlesDownloaderException {
+    protected Void call() {
         updateProgress(0, DONE);
         String extension = FilenameUtils.getExtension(subtitles.getFileName());
         Path destinationPath = getSubtitlesDestinationPath(movieFile.getAbsolutePath(), extension);
