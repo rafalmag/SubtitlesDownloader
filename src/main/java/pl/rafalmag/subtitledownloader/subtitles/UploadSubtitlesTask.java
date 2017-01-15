@@ -7,13 +7,18 @@ import javafx.beans.property.BooleanProperty;
 import javafx.concurrent.Task;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.Hyperlink;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
 import pl.rafalmag.subtitledownloader.title.Movie;
 
+import java.awt.*;
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -23,8 +28,10 @@ public class UploadSubtitlesTask extends Task<Void> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UploadSubtitlesTask.class);
 
-    private static final long STEP_TRY = 20;
-    private static final long STEP_UPLOAD = 50;
+    private static final long STEP_SUBTITLES_SELECTED = 10;
+    private static final long STEP_AFTER_MOVIE_HASH = 20;
+    private static final long STEP_AFTER_TRY_UPLOAD = 50;
+    private static final long STEP_AFTER_GETTING_SUBTITLES_LANGUAGE_ID = 70;
     private static final long DONE = 100;
     // based on https://en.wikipedia.org/wiki/Subtitle_(captioning)#For_software_video_players
     private static final Set<String> SUBTITLES_EXTENSIONS = ImmutableSet.of("txt", "gsub", "jss", "ttxt",
@@ -45,14 +52,39 @@ public class UploadSubtitlesTask extends Task<Void> {
         this.disableProgressBarProperty = disableProgressBarProperty;
     }
 
+    public Movie getMovie() {
+        return movie;
+    }
+
+    public File getMovieFile() {
+        return movieFile;
+    }
+
     @Override
     protected Void call() {
         updateProgress(0, DONE);
-
         Optional<File> subtitles = getSubtitlesFile();
+        updateProgress(STEP_SUBTITLES_SELECTED, DONE);
         try {
             if (subtitles.isPresent()) {
-                subtitlesService.uploadSubtitles(movie, movieFile, subtitles.get());
+                Optional<String> urlToNewSubtitles = subtitlesService.uploadSubtitles(this, subtitles.get());
+                urlToNewSubtitles.ifPresent(url -> Platform.runLater(() -> {
+                    Alert alert2 = new Alert(Alert.AlertType.INFORMATION);
+                    alert2.setTitle("New subtitles uploaded");
+                    alert2.setContentText("New subtitles uploaded");
+                    Hyperlink hyperlink = new Hyperlink(url);
+                    hyperlink.setOnAction(event -> {
+                        try {
+                            URI uri = new URI(hyperlink.getText());
+                            Desktop.getDesktop().browse(uri);
+                        } catch (IOException | URISyntaxException e) {
+                            LOGGER.error("Could not open url, because of " + e.getMessage(), e);
+                        }
+                    });
+                    alert2.getDialogPane().setExpanded(true);
+                    alert2.getDialogPane().setExpandableContent(hyperlink);
+                    alert2.showAndWait();
+                }));
             }
         } catch (SubtitlesDownloaderException e) {
             String message = "Could not upload subtitles " + subtitles + ", because of " + e.getMessage();
@@ -117,5 +149,17 @@ public class UploadSubtitlesTask extends Task<Void> {
         } catch (InterruptedException | ExecutionException e) {
             throw new IllegalStateException("Could not get subtitle from choice dialog, because of " + e.getMessage(), e);
         }
+    }
+
+    public void afterMovieHash() {
+        updateProgress(STEP_AFTER_MOVIE_HASH, DONE);
+    }
+
+    public void afterTryUploadSubtitles() {
+        updateProgress(STEP_AFTER_TRY_UPLOAD, DONE);
+    }
+
+    public void afterGettingSubtitlesLanguageId() {
+        updateProgress(STEP_AFTER_GETTING_SUBTITLES_LANGUAGE_ID, DONE);
     }
 }

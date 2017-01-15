@@ -79,11 +79,12 @@ public class SubtitlesService {
         return subtitlesFromOpenSubtitles.stream().map(Subtitles::new).collect(Collectors.toList());
     }
 
-    public void uploadSubtitles(Movie movie, File movieFile, File subtitles) throws SubtitlesDownloaderException {
-        String movieFileName = movieFile.getName();
+    public Optional<String> uploadSubtitles(UploadSubtitlesTask task, File subtitles) throws SubtitlesDownloaderException {
+        String movieFileName = task.getMovieFile().getName();
         String subtitleMd5Hash = md5(subtitles);
-        String movieHash = checkMovie.getHashCode(movieFile);
-        long movieSizeByte = checkMovie.getByteSize(movieFile);
+        String movieHash = checkMovie.getHashCode(task.getMovieFile());
+        long movieSizeByte = checkMovie.getByteSize(task.getMovieFile());
+        task.afterMovieHash();
         String subtitleFileName = subtitles.getName();
         boolean alreadyInDb = session.tryUploadSubtitles(
                 subtitleMd5Hash,
@@ -91,16 +92,18 @@ public class SubtitlesService {
                 movieHash,
                 movieSizeByte,
                 movieFileName);
+        task.afterTryUploadSubtitles();
         if (alreadyInDb) {
             LOG.info("Subtitles {} already in OpenSubtitles db", subtitles);
         } else {
             String subtitleContent = gzip(subtitles);
             Optional<String> subtitleLanguageId = getSubtitleLanguageId(subtitles, subtitleMd5Hash, subtitleContent);
+            task.afterGettingSubtitlesLanguageId();
             LOG.debug("SubtitleLanguageId = {} for subtitles {}", subtitleLanguageId, subtitles);
             if (subtitleLanguageId.isPresent()) {
-                String idMovieImdb = Integer.toString(movie.getImdbId());
+                String idMovieImdb = Integer.toString(task.getMovie().getImdbId());
                 String movieReleaseName = FilenameUtils.getBaseName(movieFileName);
-                session.uploadSubtitles(
+                return session.uploadSubtitles(
                         idMovieImdb,
                         movieReleaseName,
                         subtitleLanguageId.get(),
@@ -114,6 +117,7 @@ public class SubtitlesService {
                 LOG.info("Selecting language for subtitles {} aborted", subtitles);
             }
         }
+        return Optional.empty();
     }
 
     private Optional<String> getSubtitleLanguageId(File subtitles, String subtitleMd5Hash, String subtitleContent) throws SubtitlesDownloaderException {

@@ -111,8 +111,6 @@ public class FXMLMainDownloadAndTestTabTabController implements Initializable {
     }
 
     private void initMarkValid() {
-        // TODO mark valid
-//        markValid.disableProperty().setValue(true);
         markValid.disableProperty().bind(selectTitleProperties.selectedMovieProperty().isEqualTo(Movie.DUMMY_MOVIE));
     }
 
