@@ -3,7 +3,7 @@
 
 #define MyAppName "SubtitlesDownloader"
 ; should be in sync with maven pom file!
-#define MyAppVersion "1.4.1"
+#define MyAppVersion "1.5.0"
 #define MyAppPublisher "Rafal Magda"
 #define MyAppURL "https://bitbucket.org/rafalmag/subtitlesdownloader/"
 #define MyAppExeName "SubtitlesDownloader.exe"
