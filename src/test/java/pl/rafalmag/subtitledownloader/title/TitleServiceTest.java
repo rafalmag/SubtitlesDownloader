@@ -39,7 +39,7 @@ public class TitleServiceTest {
     @Test
     public void should_get_title_for_not_exact_title() throws Exception {
         // given
-        String titleWithError = "The Girl With The";
+        String titleWithError = "The Girl With The Dragon";
         // when
         List<Movie> titles = titleService.getByTitle(titleWithError);
 

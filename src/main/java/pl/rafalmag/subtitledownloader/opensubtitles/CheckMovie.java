@@ -41,7 +41,7 @@ public class CheckMovie {
             LOG.debug("hashCode={}", hashCode);
             return hashCode;
         } catch (ExecutionException e) {
-            throw new SubtitlesDownloaderException("Could not get hashcode for " + movieFile
+            throw new SubtitlesDownloaderException("Could not get hashcode for " + movieFile.getName()
                     + ", because of " + e.getCause().getMessage(), e.getCause());
         }
     }
