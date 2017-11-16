@@ -23,7 +23,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Singleton
 public class TitleService {
@@ -59,8 +58,8 @@ public class TitleService {
         );
         Collection<List<Movie>> solve = Utils.solve(EXECUTOR, solvers, timeoutMs, progressCallback);
 
-        return StreamSupport.stream(solve.spliterator(), false)
-                .flatMap(i -> StreamSupport.stream(i.spliterator(), false))
+        return solve.stream()
+                .flatMap(Collection::stream)
                 .collect(Collectors.toCollection(TreeSet::new));
     }
 
