@@ -105,16 +105,18 @@ public class Movie implements Comparable<Movie> {
         return "Movie title=" + getTitle() + ", year=" + getYear() + ", imdbId=" + getImdbId();
     }
 
+    // WARN : hashcode done on the getValues from Properties
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((imdbId == null) ? 0 : imdbId.hashCode());
-        result = prime * result + ((title == null) ? 0 : title.hashCode());
-        result = prime * result + ((year == null) ? 0 : year.hashCode());
+        result = prime * result + ((imdbId == null) ? 0 : imdbId.getValue().hashCode());
+        result = prime * result + ((title == null) ? 0 : title.getValueSafe().hashCode());
+        result = prime * result + ((year == null) ? 0 : year.getValue().hashCode());
         return result;
     }
 
+    // WARN : hashcode done on the getValues from Properties
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -127,17 +129,17 @@ public class Movie implements Comparable<Movie> {
         if (imdbId == null) {
             if (other.imdbId != null)
                 return false;
-        } else if (!imdbId.equals(other.imdbId))
+        } else if (!imdbId.getValue().equals(other.imdbId.getValue()))
             return false;
         if (title == null) {
             if (other.title != null)
                 return false;
-        } else if (!title.equals(other.title))
+        } else if (!title.getValueSafe().equals(other.title.getValueSafe()))
             return false;
         if (year == null) {
             if (other.year != null)
                 return false;
-        } else if (!year.equals(other.year))
+        } else if (!year.getValue().equals(other.year.getValue()))
             return false;
         return true;
     }
