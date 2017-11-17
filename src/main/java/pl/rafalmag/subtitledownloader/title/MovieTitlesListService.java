@@ -15,7 +15,7 @@ import pl.rafalmag.subtitledownloader.utils.TaskWithProgressCallback;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.File;
-import java.util.SortedSet;
+import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -57,7 +57,7 @@ public class MovieTitlesListService {
 
             @Override
             protected Void call() throws Exception {
-                final SortedSet<Movie> titles = titleService.getTitles(file, timeoutMs, this);
+                final Collection<Movie> titles = titleService.getTitles(file, timeoutMs, this);
                 Platform.runLater(() -> {
                     list.setAll(titles);
                     lastUpdatedForFilePath.setValue(selectMovieProperties.getFilePath());

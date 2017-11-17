@@ -1,5 +1,9 @@
 package pl.rafalmag.subtitledownloader.title;
 
+import akka.actor.ActorSystem;
+import akka.stream.ActorMaterializer;
+import akka.stream.Materializer;
+import akka.stream.javadsl.Sink;
 import com.google.inject.Guice;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -13,13 +17,16 @@ import javax.inject.Inject;
 import java.io.File;
 import java.util.List;
 import java.util.Locale;
-import java.util.SortedSet;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 public class TitleServiceTest {
 
+    final ActorSystem system = ActorSystem.create("QuickStart");
+    final Materializer materializer = ActorMaterializer.create(system);
     private static final int TIMEOUT_MS = 10000;
 
     @BeforeClass
@@ -41,7 +48,9 @@ public class TitleServiceTest {
         // given
         String titleWithError = "The Girl With The Dragon";
         // when
-        List<Movie> titles = titleService.getByTitle(titleWithError);
+        List<Movie> titles = titleService.getByTitle(titleWithError)
+                .runWith(Sink.seq(), materializer)
+                .toCompletableFuture().get(3, TimeUnit.SECONDS);
 
         // then
         assertThat(titles, not(hasSize(0)));
@@ -58,7 +67,9 @@ public class TitleServiceTest {
         // given
         String titleWithError = "A Lonely Place To Die";
         // when
-        List<Movie> titles = titleService.getByTitle(titleWithError);
+        List<Movie> titles = titleService.getByTitle(titleWithError)
+                .runWith(Sink.seq(), materializer)
+                .toCompletableFuture().get(3, TimeUnit.SECONDS);
 
         // then
         assertThat(titles, hasSize(1));
@@ -77,7 +88,9 @@ public class TitleServiceTest {
         File movieFile = new File(
                 "I:/filmy/!old/A Lonely Place To Die  {2011} DVDRIP. Jaybob/A Lonely Place To Die  {2011} DVDRIP. Jaybob.avi");
         // when
-        List<Movie> titles = titleService.getByFileHash(movieFile);
+        List<Movie> titles = titleService.getByFileHash(movieFile)
+                .runWith(Sink.seq(), materializer)
+                .toCompletableFuture().get(3, TimeUnit.SECONDS);
 
         // then
         assertThat(titles, hasSize(1));
@@ -98,11 +111,11 @@ public class TitleServiceTest {
         File movieFile = new File(
                 "H:/filmy/!old/A Lonely Place To Die  {2011} DVDRIP. Jaybob/A Lonely Place To Die  {2011} DVDRIP. Jaybob.avi");
         // when
-        SortedSet<Movie> titles = titleService.getTitles(movieFile, TIMEOUT_MS, new ProgressCallbackDummy());
+        Set<Movie> titles = titleService.getTitles(movieFile, TIMEOUT_MS, new ProgressCallbackDummy());
 
         // then
         assertThat(titles, hasSize(1));
-        Movie firstMovie = titles.first();
+        Movie firstMovie = titles.iterator().next();
 
         assertThat(firstMovie.getTitle(), equalToIgnoringCase("A Lonely Place To Die"));
         assertThat(firstMovie.getYear(), equalTo(2011));
@@ -115,7 +128,9 @@ public class TitleServiceTest {
         File movieFile = new File(
                 "X:/A Lonely Place To Die  {2011} DVDRIP. Jaybob/A Lonely Place To Die  {2011} DVDRIP. Jaybob.avi");
         // when
-        List<Movie> titles = titleService.getByFileName(movieFile);
+        List<Movie> titles = titleService.getByFileName(movieFile)
+                .runWith(Sink.seq(), materializer)
+                .toCompletableFuture().get(3, TimeUnit.SECONDS);
 
         // then
         assertThat(titles, hasSize(1));

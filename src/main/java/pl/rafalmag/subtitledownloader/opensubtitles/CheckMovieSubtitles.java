@@ -48,6 +48,7 @@ public class CheckMovieSubtitles extends CheckMovie {
                         new NamedCallable<>("-ByImdb", () -> getSubtitlesByImdb(movie)),
                         new NamedCallable<>("-ByMovieHashAndByteSize", () -> getSubtitlesByMovieHashAndByteSize(movieFile))
                 );
+        //TODO use akka streams!
         Collection<List<SearchSubtitlesResult>> solve = Utils.solve(EXECUTOR, solvers, timeoutMs);
 
         return StreamSupport.stream(solve.spliterator(), false)

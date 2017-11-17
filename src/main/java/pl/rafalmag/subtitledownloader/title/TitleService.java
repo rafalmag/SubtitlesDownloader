@@ -1,28 +1,37 @@
 package pl.rafalmag.subtitledownloader.title;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
+import akka.NotUsed;
+import akka.actor.ActorSystem;
+import akka.dispatch.ExecutionContexts;
+import akka.dispatch.Futures;
+import akka.japi.pf.PFBuilder;
+import akka.stream.ActorMaterializer;
+import akka.stream.Materializer;
+import akka.stream.javadsl.Merge;
+import akka.stream.javadsl.Sink;
+import akka.stream.javadsl.Source;
 import com.google.inject.Singleton;
 import com.omertron.themoviedbapi.model.movie.MovieInfo;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.slf4j.Logger;
-import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
 import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
 import pl.rafalmag.subtitledownloader.opensubtitles.CheckMovie;
 import pl.rafalmag.subtitledownloader.opensubtitles.Session;
+import pl.rafalmag.subtitledownloader.opensubtitles.SessionException;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.MovieEntity;
 import pl.rafalmag.subtitledownloader.themoviedb.TheMovieDbService;
-import pl.rafalmag.subtitledownloader.utils.NamedCallable;
 import pl.rafalmag.subtitledownloader.utils.ProgressCallback;
-import pl.rafalmag.subtitledownloader.utils.Utils;
+import pl.rafalmag.subtitledownloader.utils.Timeout;
+import scala.concurrent.ExecutionContextExecutor;
+import scala.concurrent.Future;
+import scala.concurrent.duration.Duration;
 
 import javax.inject.Inject;
 import java.io.File;
 import java.util.*;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
+import java.util.concurrent.*;
 
 @Singleton
 public class TitleService {
@@ -39,45 +48,92 @@ public class TitleService {
     @Inject
     private TheMovieDbService theMovieDbService;
 
-    public SortedSet<Movie> getTitles(File movieFile, long timeoutMs, ProgressCallback progressCallback)
+    //TODO shutdown actor system
+    final ActorSystem system = ActorSystem.create("TitleService");
+    final Materializer materializer = ActorMaterializer.create(system);
+
+    public Set<Movie> getTitles(File movieFile, long timeoutMs, ProgressCallback progressCallback)
             throws InterruptedException {
         String title = TitleNameUtils.getTitleFrom(movieFile.getName());
         return startTasksAndGetResults(title, movieFile, timeoutMs, progressCallback);
     }
 
-    private final static ExecutorService EXECUTOR = Executors
-            .newCachedThreadPool(new BasicThreadFactory.Builder().daemon(true).namingPattern("Title-%d").build());
+    public static final ExecutionContextExecutor EXECUTOR = ExecutionContexts.fromExecutor(Executors
+            .newCachedThreadPool(new BasicThreadFactory.Builder().daemon(true).namingPattern("Title-%d").build()));
 
-    private SortedSet<Movie> startTasksAndGetResults(String title, File movieFile, long timeoutMs,
-                                                     ProgressCallback progressCallback)
+    private Set<Movie> startTasksAndGetResults(String title, File movieFile, long timeoutMs,
+                                               ProgressCallback progressCallback)
             throws InterruptedException {
-        Collection<? extends Callable<List<Movie>>> solvers = ImmutableList.of(
-                new NamedCallable<>("-movByTitle", () -> getByTitle(title)),
-                new NamedCallable<>("-movByFileHash", () -> getByFileHash(movieFile)),
-                new NamedCallable<>("-movByFileName", () -> getByFileName(movieFile))
-        );
-        Collection<List<Movie>> solve = Utils.solve(EXECUTOR, solvers, timeoutMs, progressCallback);
 
-        return solve.stream()
-                .flatMap(Collection::stream)
-                .collect(Collectors.toCollection(TreeSet::new));
+        Timeout timeout = new Timeout(timeoutMs, TimeUnit.MILLISECONDS);
+
+        Source<Movie, NotUsed> source = Source.combine(getByTitle(title), getByFileHash(movieFile), Collections.singletonList(getByFileName(movieFile)), Merge::create)
+                .takeWithin(Duration.apply(timeoutMs, TimeUnit.MILLISECONDS))
+                .map(x -> {
+                    progressCallback.updateProgress(
+                            timeout.getElapsedTime(TimeUnit.MILLISECONDS), timeoutMs);
+                    return x;
+                });
+        Sink<Movie, CompletionStage<Set<Movie>>> sink = Sink.fold(new HashSet<>(), (set, elem) -> {
+            set.add(elem);
+            return set;
+        });
+        CompletionStage<Set<Movie>> listCompletionStage = source.runWith(sink, materializer);
+
+        try {
+            return listCompletionStage.toCompletableFuture().get(timeoutMs * 10, TimeUnit.MILLISECONDS);
+        } catch (ExecutionException e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof SessionException) {
+                Platform.runLater(() -> {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error");
+                    alert.setHeaderText(null);
+                    alert.setContentText(cause.getMessage());
+                    alert.showAndWait();
+                });
+            }
+            LOG.error("Exception in task: " + cause.getMessage(), cause);
+            return Collections.emptySet();
+        } catch (TimeoutException e) {
+            throw new IllegalStateException("Timeout while waiting for seq from stream", e);
+        } finally {
+            progressCallback.updateProgress(1);
+        }
     }
 
-    protected List<Movie> getByFileName(File movieFile) throws SubtitlesDownloaderException {
-        return session.guessMovieFromFileName(movieFile.getName())
-                .map(Collections::singletonList)
-                .orElse(Collections.emptyList());
+    protected Source<Movie, NotUsed> getByFileName(File movieFile) {
+        Future<Optional<Movie>> future = Futures.future(() -> session.guessMovieFromFileName(movieFile.getName()), EXECUTOR);
+        return Source.fromFuture(future)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .recoverWith(new PFBuilder<Throwable, Source<Movie, NotUsed>>()
+                        .match(Exception.class, ex -> {
+                            LOG.error("Could not guess movie by file name " + movieFile.getName() + ", because of " + ex.getMessage(), ex);
+                            return Source.empty();
+                        })
+                        .build());
     }
 
-    protected List<Movie> getByTitle(String title) {
-        List<MovieInfo> searchMovie = theMovieDbService.searchMovie(title);
-        List<Movie> list = Lists.transform(searchMovie, Movie::new);
-        LOG.debug("TheMovieDb returned: {}", list);
-        return list;
+    protected Source<Movie, NotUsed> getByTitle(String title) {
+        Future<List<MovieInfo>> future = Futures.future(() -> theMovieDbService.searchMovie(title), EXECUTOR);
+        return Source.fromFuture(future).mapConcat(x -> x).map(Movie::new)
+                .recoverWith(new PFBuilder<Throwable, Source<Movie, NotUsed>>()
+                        .match(Exception.class, ex -> {
+                            LOG.error("Could not retrieve movie by title " + title + " from theMovieDbService, because of " + ex.getMessage(), ex);
+                            return Source.empty();
+                        })
+                        .build());
     }
 
-    protected List<Movie> getByFileHash(File movieFile) throws SubtitlesDownloaderException {
-        List<MovieEntity> checkMovieHash2Entities = checkMovie.getTitleInfo(movieFile);
-        return Lists.transform(checkMovieHash2Entities, Movie::new);
+    protected Source<Movie, NotUsed> getByFileHash(File movieFile) {
+        Future<List<MovieEntity>> future = Futures.future(() -> checkMovie.getTitleInfo(movieFile), EXECUTOR);
+        return Source.fromFuture(future).mapConcat(x -> x).map(Movie::new)
+                .recoverWith(new PFBuilder<Throwable, Source<Movie, NotUsed>>()
+                        .match(Exception.class, ex -> {
+                            LOG.error("Could not get movie by file " + movieFile.getName() + " hash, because of " + ex.getMessage(), ex);
+                            return Source.empty();
+                        })
+                        .build());
     }
 }
