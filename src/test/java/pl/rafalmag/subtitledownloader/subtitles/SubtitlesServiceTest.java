@@ -58,7 +58,7 @@ public class SubtitlesServiceTest {
         // given
         File tempFile = Files.newTemporaryFile();
         tempFile.deleteOnExit();
-        com.google.common.io.Files.write("test", tempFile, Charsets.UTF_8);
+        com.google.common.io.Files.asCharSink(tempFile, Charsets.UTF_8).write("test");
         // when
         String md5 = subtitlesService.md5(tempFile);
         // then
@@ -70,7 +70,7 @@ public class SubtitlesServiceTest {
         // given
         File tempFile = Files.newTemporaryFile();
         tempFile.deleteOnExit();
-        com.google.common.io.Files.write("test", tempFile, Charsets.UTF_8);
+        com.google.common.io.Files.asCharSink(tempFile, Charsets.UTF_8).write("test");
         // when
         String gzip = subtitlesService.gzip(tempFile);
         // then

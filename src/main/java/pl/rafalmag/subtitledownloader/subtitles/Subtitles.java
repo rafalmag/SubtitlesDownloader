@@ -92,7 +92,7 @@ public class Subtitles implements Comparable<Subtitles> {
 
     @Override
     public int compareTo(Subtitles o) {
-        return new Integer(getDownloadsCount()).compareTo(o.getDownloadsCount());
+        return Integer.compare(getDownloadsCount(), o.getDownloadsCount());
     }
 
 }

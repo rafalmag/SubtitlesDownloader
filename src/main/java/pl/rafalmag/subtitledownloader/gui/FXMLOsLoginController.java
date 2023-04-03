@@ -1,6 +1,7 @@
 package pl.rafalmag.subtitledownloader.gui;
 
 import com.google.common.base.Strings;
+import javafx.application.HostServices;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -19,8 +20,6 @@ import pl.rafalmag.subtitledownloader.opensubtitles.entities.LoginAndPassword;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.awt.*;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -51,6 +50,9 @@ public class FXMLOsLoginController implements Initializable {
 
     @Inject
     private Session session;
+
+    @Inject
+    private HostServices hostServices;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -88,8 +90,8 @@ public class FXMLOsLoginController implements Initializable {
         LOG.debug("register");
         try {
             final URI uri = new URI(REGISTER_URL);
-            Desktop.getDesktop().browse(uri);
-        } catch (IOException | URISyntaxException e) {
+            hostServices.showDocument(uri.toString());
+        } catch (URISyntaxException e) {
             LOG.error("Could not open URL " + REGISTER_URL + " because of " + e.getMessage(), e);
         }
         actionEvent.consume();
