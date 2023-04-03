@@ -1,6 +1,6 @@
 package pl.rafalmag.subtitledownloader.gui;
 
-import com.sun.javafx.scene.control.skin.ComboBoxListViewSkin;
+import javafx.scene.control.skin.ComboBoxListViewSkin;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.control.ComboBox;
@@ -31,7 +31,7 @@ public class SelectKeyComboBoxListener<T> implements EventHandler<KeyEvent> {
         // add a focus listener such that if not in focus, reset the filtered typed keys
         this.comboBox.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
-                ListView lv = ((ComboBoxListViewSkin) SelectKeyComboBoxListener.this.comboBox.getSkin()).getListView();
+                ListView lv = (ListView) ((ComboBoxListViewSkin) SelectKeyComboBoxListener.this.comboBox.getSkin()).getPopupContent();
                 lv.scrollTo(lv.getSelectionModel().getSelectedIndex());
             } else {
                 sb.delete(0, sb.length());
@@ -39,7 +39,7 @@ public class SelectKeyComboBoxListener<T> implements EventHandler<KeyEvent> {
         });
 
         this.comboBox.setOnMouseClicked(event -> {
-            ListView lv = ((ComboBoxListViewSkin) SelectKeyComboBoxListener.this.comboBox.getSkin()).getListView();
+            ListView lv = (ListView) ((ComboBoxListViewSkin) SelectKeyComboBoxListener.this.comboBox.getSkin()).getPopupContent();
             lv.scrollTo(lv.getSelectionModel().getSelectedIndex());
         });
     }
@@ -61,7 +61,7 @@ public class SelectKeyComboBoxListener<T> implements EventHandler<KeyEvent> {
         ObservableList<T> items = comboBox.getItems();
         for (int i = 0; i < items.size(); i++) {
             if (event.getCode() != KeyCode.BACK_SPACE && items.get(i).toString().toLowerCase().startsWith(sb.toString().toLowerCase())) {
-                ListView lv = ((ComboBoxListViewSkin) comboBox.getSkin()).getListView();
+                ListView lv = (ListView) ((ComboBoxListViewSkin) comboBox.getSkin()).getPopupContent();
                 lv.getSelectionModel().clearAndSelect(i);
                 lv.scrollTo(lv.getSelectionModel().getSelectedIndex());
                 found = true;

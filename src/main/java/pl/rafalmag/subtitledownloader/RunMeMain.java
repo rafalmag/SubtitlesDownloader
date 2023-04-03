@@ -4,7 +4,7 @@ import com.cathive.fx.guice.GuiceApplication;
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.inject.Injector;
 import com.google.inject.Module;
-import com.sun.javafx.application.PlatformImpl;
+import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -98,9 +98,9 @@ public class RunMeMain extends GuiceApplication {
 
     public void setTheme(Theme theme) {
         if (theme == Theme.DEFAULT) {
-            PlatformImpl.setDefaultPlatformUserAgentStylesheet();
+            Application.setUserAgentStylesheet(Theme.DEFAULT.getStyleSheetUrl());
         } else {
-            PlatformImpl.setPlatformUserAgentStylesheet(theme.getStyleSheetUrl());
+            Application.setUserAgentStylesheet(theme.getStyleSheetUrl());
         }
     }
 
