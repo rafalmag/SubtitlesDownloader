@@ -1,0 +1,64 @@
+plugins {
+    id 'java'
+    id 'application'
+//    id 'maven'
+    id 'maven-publish'
+    id 'org.openjfx.javafxplugin' version '0.0.13'
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        url = uri('https://repo.maven.apache.org/maven2/')
+    }
+}
+
+dependencies {
+    implementation 'org.apache.xmlrpc:xmlrpc-common:3.1.3'
+    implementation 'org.apache.xmlrpc:xmlrpc-client:3.1.3'
+    implementation 'com.sun.jersey:jersey-client:1.12'
+    implementation 'com.omertron:themoviedbapi:4.2'
+    implementation 'com.google.inject:guice:5.1.0'
+    implementation 'com.cathive.fx:fx-guice:8.0.0'
+    implementation 'com.google.code.gson:gson:2.6.2'
+    implementation 'commons-io:commons-io:2.3'
+    implementation 'commons-codec:commons-codec:1.10'
+    implementation 'com.google.guava:guava:31.1-jre'
+    implementation 'com.google.code.findbugs:jsr305:3.0.0'
+    implementation 'com.typesafe.akka:akka-actor_2.12:2.5.6'
+    implementation 'com.typesafe.akka:akka-stream_2.12:2.5.6'
+    implementation 'com.typesafe.akka:akka-slf4j_2.12:2.5.6'
+//    implementation 'org.openjfx:javafx-controls:20'
+//    implementation 'org.openjfx:javafx-fxml:20'
+    implementation 'org.slf4j:slf4j-api:2.0.7'
+    implementation 'org.slf4j:log4j-over-slf4j:2.0.7'
+    implementation 'org.slf4j:jul-to-slf4j:2.0.7'
+    implementation 'ch.qos.logback:logback-classic:1.4.6'
+    runtimeOnly 'org.codehaus.groovy:groovy-all:3.0.17'
+    testImplementation 'junit:junit-dep:4.10'
+    testImplementation 'org.hamcrest:hamcrest-all:1.3'
+    testImplementation 'org.assertj:assertj-core:3.4.1'
+    testImplementation 'pl.pragmatists:JUnitParams:0.5.0'
+    testImplementation 'com.google.inject.extensions:guice-testlib:4.0'
+    testImplementation 'org.mockito:mockito-core:1.10.19'
+}
+
+group = 'pl.rafalmag'
+version = '1.5.0-SNAPSHOT'
+description = 'Subtitles Downloader'
+//java.sourceCompatibility = JavaVersion.VERSION_1_8
+
+mainClassName = 'pl.rafalmag.subtitledownloader.RunMeMain'
+
+javafx {
+    version = '20'
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
+}
+
+//publishing {
+//    publications {
+//        maven(MavenPublication) {
+//            from(components.java)
+//        }
+//    }
+//}
