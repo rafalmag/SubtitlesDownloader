@@ -6,6 +6,8 @@
     <!-- should be in sync with ./innoSetup/innoSetupScript.iss MyAppVersion value -->
     <version>1.5.0-SNAPSHOT</version>
     <name>Subtitles Downloader</name>
+    <inceptionYear>2018</inceptionYear>
+    <description>This program allow you to download movie subtitles from http://www.opensubtitles.org in a few easy steps.</description>
 
     <dependencies>
         <dependency>
@@ -195,6 +197,7 @@
             <plugin>
                 <groupId>com.akathist.maven.plugins.launch4j</groupId>
                 <artifactId>launch4j-maven-plugin</artifactId>
+                <version>2.3.3</version>
                 <configuration>
                     <dontWrapJar>true</dontWrapJar>
                     <headerType>gui</headerType>
@@ -209,11 +212,12 @@
                     <restartOnCrash>false</restartOnCrash>
                     <icon>src/main/resources/icon2.ico</icon>
                     <jre>
-                        <bundledJre64Bit>false</bundledJre64Bit>
-                        <bundledJreAsFallback>false</bundledJreAsFallback>
+                        <requires64Bit>false</requires64Bit>
+<!--                        <bundledJreAsFallback>false</bundledJreAsFallback>-->
                         <minVersion>1.8.0</minVersion>
-                        <jdkPreference>preferJre</jdkPreference>
-                        <runtimeBits>64/32</runtimeBits>
+                        <maxVersion>1.8.0</maxVersion>
+<!--                        <jdkPreference>preferJre</jdkPreference>-->
+<!--                        <requires64Bit>64/32</requires64Bit>-->
                     </jre>
                 </configuration>
                 <executions>
@@ -228,7 +232,9 @@
             </plugin>
             <!-- to make fat jar -->
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.5.0</version>
                 <configuration>
                     <archive>
                         <!-- http://loop81.blogspot.com/2012/03/javafx-2-get-started-with-maven-eclipse.html -->

@@ -25,7 +25,7 @@
 
 package com.javafx.main;
 
-import sun.misc.BASE64Decoder;
+import com.google.common.base.Charsets;
 
 import javax.swing.*;
 import java.io.File;
@@ -37,10 +37,7 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -472,9 +469,8 @@ public class Main {
     }
 
     private static String decodeBase64(String inp) throws IOException {
-        BASE64Decoder decoder = new BASE64Decoder();
-        byte[] decodedBytes = decoder.decodeBuffer(inp);
-        return new String(decodedBytes);
+        byte[] decodedBytes = Base64.getDecoder().decode(inp.getBytes(Charsets.UTF_8));
+        return new String(decodedBytes, Charsets.UTF_8);
     }
 
     private static String[] getAppArguments(Attributes attrs) {
