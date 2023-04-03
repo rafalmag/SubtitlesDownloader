@@ -42,7 +42,7 @@ public class Session {
      * See restrictions here:
      * {@see http://trac.opensubtitles.org/projects/opensubtitles/wiki/DevReadFirst}
      */
-    private static final String USER_AGENT = "SubtitlesDownloader v1.5";
+    private static final String USER_AGENT = "SubtitlesDownloader v1.6";
 
     @InjectLogger
     private Logger LOG;
