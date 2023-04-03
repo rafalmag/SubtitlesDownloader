@@ -1,5 +1,6 @@
 package pl.rafalmag.subtitledownloader;
 
+import akka.actor.ActorSystem;
 import com.cathive.fx.guice.GuiceApplication;
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.inject.Injector;
@@ -49,6 +50,9 @@ public class RunMeMain extends GuiceApplication {
     @Inject
     private Provider<ResourceBundle> resources;
 
+    @Inject
+    private ActorSystem actorSystem;
+
     private Stage primaryStage;
 
     public static void main(String[] args) {
@@ -58,7 +62,7 @@ public class RunMeMain extends GuiceApplication {
 
     @Override
     public void init(List<Module> list) throws Exception {
-        list.add(new GuiceModule(() -> primaryStage));
+        list.add(new GuiceModule(() -> primaryStage, this::getHostServices));
     }
 
     /*
@@ -130,4 +134,11 @@ public class RunMeMain extends GuiceApplication {
         scene.setRoot(newParent);
     }
 
+    @Override
+    public void stop() throws Exception {
+        LOGGER.trace("stop");
+        super.stop();
+        actorSystem.terminate();
+        LOGGER.trace("stop: after calling terminate (may be still terminating)");
+    }
 }

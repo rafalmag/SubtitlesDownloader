@@ -5,8 +5,6 @@ import akka.actor.ActorSystem;
 import akka.dispatch.ExecutionContexts;
 import akka.dispatch.Futures;
 import akka.japi.pf.PFBuilder;
-import akka.stream.ActorMaterializer;
-import akka.stream.Materializer;
 import akka.stream.javadsl.Merge;
 import akka.stream.javadsl.Sink;
 import akka.stream.javadsl.Source;
@@ -26,10 +24,11 @@ import pl.rafalmag.subtitledownloader.utils.ProgressCallback;
 import pl.rafalmag.subtitledownloader.utils.Timeout;
 import scala.concurrent.ExecutionContextExecutor;
 import scala.concurrent.Future;
-import scala.concurrent.duration.Duration;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -48,9 +47,8 @@ public class TitleService {
     @Inject
     private TheMovieDbService theMovieDbService;
 
-    //TODO shutdown actor system
-    final ActorSystem system = ActorSystem.create("TitleService");
-    final Materializer materializer = ActorMaterializer.create(system);
+    @Inject
+    private ActorSystem system;
 
     public Set<Movie> getTitles(File movieFile, long timeoutMs, ProgressCallback progressCallback)
             throws InterruptedException {
@@ -68,7 +66,7 @@ public class TitleService {
         Timeout timeout = new Timeout(timeoutMs, TimeUnit.MILLISECONDS);
 
         Source<Movie, NotUsed> source = Source.combine(getByTitle(title), getByFileHash(movieFile), Collections.singletonList(getByFileName(movieFile)), Merge::create)
-                .takeWithin(Duration.apply(timeoutMs, TimeUnit.MILLISECONDS))
+                .takeWithin(Duration.of(timeoutMs, ChronoUnit.MILLIS))
                 .map(x -> {
                     progressCallback.updateProgress(
                             timeout.getElapsedTime(TimeUnit.MILLISECONDS), timeoutMs);
@@ -78,7 +76,7 @@ public class TitleService {
             set.add(elem);
             return set;
         });
-        CompletionStage<Set<Movie>> listCompletionStage = source.runWith(sink, materializer);
+        CompletionStage<Set<Movie>> listCompletionStage = source.runWith(sink, system);
 
         try {
             return listCompletionStage.toCompletableFuture().get(timeoutMs * 10, TimeUnit.MILLISECONDS);
