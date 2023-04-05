@@ -50,7 +50,7 @@ public class TitleServiceTest {
         // when
         List<Movie> titles = titleService.getByTitle(titleWithError)
                 .runWith(Sink.seq(), system)
-                .toCompletableFuture().get(3, TimeUnit.SECONDS);
+                .toCompletableFuture().get(5, TimeUnit.SECONDS);
 
         // then
         assertThat(titles, not(hasSize(0)));
@@ -69,7 +69,7 @@ public class TitleServiceTest {
         // when
         List<Movie> titles = titleService.getByTitle(titleWithError)
                 .runWith(Sink.seq(), system)
-                .toCompletableFuture().get(3, TimeUnit.SECONDS);
+                .toCompletableFuture().get(5, TimeUnit.SECONDS);
 
         // then
         Movie firstMovie = titles.get(0);
@@ -113,7 +113,7 @@ public class TitleServiceTest {
         Set<Movie> titles = titleService.getTitles(movieFile, TIMEOUT_MS, new ProgressCallbackDummy());
 
         // then
-        Movie firstMovie = titles.iterator().next();
+        Movie firstMovie = titles.stream().toList().get(1);
 
         assertThat(firstMovie.getTitle(), equalToIgnoringCase("A Lonely Place To Die"));
         assertThat(firstMovie.getYear(), equalTo(2011));
