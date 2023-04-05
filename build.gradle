@@ -1,9 +1,8 @@
 plugins {
     id 'java'
     id 'application'
-//    id 'maven'
-    id 'maven-publish'
     id 'org.openjfx.javafxplugin' version '0.0.13'
+    id 'org.beryx.jlink' version '2.26.0'
 }
 
 repositories {
@@ -13,8 +12,13 @@ repositories {
     }
 }
 
+targetCompatibility = "19"
+sourceCompatibility = "19"
+
 dependencies {
-    implementation 'org.apache.xmlrpc:xmlrpc-common:3.1.3'
+    implementation('org.apache.xmlrpc:xmlrpc-common:3.1.3'){
+        exclude group: 'junit', module: 'junit'
+    }
     implementation 'org.apache.xmlrpc:xmlrpc-client:3.1.3'
     implementation 'com.sun.jersey:jersey-client:1.12'
     implementation 'com.omertron:themoviedbapi:4.2'
@@ -24,17 +28,15 @@ dependencies {
     implementation 'commons-io:commons-io:2.3'
     implementation 'commons-codec:commons-codec:1.10'
     implementation 'com.google.guava:guava:31.1-jre'
-    implementation 'com.google.code.findbugs:jsr305:3.0.0'
-    implementation 'com.typesafe.akka:akka-actor_2.13:2.8.0'
-    implementation 'com.typesafe.akka:akka-stream_2.13:2.8.0'
-    implementation 'com.typesafe.akka:akka-slf4j_2.13:2.8.0'
-//    implementation 'org.openjfx:javafx-controls:20'
-//    implementation 'org.openjfx:javafx-fxml:20'
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    implementation 'com.typesafe.akka:akka-actor_2.13:2.6.19'
+    implementation 'com.typesafe.akka:akka-stream_2.13:2.6.19'
+    implementation 'com.typesafe.akka:akka-slf4j_2.13:2.6.19'
     implementation 'org.slf4j:slf4j-api:2.0.7'
     implementation 'org.slf4j:log4j-over-slf4j:2.0.7'
     implementation 'org.slf4j:jul-to-slf4j:2.0.7'
     implementation 'ch.qos.logback:logback-classic:1.4.6'
-    runtimeOnly 'org.codehaus.groovy:groovy-all:3.0.17'
+
     testImplementation 'junit:junit-dep:4.10'
     testImplementation 'org.hamcrest:hamcrest-all:1.3'
     testImplementation 'org.assertj:assertj-core:3.4.1'
@@ -46,19 +48,19 @@ dependencies {
 group = 'pl.rafalmag'
 version = '1.5.0-SNAPSHOT'
 description = 'Subtitles Downloader'
-//java.sourceCompatibility = JavaVersion.VERSION_1_8
 
-mainClassName = 'pl.rafalmag.subtitledownloader.RunMeMain'
 
 javafx {
     version = '20'
     modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
-//publishing {
-//    publications {
-//        maven(MavenPublication) {
-//            from(components.java)
-//        }
+mainClassName = 'pl.rafalmag.subtitledownloader.RunMeMain'
+
+//jlink {
+//    jarExclude("xml-apis", "**/license/") // because of https://github.com/beryx/badass-jlink-plugin/issues/186
+//    launcher {
+//        name = 'Subtitles Downloader'
+////        jvmArgs = ['-Djdk.gtk.version=2'] // required due to a bug in Java: https://github.com/javafxports/openjdk-jfx/issues/175
 //    }
 //}

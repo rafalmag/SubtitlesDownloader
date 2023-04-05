@@ -65,7 +65,7 @@ public class Session {
         try {
             config.setServerURL(new URL("https://api.opensubtitles.org:443/xml-rpc"));
         } catch (MalformedURLException e) {
-            throw Throwables.propagate(e);
+            Throwables.throwIfUnchecked(e);
         }
         client = new XmlRpcClient();
         client.setConfig(config);
