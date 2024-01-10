@@ -1,6 +1,8 @@
 package pl.rafalmag.subtitledownloader;
 
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,8 +13,6 @@ import pl.rafalmag.subtitledownloader.opensubtitles.entities.LoginAndPassword;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SubtitleLanguage;
 
 import javax.annotation.Nullable;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

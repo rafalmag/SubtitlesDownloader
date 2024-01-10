@@ -1,13 +1,13 @@
 package pl.rafalmag.subtitledownloader.gui;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import javafx.application.HostServices;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import org.slf4j.Logger;
 import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.net.URI;
 import java.net.URISyntaxException;
 

@@ -11,7 +11,6 @@ import pl.rafalmag.subtitledownloader.annotations.I18nResources;
 import pl.rafalmag.subtitledownloader.annotations.Slf4jTypeListener;
 import pl.rafalmag.subtitledownloader.opensubtitles.CheckMovie;
 import pl.rafalmag.subtitledownloader.opensubtitles.CheckMovieSubtitles;
-import pl.rafalmag.subtitledownloader.utils.UTF8Control;
 
 import java.util.ResourceBundle;
 
@@ -31,7 +30,7 @@ public class GuiceModule extends AbstractModule {
         bind(HostServices.class).toProvider(hostServicesProvider);
         bind(CheckMovie.class).to(CheckMovieSubtitles.class);
         bind(ResourceBundle.class).annotatedWith(I18nResources.class)
-                .toProvider(() -> ResourceBundle.getBundle("opensubtitles", new UTF8Control()));
+                .toProvider(() -> ResourceBundle.getBundle("opensubtitles"));
         bind(ActorSystem.class).toInstance(ActorSystem.create("TitleService"));
     }
 }

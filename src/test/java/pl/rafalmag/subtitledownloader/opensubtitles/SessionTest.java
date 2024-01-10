@@ -10,7 +10,7 @@ import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResu
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SubtitleLanguage;
 import pl.rafalmag.subtitledownloader.title.Movie;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;

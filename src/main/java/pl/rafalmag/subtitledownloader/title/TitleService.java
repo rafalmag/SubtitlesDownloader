@@ -8,6 +8,7 @@ import akka.japi.pf.PFBuilder;
 import akka.stream.javadsl.Merge;
 import akka.stream.javadsl.Sink;
 import akka.stream.javadsl.Source;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.omertron.themoviedbapi.model.movie.MovieInfo;
 import javafx.application.Platform;
@@ -25,7 +26,6 @@ import pl.rafalmag.subtitledownloader.utils.Timeout;
 import scala.concurrent.ExecutionContextExecutor;
 import scala.concurrent.Future;
 
-import javax.inject.Inject;
 import java.io.File;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;

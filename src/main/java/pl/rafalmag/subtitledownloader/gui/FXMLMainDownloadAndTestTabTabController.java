@@ -1,5 +1,7 @@
 package pl.rafalmag.subtitledownloader.gui;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import javafx.beans.binding.BooleanBinding;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -15,8 +17,6 @@ import pl.rafalmag.subtitledownloader.subtitles.*;
 import pl.rafalmag.subtitledownloader.title.Movie;
 import pl.rafalmag.subtitledownloader.title.SelectTitleProperties;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;

@@ -1,12 +1,12 @@
 package org.themoviedb;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.config.DefaultClientConfig;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.MediaType;
+import org.glassfish.jersey.client.ClientConfig;
 import org.junit.Test;
 import pl.rafalmag.subtitledownloader.themoviedb.TheMovieDbService;
-
-import javax.ws.rs.core.MediaType;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertThat;
@@ -21,18 +21,18 @@ public class TMDbTest {
         String get_movie11 = "http://api.themoviedb.org/3/movie/11?api_key="
                 + TM_DB_API_KEY;
 
-        DefaultClientConfig clientConfig = new DefaultClientConfig();
-        Client client = Client.create(clientConfig);
+        ClientConfig clientConfig = new ClientConfig();
+        try (Client client = ClientBuilder.newClient(clientConfig)) {
+            // when
+            WebTarget resource = client.target(get_movie11);
+            // lets get the XML as a String
+            String text = resource.request(MediaType.APPLICATION_JSON_TYPE)
+                    .accept(MediaType.APPLICATION_JSON).get(String.class);
 
-        // when
-        WebResource resource = client.resource(get_movie11);
-        // lets get the XML as a String
-        String text = resource.type(MediaType.APPLICATION_JSON_TYPE)
-                .accept(MediaType.APPLICATION_JSON).get(String.class);
-
-        // then
-        assertThat(text, containsString("Star Wars"));
-        // System.out.println(text);
+            // then
+            assertThat(text, containsString("Star Wars"));
+            // System.out.println(text);
+        }
     }
 
     @Test
@@ -41,17 +41,18 @@ public class TMDbTest {
         String get_conf = "http://api.themoviedb.org/3/configuration?api_key="
                 + TM_DB_API_KEY;
 
-        DefaultClientConfig clientConfig = new DefaultClientConfig();
-        Client client = Client.create(clientConfig);
+        ClientConfig clientConfig = new ClientConfig();
+        try (Client client = ClientBuilder.newClient(clientConfig)) {
 
-        // when
-        WebResource resource = client.resource(get_conf);
-        // lets get the XML as a String
-        String text = resource.type(MediaType.APPLICATION_JSON_TYPE)
-                .accept(MediaType.APPLICATION_JSON).get(String.class);
+            // when
+            WebTarget resource = client.target(get_conf);
+            // lets get the XML as a String
+            String text = resource.request(MediaType.APPLICATION_JSON_TYPE)
+                    .accept(MediaType.APPLICATION_JSON).get(String.class);
 
-        // then
-        assertThat(text, containsString("_sizes"));
+            // then
+            assertThat(text, containsString("_sizes"));
+        }
     }
 
 }

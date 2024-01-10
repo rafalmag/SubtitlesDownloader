@@ -1,12 +1,12 @@
 package pl.rafalmag.subtitledownloader.gui;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderProperties;
 
 import javax.annotation.Nullable;
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.io.File;
 
 @Singleton

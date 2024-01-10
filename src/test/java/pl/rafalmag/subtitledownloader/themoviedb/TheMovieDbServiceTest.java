@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import pl.rafalmag.subtitledownloader.TestGuiceModule;
 import pl.rafalmag.subtitledownloader.opensubtitles.SessionException;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.List;

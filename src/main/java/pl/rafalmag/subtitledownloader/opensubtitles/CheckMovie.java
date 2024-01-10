@@ -2,6 +2,8 @@ package pl.rafalmag.subtitledownloader.opensubtitles;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.opensubtitles.OpenSubtitlesHasher;
 import org.slf4j.Logger;
 import pl.rafalmag.subtitledownloader.SubtitlesDownloaderException;
@@ -9,8 +11,6 @@ import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.MovieEntity;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SearchSubtitlesResult;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.ExecutionException;

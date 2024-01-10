@@ -1,14 +1,35 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "org.gradlex:extra-java-module-info:1.6.2"
+    }
+}
+
+//apply plugin: "org.gradlex.extra-java-module-info"
+
 plugins {
     id 'java'
     id 'application'
-    id 'org.openjfx.javafxplugin' version '0.0.13'
-    id 'org.beryx.jlink' version '2.26.0'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+    id 'org.beryx.jlink' version '3.0.1'
+//    id "org.gradlex.extra-java-module-info" //version "1.6.2"
 }
+
+apply plugin: "org.gradlex.extra-java-module-info"
 
 repositories {
     mavenLocal()
     maven {
         url = uri('https://repo.maven.apache.org/maven2/')
+    }
+    maven {
+        url "https://plugins.gradle.org/m2/"
     }
 }
 
@@ -16,26 +37,35 @@ targetCompatibility = "19"
 sourceCompatibility = "19"
 
 dependencies {
+//    implementation("org.gradlex:extra-java-module-info:1.6.2")
+//    implementation('com.evolvedbinary.thirdparty.org.apache.xmlrpc:xmlrpc-common:4.0.0'){
+//        exclude group: 'junit', module: 'junit'
+//    }
+//    implementation 'com.evolvedbinary.thirdparty.org.apache.xmlrpc:xmlrpc-client:5.0.0'
     implementation('org.apache.xmlrpc:xmlrpc-common:3.1.3'){
         exclude group: 'junit', module: 'junit'
     }
     implementation 'org.apache.xmlrpc:xmlrpc-client:3.1.3'
-    implementation 'com.sun.jersey:jersey-client:1.12'
+    implementation 'org.apache.commons:commons-lang3:3.14.0'
+    implementation 'org.glassfish.jersey.core:jersey-client:3.1.5'
+
+    implementation 'javax.inject:javax.inject:1'
+    implementation 'jakarta.inject:jakarta.inject-api:2.0.1'
     implementation 'com.omertron:themoviedbapi:4.2'
-    implementation 'com.google.inject:guice:5.1.0'
+    implementation 'com.google.inject:guice:7.0.0'
     implementation 'com.cathive.fx:fx-guice:8.0.0'
-    implementation 'com.google.code.gson:gson:2.6.2'
-    implementation 'commons-io:commons-io:2.3'
-    implementation 'commons-codec:commons-codec:1.10'
-    implementation 'com.google.guava:guava:31.1-jre'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'commons-io:commons-io:2.15.1'
+    implementation 'commons-codec:commons-codec:1.16.0'
+    implementation 'com.google.guava:guava:33.0.0-jre'
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
-    implementation 'com.typesafe.akka:akka-actor_2.13:2.6.19'
-    implementation 'com.typesafe.akka:akka-stream_2.13:2.6.19'
-    implementation 'com.typesafe.akka:akka-slf4j_2.13:2.6.19'
-    implementation 'org.slf4j:slf4j-api:2.0.7'
-    implementation 'org.slf4j:log4j-over-slf4j:2.0.7'
-    implementation 'org.slf4j:jul-to-slf4j:2.0.7'
-    implementation 'ch.qos.logback:logback-classic:1.4.6'
+    implementation 'com.typesafe.akka:akka-actor_2.13:2.6.21'
+    implementation 'com.typesafe.akka:akka-stream_2.13:2.6.21'
+    implementation 'com.typesafe.akka:akka-slf4j_2.13:2.6.21'
+    implementation 'org.slf4j:slf4j-api:2.0.11'
+    implementation 'org.slf4j:log4j-over-slf4j:2.0.11'
+    implementation 'org.slf4j:jul-to-slf4j:2.0.11'
+    implementation 'ch.qos.logback:logback-classic:1.4.14'
 
     testImplementation 'junit:junit-dep:4.10'
     testImplementation 'org.hamcrest:hamcrest-all:1.3'
@@ -49,6 +79,16 @@ group = 'pl.rafalmag'
 version = '1.5.0-SNAPSHOT'
 description = 'Subtitles Downloader'
 
+extraJavaModuleInfo {
+    failOnMissingModuleInfo.set(false)
+
+    automaticModule("org.apache.xmlrpc:xmlrpc-common", "xmlrpc.common")
+    automaticModule("org.apache.xmlrpc:xmlrpc-client", "xmlrpc.client")
+    automaticModule("com.omertron:themoviedbapi", "themoviedbapi")
+    automaticModule("com.cathive.fx:fx-guice", "fx.guice")
+    automaticModule("jsr305-3.0.2.jar","jsr305")
+
+}
 
 javafx {
     version = '20'
@@ -57,10 +97,21 @@ javafx {
 
 mainClassName = 'pl.rafalmag.subtitledownloader.RunMeMain'
 
-//jlink {
-//    jarExclude("xml-apis", "**/license/") // because of https://github.com/beryx/badass-jlink-plugin/issues/186
-//    launcher {
-//        name = 'Subtitles Downloader'
-////        jvmArgs = ['-Djdk.gtk.version=2'] // required due to a bug in Java: https://github.com/javafxports/openjdk-jfx/issues/175
-//    }
-//}
+jlink {
+    jarExclude("xml-apis", "**/license/") // because of https://github.com/beryx/badass-jlink-plugin/issues/186
+
+    mergedModule {
+        excludeRequires("log4j")
+//        excludeRequires("commons.logging")
+//        excludeRequires("api.common")
+
+//        excludeProvides servicePattern: 'com.sun.jersey.core.impl.provider.*'
+//        excludeProvides implementation: 'com.sun.jersey.core.impl.provider.entity.DocumentProvider'
+//        excludeProvides implementation: 'com.sun.jersey.core.impl.provider.xml.DocumentBuilderFactoryProvider'
+    }
+    addExtraDependencies("javafx","javax.inject")
+    launcher {
+        name = 'Subtitles Downloader'
+//        jvmArgs = ['-Djdk.gtk.version=2'] // required due to a bug in Java: https://github.com/javafxports/openjdk-jfx/issues/175
+    }
+}

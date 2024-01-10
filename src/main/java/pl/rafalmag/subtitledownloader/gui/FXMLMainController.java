@@ -2,6 +2,8 @@ package pl.rafalmag.subtitledownloader.gui;
 
 import com.cathive.fx.guice.GuiceFXMLLoader;
 import com.google.common.base.Throwables;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.google.inject.name.Named;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,8 +23,6 @@ import pl.rafalmag.subtitledownloader.SubtitlesDownloaderProperties;
 import pl.rafalmag.subtitledownloader.annotations.InjectLogger;
 import pl.rafalmag.subtitledownloader.entities.Theme;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;

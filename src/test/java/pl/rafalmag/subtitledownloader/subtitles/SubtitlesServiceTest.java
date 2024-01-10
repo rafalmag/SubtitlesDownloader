@@ -12,7 +12,7 @@ import pl.rafalmag.subtitledownloader.opensubtitles.SessionException;
 import pl.rafalmag.subtitledownloader.title.Movie;
 import pl.rafalmag.subtitledownloader.utils.ProgressCallbackDummy;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;

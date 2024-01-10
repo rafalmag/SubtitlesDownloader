@@ -1,9 +1,8 @@
 package pl.rafalmag.subtitledownloader.subtitles;
 
+import com.google.inject.Singleton;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-
-import javax.inject.Singleton;
 
 @Singleton
 public class SelectSubtitlesProperties {

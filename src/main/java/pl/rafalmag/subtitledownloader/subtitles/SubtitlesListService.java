@@ -1,5 +1,7 @@
 package pl.rafalmag.subtitledownloader.subtitles;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -14,8 +16,6 @@ import pl.rafalmag.subtitledownloader.title.Movie;
 import pl.rafalmag.subtitledownloader.title.SelectTitleProperties;
 import pl.rafalmag.subtitledownloader.utils.TaskWithProgressCallback;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.io.File;
 import java.util.SortedSet;
 import java.util.concurrent.ExecutorService;

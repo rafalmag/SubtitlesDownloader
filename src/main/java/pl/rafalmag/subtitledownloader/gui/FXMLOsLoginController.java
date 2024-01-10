@@ -1,6 +1,8 @@
 package pl.rafalmag.subtitledownloader.gui;
 
 import com.google.common.base.Strings;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import javafx.application.HostServices;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,8 +20,6 @@ import pl.rafalmag.subtitledownloader.opensubtitles.Session;
 import pl.rafalmag.subtitledownloader.opensubtitles.SessionException;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.LoginAndPassword;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;

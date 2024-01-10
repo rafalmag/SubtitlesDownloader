@@ -1,6 +1,8 @@
 package pl.rafalmag.subtitledownloader.gui;
 
 import com.google.common.collect.ImmutableList;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
@@ -17,8 +19,6 @@ import pl.rafalmag.subtitledownloader.title.Movie;
 import pl.rafalmag.subtitledownloader.title.MovieTitlesListService;
 import pl.rafalmag.subtitledownloader.title.SelectTitleProperties;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.net.URL;
 import java.util.ResourceBundle;
 

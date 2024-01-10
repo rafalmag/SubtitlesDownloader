@@ -1,6 +1,8 @@
 package pl.rafalmag.subtitledownloader.gui;
 
 import com.google.common.collect.ImmutableList;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -16,8 +18,6 @@ import pl.rafalmag.subtitledownloader.entities.InterfaceLanguage;
 import pl.rafalmag.subtitledownloader.opensubtitles.Session;
 import pl.rafalmag.subtitledownloader.opensubtitles.entities.SubtitleLanguage;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;

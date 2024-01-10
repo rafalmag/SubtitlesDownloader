@@ -1,11 +1,11 @@
 package pl.rafalmag.subtitledownloader.themoviedb;
 
 import com.google.common.base.Throwables;
+import com.google.inject.Singleton;
 import com.omertron.themoviedbapi.MovieDbException;
 import com.omertron.themoviedbapi.TheMovieDbApi;
 import com.omertron.themoviedbapi.model.movie.MovieInfo;
 
-import javax.inject.Singleton;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;

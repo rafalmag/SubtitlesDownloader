@@ -1,8 +1,6 @@
 package pl.rafalmag.subtitledownloader.title;
 
 import akka.actor.ActorSystem;
-import akka.stream.ActorMaterializer;
-import akka.stream.Materializer;
 import akka.stream.javadsl.Sink;
 import com.google.inject.Guice;
 import org.junit.Before;
@@ -13,7 +11,7 @@ import pl.rafalmag.subtitledownloader.TestGuiceModule;
 import pl.rafalmag.subtitledownloader.opensubtitles.SessionException;
 import pl.rafalmag.subtitledownloader.utils.ProgressCallbackDummy;
 
-import javax.inject.Inject;
+import com.google.inject.Inject;
 import java.io.File;
 import java.util.List;
 import java.util.Locale;
@@ -58,8 +56,8 @@ public class TitleServiceTest {
 
         // a -> the
         assertThat(firstMovie.getTitle(), equalToIgnoringCase("The Girl With the Dragon Tattoo"));
-        assertThat(firstMovie.getYear(), equalTo(2011));
-        assertThat(firstMovie.getImdbId(), equalTo(1568346));
+        assertThat(firstMovie.getYear(), equalTo(2009));
+        assertThat(firstMovie.getImdbId(), equalTo(1132620));
     }
 
     @Test
