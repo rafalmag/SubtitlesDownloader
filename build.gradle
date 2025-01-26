@@ -76,7 +76,7 @@ dependencies {
 }
 
 group = 'pl.rafalmag'
-version = '1.5.0-SNAPSHOT'
+version = '1.5.1-SNAPSHOT'
 description = 'Subtitles Downloader'
 
 extraJavaModuleInfo {
@@ -87,27 +87,23 @@ extraJavaModuleInfo {
     automaticModule("com.omertron:themoviedbapi", "themoviedbapi")
     automaticModule("com.cathive.fx:fx-guice", "fx.guice")
     automaticModule("jsr305-3.0.2.jar","jsr305")
-
 }
 
 javafx {
     version = '20'
     modules = [ 'javafx.controls', 'javafx.fxml' ]
+    platform = 'win'
 }
 
 mainClassName = 'pl.rafalmag.subtitledownloader.RunMeMain'
 
 jlink {
-    jarExclude("xml-apis", "**/license/") // because of https://github.com/beryx/badass-jlink-plugin/issues/186
+    jarExclude("xml-apis", "**/license/","java.xml") // because of https://github.com/beryx/badass-jlink-plugin/issues/186
 
     mergedModule {
         excludeRequires("log4j")
-//        excludeRequires("commons.logging")
-//        excludeRequires("api.common")
-
-//        excludeProvides servicePattern: 'com.sun.jersey.core.impl.provider.*'
-//        excludeProvides implementation: 'com.sun.jersey.core.impl.provider.entity.DocumentProvider'
-//        excludeProvides implementation: 'com.sun.jersey.core.impl.provider.xml.DocumentBuilderFactoryProvider'
+        excludeRequires("xml-apis")
+        excludeRequires("java.xml")
     }
     addExtraDependencies("javafx","javax.inject")
     launcher {

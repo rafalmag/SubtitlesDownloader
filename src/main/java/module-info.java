@@ -1,6 +1,4 @@
 open module subtitlesdownloader.main {
-//    opens pl.rafalmag.subtitledownloader to com.google.guice;
-//    opens pl.rafalmag.subtitledownloader.opensubtitles to com.google.guice;
 
     requires javafx.graphics;
     requires javafx.fxml;
@@ -23,12 +21,9 @@ open module subtitlesdownloader.main {
     requires ch.qos.logback.classic;
     requires ch.qos.logback.core;
     requires jakarta.inject;
+    requires akka.stream;
+    requires scala.library;
 
     exports pl.rafalmag.subtitledownloader;
 
-//    exports pl.rafalmag.subtitledownloader.provider;
-//    exports pl.rafalmag.subtitledownloader.provider.spi;
-//    provides pl.rafalmag.subtitledownloader.provider.spi.MessagesProvider with pl.rafalmag.subtitledownloader.provider.MessagesProviderImpl;
-//
-//    uses pl.rafalmag.subtitledownloader.provider.spi.MessagesProvider;
 }

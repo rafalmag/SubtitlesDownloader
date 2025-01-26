@@ -19,7 +19,8 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
+//import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class TitleServiceTest {
 
@@ -52,7 +53,7 @@ public class TitleServiceTest {
 
         // then
         assertThat(titles, not(hasSize(0)));
-        Movie firstMovie = titles.get(1);
+        Movie firstMovie = titles.get(0);
 
         // a -> the
         assertThat(firstMovie.getTitle(), equalToIgnoringCase("The Girl With the Dragon Tattoo"));
@@ -111,7 +112,7 @@ public class TitleServiceTest {
         Set<Movie> titles = titleService.getTitles(movieFile, TIMEOUT_MS, new ProgressCallbackDummy());
 
         // then
-        Movie firstMovie = titles.stream().toList().get(1);
+        Movie firstMovie = titles.stream().toList().get(2);
 
         assertThat(firstMovie.getTitle(), equalToIgnoringCase("A Lonely Place To Die"));
         assertThat(firstMovie.getYear(), equalTo(2011));
